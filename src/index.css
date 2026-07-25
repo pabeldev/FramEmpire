@@ -37,6 +37,7 @@ html, body {
   color: var(--text-main);
   font-family: var(--font-body);
   line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
@@ -72,14 +73,14 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-neon);
   border-radius: 16px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .neon-card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-neon-glow);
-  box-shadow: 0 4px 20px rgba(0, 243, 255, 0.08);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 243, 255, 0.1);
+  transform: translateY(-3px);
 }
 
 .neon-button-primary {
@@ -93,7 +94,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   letter-spacing: 0.3px;
   cursor: pointer;
   box-shadow: var(--glow-button);
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -101,8 +102,8 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 }
 
 .neon-button-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
 }
 
 .neon-button-secondary {
@@ -114,7 +115,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   padding: 12px 24px;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -124,6 +125,7 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .neon-button-secondary:hover {
   background: rgba(0, 243, 255, 0.14);
   border-color: var(--neon-cyan);
+  transform: translateY(-1px);
 }
 
 .neon-badge {
@@ -170,14 +172,14 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   filter: blur(60px);
 }
 
-/* Very Soft Floating Animation */
+/* Ultra Smooth Keyframes & Animations */
 @keyframes softFloat {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-8px); }
 }
 
 .animate-float {
-  animation: softFloat 7s ease-in-out infinite;
+  animation: softFloat 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes softPulse {
@@ -187,4 +189,19 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 .animate-pulse-glow {
   animation: softPulse 5s ease-in-out infinite;
+}
+
+@keyframes smoothFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: smoothFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

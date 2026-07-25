@@ -59,25 +59,25 @@ export const SERVICES = [
 ];
 
 export const PORTFOLIO_PROJECTS = [
-  // 1. Behance Motion & Design Projects
+  // 1. Behance Projects -> Categorized under Graphic Design
   {
     id: "behance-1",
-    title: "FramEmpire 3D Motion System #1",
+    title: "FramEmpire Brand & Graphic Design #1",
     client: "FramEmpire Behance Showcase",
-    category: "Motion Graphics",
-    categoryKey: "motion-graphics",
+    category: "Graphic Design",
+    categoryKey: "graphic-design",
     platform: "behance",
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/253103033?ilo0=1",
     year: "2026",
-    summary: "Featured Behance 3D animation project showcase presenting volumetric lighting & kinetic motion dynamics.",
-    stats: "Behance Featured • 99% Rating",
-    deliverables: ["3D Kinetic Motion", "Behance Presentation", "Octane Render Assets"],
+    summary: "Featured Behance graphic design project presenting brand guidelines & vector asset composition.",
+    stats: "Behance Featured • Graphic Design",
+    deliverables: ["Visual Identity System", "Behance Presentation", "Vector Art"],
     featured: true,
   },
   {
     id: "behance-2",
-    title: "FramEmpire Brand & Motion #2",
+    title: "FramEmpire Visual Identity System #2",
     client: "FramEmpire Showcase",
     category: "Graphic Design",
     categoryKey: "graphic-design",
@@ -92,22 +92,22 @@ export const PORTFOLIO_PROJECTS = [
   },
   {
     id: "behance-3",
-    title: "FramEmpire 3D Concept #3",
+    title: "FramEmpire Graphic Design Concept #3",
     client: "FramEmpire Studios",
-    category: "Motion Graphics",
-    categoryKey: "motion-graphics",
+    category: "Graphic Design",
+    categoryKey: "graphic-design",
     platform: "behance",
     image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/248708119?ilo0=1",
     year: "2025",
-    summary: "3D animation environment render with custom lighting FX and kinetic composition.",
+    summary: "Graphic design artwork render with custom lighting FX and kinetic composition.",
     stats: "Behance Staff Pick",
-    deliverables: ["3D Environment Render", "VFX Compositing", "Color Pass"],
+    deliverables: ["Graphic Design Art", "VFX Compositing", "Color Pass"],
     featured: true,
   },
   {
     id: "behance-4",
-    title: "FramEmpire Kinetic Visual System #4",
+    title: "FramEmpire Visual Identity #4",
     client: "FramEmpire Studio",
     category: "Graphic Design",
     categoryKey: "graphic-design",
@@ -122,21 +122,53 @@ export const PORTFOLIO_PROJECTS = [
   },
   {
     id: "behance-5",
-    title: "FramEmpire Creative Motion Reel #5",
+    title: "FramEmpire Graphic Design Showcase #5",
     client: "FramEmpire Studio",
-    category: "Motion Graphics",
-    categoryKey: "motion-graphics",
+    category: "Graphic Design",
+    categoryKey: "graphic-design",
     platform: "behance",
     image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/247216449?ilo0=1",
     year: "2025",
-    summary: "High-voltage 3D motion reel with volumetric lighting and particle simulations.",
-    stats: "Behance Motion Award",
-    deliverables: ["Full 4K Reel", "Sound Design", "Octane Render"],
+    summary: "High-voltage graphic design art showcase with volumetric composition.",
+    stats: "Behance Design Award",
+    deliverables: ["Design Presentation", "Graphic Layout", "Poster Art"],
     featured: false,
   },
 
-  // 2. YouTube Video Editing Projects
+  // 2. Motion Graphics Projects
+  {
+    id: "motion-1",
+    title: "FramEmpire 3D Kinetic Motion Reel",
+    client: "FramEmpire Studios",
+    category: "Motion Graphics",
+    categoryKey: "motion-graphics",
+    platform: "direct",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-beams-in-the-dark-42861-large.mp4",
+    year: "2026",
+    summary: "Flagship 3D kinetic character animation & Octane volumetric render showcase.",
+    stats: "4K Motion Reel • 99.6% Rating",
+    deliverables: ["3D Kinetic Motion", "Character Rigging", "Octane Render Assets"],
+    featured: true,
+  },
+  {
+    id: "motion-2",
+    title: "CYBER-KINGDOM 3D Animation Reel",
+    client: "Tokyo Interactive",
+    category: "Motion Graphics",
+    categoryKey: "motion-graphics",
+    platform: "direct",
+    image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-blue-and-purple-lights-42858-large.mp4",
+    year: "2025",
+    summary: "Octane Render 3D environment walkthrough with volumetric neon lighting.",
+    stats: "Vimeo Staff Pick Award",
+    deliverables: ["Full 4K Reel", "Sound Design", "VFX Compositing"],
+    featured: true,
+  },
+
+  // 3. YouTube Video Editing Projects
   {
     id: "yt-1",
     title: "FramEmpire Commercial Video Edit #1",
@@ -183,7 +215,7 @@ export const PORTFOLIO_PROJECTS = [
     featured: false,
   },
 
-  // 3. Web Development Live Projects
+  // 4. Web Development Live Projects
   {
     id: "web-1",
     title: "Education BD Web Platform",
@@ -270,7 +302,7 @@ export const EMPLOYEES = [
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop",
     status: "Active - In Suite",
     skills: ["DaVinci Resolve", "Premiere Pro", "Sound Design", "VFX"],
-    currentProject: "HYPERION Commercial",
+    currentProject: "FramEmpire Commercial",
     workloadPercent: 70,
     rating: 4.85,
     hoursThisWeek: 36.0,
@@ -284,7 +316,7 @@ export const EMPLOYEES = [
     avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop",
     status: "Active - Client Review",
     skills: ["Figma", "Illustrator", "Photoshop", "3D Typography"],
-    currentProject: "NEXUS UI System",
+    currentProject: "FramEmpire Behance Identity",
     workloadPercent: 90,
     rating: 5.0,
     hoursThisWeek: 40.0,
@@ -322,7 +354,7 @@ export const EMPLOYEES = [
 export const CLIENT_PROJECTS_PIPELINE = [
   {
     id: "proj-pipe-1",
-    name: "FramEmpire 3D Reel",
+    name: "FramEmpire 3D Motion Reel",
     client: "FramEmpire Studios",
     lead: "Elena Vance",
     discipline: "Motion Graphics",
@@ -373,27 +405,27 @@ export const CLIENT_PROJECTS_PIPELINE = [
   },
   {
     id: "proj-pipe-4",
-    name: "NEO-GLOW Brand Redesign",
+    name: "FramEmpire Behance Identity",
     client: "Glow Tech",
     lead: "Sophia Chen",
     discipline: "Graphic Design",
     budget: "$24,000",
-    progress: 35,
-    status: "Concept Phase",
-    dueDate: "2026-08-28",
+    progress: 100,
+    status: "Published on Behance",
+    dueDate: "2026-07-20",
     tasks: [
-      { id: 1, title: "Client Discovery & Moodboards", done: true },
-      { id: 2, title: "3D Logo Explorations", done: false },
-      { id: 3, title: "Typography & Color Tokens", done: false }
+      { id: 1, title: "Discovery & Brand Identity", done: true },
+      { id: 2, title: "Vector Asset Explorations", done: true },
+      { id: 3, title: "Behance Presentation Upload", done: true }
     ]
   }
 ];
 
 export const RECENT_TIMESHEETS = [
-  { id: "ts-1", employee: "Elena Vance", project: "FramEmpire 3D Reel", hours: 8.5, date: "2026-07-24", category: "3D Rendering", status: "Approved" },
+  { id: "ts-1", employee: "Elena Vance", project: "FramEmpire 3D Motion Reel", hours: 8.5, date: "2026-07-24", category: "3D Rendering", status: "Approved" },
   { id: "ts-2", employee: "Marcus Vance", project: "FramEmpire Commercial Cut", hours: 7.5, date: "2026-07-24", category: "Color Grading", status: "Approved" },
-  { id: "ts-3", employee: "Sophia Chen", project: "NEO-GLOW Brand Redesign", hours: 8.0, date: "2026-07-25", category: "Vector Design", status: "Pending Approval" },
-  { id: "ts-4", employee: "David Kross", project: "Education BD Platform", hours: 9.0, date: "2026-07-25", category: "Frontend Coding", status: "Pending Approval" }
+  { id: "ts-3", employee: "Sophia Chen", project: "FramEmpire Behance Identity", hours: 8.0, date: "2026-07-25", category: "Vector Design", status: "Approved" },
+  { id: "ts-4", employee: "David Kross", project: "Education BD Platform", hours: 9.0, date: "2026-07-25", category: "Frontend Coding", status: "Approved" }
 ];
 
 export const PTO_REQUESTS = [

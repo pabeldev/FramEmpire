@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag, Video } from 'lucide-react';
+import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag, Video, Globe } from 'lucide-react';
 import { PORTFOLIO_PROJECTS } from '../../data/creativeData';
 
 export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
@@ -22,7 +22,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
               Selected <span className="text-gradient">Client Showcase & Motion Reels</span>
             </h2>
             <p className="text-slate-400 text-xs sm:text-sm max-w-xl">
-              Explore our latest commercial video cuts, 3D motion animations, graphic identity systems, and web builds.
+              Explore our live web platforms, commercial video cuts, Behance motion systems, and graphic design identity.
             </p>
           </div>
 
@@ -84,10 +84,14 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                   )}
                 </div>
 
-                {/* Play Button Overlay */}
+                {/* Play / Visit Button Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-cyan-400 text-black flex items-center justify-center shadow-[0_0_20px_rgba(0,243,255,0.8)]">
-                    <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-black ml-0.5" />
+                    {project.liveUrl ? (
+                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
+                    ) : (
+                      <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-black ml-0.5" />
+                    )}
                   </div>
                 </div>
               </div>
@@ -113,7 +117,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                     {project.stats}
                   </span>
                   <span className="text-xs font-bold text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform shrink-0">
-                    <span>Watch</span>
+                    <span>{project.liveUrl ? 'Visit Website' : 'Watch Embed'}</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -123,7 +127,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
           ))}
         </div>
 
-        {/* Project Detail Lightbox Modal with Embed Support */}
+        {/* Project Detail Lightbox Modal with Live Embed / Link Support */}
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-xl animate-fadeIn">
             <div className="neon-card max-w-3xl w-full max-h-[92vh] overflow-y-auto border-cyan-400 p-4 sm:p-8 relative space-y-4 sm:space-y-6">
@@ -151,7 +155,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 </h2>
               </div>
 
-              {/* Embed Video / Iframe Box inside Modal */}
+              {/* Embed / Live Link Player Box inside Modal */}
               <div className="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-video bg-slate-950 border border-cyan-500/30">
                 {selectedProject.embedUrl ? (
                   <iframe
@@ -161,6 +165,24 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                     allowFullScreen
                     title={selectedProject.title}
                   />
+                ) : selectedProject.liveUrl ? (
+                  <div className="w-full h-full relative group">
+                    <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/75 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-4">
+                      <Globe className="w-12 h-12 text-cyan-400 animate-pulse" />
+                      <h3 className="text-lg font-bold text-white font-['Creato_Display']">{selectedProject.title}</h3>
+                      <p className="text-xs text-slate-300 max-w-md">{selectedProject.summary}</p>
+                      <a
+                        href={selectedProject.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="neon-button-primary py-2.5 px-6 text-xs flex items-center gap-2"
+                      >
+                        <span>Visit Live Website</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </div>
+                  </div>
                 ) : selectedProject.videoPreview ? (
                   <video
                     src={selectedProject.videoPreview}
@@ -183,7 +205,20 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 <div className="space-y-2 sm:space-y-3">
                   <h4 className="font-bold text-xs sm:text-sm text-white font-['Creato_Display']">Project Scope & Summary</h4>
                   <p className="leading-relaxed text-slate-300">{selectedProject.summary}</p>
-                  <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/20">
+                  
+                  {selectedProject.liveUrl && (
+                    <a
+                      href={selectedProject.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-cyan-300 font-bold hover:underline text-xs pt-1"
+                    >
+                      <Globe className="w-4 h-4" />
+                      <span>{selectedProject.liveUrl}</span>
+                    </a>
+                  )}
+
+                  <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/20 mt-2">
                     <span className="text-[9px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Performance Stats</span>
                     <span className="text-xs sm:text-sm font-extrabold text-white">{selectedProject.stats}</span>
                   </div>

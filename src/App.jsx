@@ -4,6 +4,7 @@ import HeroSection from './components/public/HeroSection';
 import ServicesSection from './components/public/ServicesSection';
 import PortfolioSection from './components/public/PortfolioSection';
 import AboutSection from './components/public/AboutSection';
+import TeamCaptainSection from './components/public/TeamCaptainSection';
 import ClientEstimator from './components/public/ClientEstimator';
 import Footer from './components/public/Footer';
 
@@ -76,6 +77,7 @@ export default function App() {
           <AboutSection
             onOpenEstimator={() => handleOpenEstimator()}
           />
+          <TeamCaptainSection />
           <Footer
             onOpenEstimator={() => handleOpenEstimator()}
             onOpenLoginModal={() => setLoginModalOpen(true)}

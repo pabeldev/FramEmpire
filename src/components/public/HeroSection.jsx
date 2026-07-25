@@ -93,22 +93,22 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
         {/* Right Column: Highlighting "One of our most client's choice projects" */}
         <div className="lg:col-span-5 relative mt-4 lg:mt-0">
           
-          {/* Main Floating Video Card with Glowing Border */}
-          <div className="neon-card p-4 sm:p-6 border-cyan-400/60 relative z-10 space-y-4 sm:space-y-5 animate-float shadow-[0_0_35px_rgba(0,243,255,0.3)]">
+          {/* Main Video Card (Hardware Accelerated GPU layer, smooth iframe rendering) */}
+          <div className="neon-card p-4 sm:p-6 border-cyan-400/60 relative z-10 space-y-4 sm:space-y-5 shadow-[0_0_30px_rgba(0,243,255,0.25)] transition-shadow duration-500 hover:shadow-[0_0_45px_rgba(0,243,255,0.4)]">
             
             {/* Top Eye-Catching Banner */}
             <div className="flex flex-col gap-1.5 border-b border-cyan-500/30 pb-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 text-yellow-300 border border-yellow-500/40 text-[10px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-[0_0_15px_rgba(234,179,8,0.3)]">
-                  <Flame className="w-3.5 h-3.5 text-yellow-400 animate-bounce fill-yellow-400" />
+                  <Flame className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
                   <span>ONE OF OUR MOST CLIENT'S CHOICE PROJECTS</span>
                 </span>
                 <span className="neon-badge text-[9px] border-cyan-400 text-cyan-300">VIMEO HD</span>
               </div>
             </div>
 
-            {/* Vimeo Live Video Player Box */}
-            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border-2 border-cyan-400/80 shadow-[0_0_30px_rgba(0,243,255,0.25)]">
+            {/* Vimeo Live Video Player Box (Fixed Position, Hardware-Accelerated 60 FPS) */}
+            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(0,243,255,0.2)]">
               <iframe
                 src="https://player.vimeo.com/video/1133437679?badge=0&autopause=0&player_id=0&app_id=58479"
                 className="w-full h-full border-0"

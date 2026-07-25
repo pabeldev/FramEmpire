@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag, Video, Globe } from 'lucide-react';
 import { PORTFOLIO_PROJECTS } from '../../data/creativeData';
 
-// Helper to auto-generate thumbnail or live embed preview (No fallback dummy image used for Behance or YouTube)
+// Helper to auto-generate thumbnail, live embed iframe, or live website preview
 export function getCardMediaPreview(project) {
   // 1. Behance Direct Embed Preview (Live Iframe in Card)
   if (project.platform === 'behance' || (project.embedUrl && project.embedUrl.includes('behance.net'))) {
@@ -28,7 +28,16 @@ export function getCardMediaPreview(project) {
     }
   }
 
-  // 3. Direct Video MP4
+  // 3. Web Development Live Site Iframe Preview (Renders site hero/welcome page)
+  if (project.liveUrl || project.platform === 'web') {
+    return {
+      type: 'web-iframe',
+      url: project.liveUrl,
+      fallbackImage: `https://api.microlink.io/?url=${encodeURIComponent(project.liveUrl)}&screenshot=true&embed=screenshot.url`
+    };
+  }
+
+  // 4. Direct Video MP4
   if (project.videoPreview) {
     return {
       type: 'video',
@@ -36,7 +45,7 @@ export function getCardMediaPreview(project) {
     };
   }
 
-  // 4. Default Cover Image or Fallback
+  // 5. Default Fallback
   return {
     type: 'image',
     url: project.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop'
@@ -72,9 +81,9 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
             {[
               { id: 'all', label: 'All Projects' },
               { id: 'graphic-design', label: 'Graphic Design', icon: Palette },
+              { id: 'web-dev', label: 'Web Dev', icon: Code2 },
               { id: 'motion-graphics', label: 'Motion', icon: Sparkles },
               { id: 'video-editing', label: 'Video', icon: Film },
-              { id: 'web-dev', label: 'Web Dev', icon: Code2 },
             ].map(tab => {
               const IconComp = tab.icon;
               const isActive = filter === tab.id;
@@ -107,16 +116,25 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 onClick={() => setSelectedProject(project)}
                 className="neon-card group overflow-hidden border-cyan-500/20 hover:border-cyan-400 cursor-pointer flex flex-col justify-between"
               >
-                {/* Media Thumbnail Container (Direct Live Behance Iframe / YouTube Auto-Thumbnail) */}
+                {/* Media Thumbnail Container (Direct Live Behance / Website Hero Preview) */}
                 <div className="relative aspect-video overflow-hidden bg-slate-950">
                   {media.type === 'iframe' ? (
                     <div className="w-full h-full relative">
                       <iframe
                         src={media.url}
-                        className="w-full h-full border-0 pointer-events-none scale-100 group-hover:scale-105 transition-transform"
+                        className="w-full h-full border-0 pointer-events-none"
                         title={project.title}
                       />
-                      {/* Transparent overlay for click to open full lightbox modal */}
+                      <div className="absolute inset-0 bg-cyan-950/10 group-hover:bg-cyan-950/20 transition-colors" />
+                    </div>
+                  ) : media.type === 'web-iframe' ? (
+                    <div className="w-full h-full relative overflow-hidden bg-slate-900">
+                      <iframe
+                        src={media.url}
+                        className="w-[1280px] h-[800px] border-0 pointer-events-none origin-top-left scale-[0.3] sm:scale-[0.32] lg:scale-[0.35]"
+                        title={project.title}
+                        loading="lazy"
+                      />
                       <div className="absolute inset-0 bg-cyan-950/10 group-hover:bg-cyan-950/20 transition-colors" />
                     </div>
                   ) : media.type === 'video' ? (
@@ -194,10 +212,10 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
           })}
         </div>
 
-        {/* Project Detail Lightbox Modal with Full Live Embed */}
+        {/* Project Detail Lightbox Modal with Full Live Embed / Website Hero View */}
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-xl animate-fadeIn">
-            <div className="neon-card max-w-3xl w-full max-h-[92vh] overflow-y-auto border-cyan-400 p-4 sm:p-8 relative space-y-4 sm:space-y-6">
+            <div className="neon-card max-w-4xl w-full max-h-[92vh] overflow-y-auto border-cyan-400 p-4 sm:p-8 relative space-y-4 sm:space-y-6">
               
               <button
                 onClick={() => setSelectedProject(null)}
@@ -212,7 +230,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                   <span className="neon-badge text-[9px] sm:text-[10px]">{selectedProject.category}</span>
                   {selectedProject.platform && (
                     <span className="neon-badge text-[9px] sm:text-[10px] border-blue-500/40 text-blue-300 bg-blue-950/40">
-                      EMBED: {selectedProject.platform.toUpperCase()}
+                      {selectedProject.platform === 'web' ? 'LIVE WEBSITE PLATFORM' : `EMBED: ${selectedProject.platform.toUpperCase()}`}
                     </span>
                   )}
                   <span className="text-xs text-slate-400">Client: <strong className="text-cyan-300">{selectedProject.client}</strong></span>
@@ -222,9 +240,41 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 </h2>
               </div>
 
-              {/* Embed Video / Behance / Iframe Box inside Modal */}
+              {/* Live Website / Embed Video / Behance Preview Box inside Modal */}
               <div className="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-video bg-slate-950 border border-cyan-500/30">
-                {selectedProject.embedUrl ? (
+                {selectedProject.liveUrl ? (
+                  <div className="w-full h-full relative flex flex-col">
+                    {/* Website Browser Header Simulation */}
+                    <div className="bg-slate-950 px-4 py-2 border-b border-cyan-500/20 flex items-center justify-between text-xs text-slate-400">
+                      <div className="flex items-center gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                        <span className="ml-2 font-mono text-[11px] text-cyan-300 font-semibold">{selectedProject.liveUrl}</span>
+                      </div>
+
+                      <a
+                        href={selectedProject.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="neon-button-primary py-1 px-3 text-[11px] flex items-center gap-1"
+                      >
+                        <span>Open Site</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+
+                    {/* Live Website Hero / Page Iframe Preview */}
+                    <div className="flex-1 w-full h-full relative overflow-hidden bg-slate-900">
+                      <iframe
+                        src={selectedProject.liveUrl}
+                        className="w-full h-full border-0"
+                        title={selectedProject.title}
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                ) : selectedProject.embedUrl ? (
                   <iframe
                     src={selectedProject.embedUrl}
                     className="w-full h-full border-0"
@@ -232,24 +282,6 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                     allowFullScreen
                     title={selectedProject.title}
                   />
-                ) : selectedProject.liveUrl ? (
-                  <div className="w-full h-full relative group">
-                    <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/75 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center space-y-4">
-                      <Globe className="w-12 h-12 text-cyan-400 animate-pulse" />
-                      <h3 className="text-lg font-bold text-white font-['Creato_Display']">{selectedProject.title}</h3>
-                      <p className="text-xs text-slate-300 max-w-md">{selectedProject.summary}</p>
-                      <a
-                        href={selectedProject.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="neon-button-primary py-2.5 px-6 text-xs flex items-center gap-2"
-                      >
-                        <span>Visit Live Website</span>
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </div>
-                  </div>
                 ) : selectedProject.videoPreview ? (
                   <video
                     src={selectedProject.videoPreview}

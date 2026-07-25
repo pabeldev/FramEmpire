@@ -59,15 +59,14 @@ export const SERVICES = [
 ];
 
 export const PORTFOLIO_PROJECTS = [
-  // 1. Behance Projects -> Categorized under Graphic Design
+  // 1. Behance Projects -> Direct Embed (No static image needed)
   {
     id: "behance-1",
-    title: "FramEmpire Brand & Graphic Design #1",
+    title: "FramEmpire Graphic Design #1",
     client: "FramEmpire Behance Showcase",
     category: "Graphic Design",
     categoryKey: "graphic-design",
     platform: "behance",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/253103033?ilo0=1",
     year: "2026",
     summary: "Featured Behance graphic design project presenting brand guidelines & vector asset composition.",
@@ -77,12 +76,11 @@ export const PORTFOLIO_PROJECTS = [
   },
   {
     id: "behance-2",
-    title: "FramEmpire Visual Identity System #2",
+    title: "FramEmpire Visual Identity #2",
     client: "FramEmpire Showcase",
     category: "Graphic Design",
     categoryKey: "graphic-design",
     platform: "behance",
-    image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/252254261?ilo0=1",
     year: "2026",
     summary: "Complete visual identity and 3D brand guidelines manual presented on Behance.",
@@ -92,12 +90,11 @@ export const PORTFOLIO_PROJECTS = [
   },
   {
     id: "behance-3",
-    title: "FramEmpire Graphic Design Concept #3",
+    title: "FramEmpire Graphic Concept #3",
     client: "FramEmpire Studios",
     category: "Graphic Design",
     categoryKey: "graphic-design",
     platform: "behance",
-    image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/248708119?ilo0=1",
     year: "2025",
     summary: "Graphic design artwork render with custom lighting FX and kinetic composition.",
@@ -112,7 +109,6 @@ export const PORTFOLIO_PROJECTS = [
     category: "Graphic Design",
     categoryKey: "graphic-design",
     platform: "behance",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/248462649?ilo0=1",
     year: "2025",
     summary: "Futuristic 3D typography and neon visual identity assets.",
@@ -122,12 +118,11 @@ export const PORTFOLIO_PROJECTS = [
   },
   {
     id: "behance-5",
-    title: "FramEmpire Graphic Design Showcase #5",
+    title: "FramEmpire Graphic Showcase #5",
     client: "FramEmpire Studio",
     category: "Graphic Design",
     categoryKey: "graphic-design",
     platform: "behance",
-    image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.behance.net/embed/project/247216449?ilo0=1",
     year: "2025",
     summary: "High-voltage graphic design art showcase with volumetric composition.",
@@ -144,7 +139,6 @@ export const PORTFOLIO_PROJECTS = [
     category: "Motion Graphics",
     categoryKey: "motion-graphics",
     platform: "direct",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
     videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-beams-in-the-dark-42861-large.mp4",
     year: "2026",
     summary: "Flagship 3D kinetic character animation & Octane volumetric render showcase.",
@@ -159,7 +153,6 @@ export const PORTFOLIO_PROJECTS = [
     category: "Motion Graphics",
     categoryKey: "motion-graphics",
     platform: "direct",
-    image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop",
     videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-blue-and-purple-lights-42858-large.mp4",
     year: "2025",
     summary: "Octane Render 3D environment walkthrough with volumetric neon lighting.",
@@ -168,7 +161,7 @@ export const PORTFOLIO_PROJECTS = [
     featured: true,
   },
 
-  // 3. YouTube Video Editing Projects
+  // 3. YouTube Video Editing Projects (Auto YouTube Thumbnails)
   {
     id: "yt-1",
     title: "FramEmpire Commercial Video Edit #1",
@@ -176,7 +169,6 @@ export const PORTFOLIO_PROJECTS = [
     category: "Video Editing",
     categoryKey: "video-editing",
     platform: "youtube",
-    image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.youtube.com/embed/WqnqlY8JoSE?rel=0",
     year: "2026",
     summary: "High-pace commercial video editing with custom sound design, DaVinci Resolve color grading & VFX overlays.",
@@ -191,7 +183,6 @@ export const PORTFOLIO_PROJECTS = [
     category: "Video Editing",
     categoryKey: "video-editing",
     platform: "youtube",
-    image: "https://images.unsplash.com/photo-1518173946687-a4c8a383392e?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.youtube.com/embed/94etk1eeSdo?rel=0",
     year: "2026",
     summary: "Dynamic video post-production reel with kinetic motion overlays and DaVinci HDR color grade.",
@@ -206,7 +197,6 @@ export const PORTFOLIO_PROJECTS = [
     category: "Video Editing",
     categoryKey: "video-editing",
     platform: "youtube",
-    image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=1200&auto=format&fit=crop",
     embedUrl: "https://www.youtube.com/embed/mZF06b970NA?rel=0",
     year: "2026",
     summary: "Fast-paced vertical social commercial edit with sound FX & seamless transitions.",

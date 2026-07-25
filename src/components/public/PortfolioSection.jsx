@@ -2,9 +2,17 @@ import React, { useState } from 'react';
 import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag, Video, Globe } from 'lucide-react';
 import { PORTFOLIO_PROJECTS } from '../../data/creativeData';
 
-// Helper to auto-generate thumbnail or embed preview
+// Helper to auto-generate thumbnail or live embed preview (No fallback dummy image used for Behance or YouTube)
 export function getCardMediaPreview(project) {
-  // 1. YouTube Auto Thumbnail
+  // 1. Behance Direct Embed Preview (Live Iframe in Card)
+  if (project.platform === 'behance' || (project.embedUrl && project.embedUrl.includes('behance.net'))) {
+    return {
+      type: 'iframe',
+      url: project.embedUrl
+    };
+  }
+
+  // 2. YouTube Auto Thumbnail
   if (project.platform === 'youtube' || (project.embedUrl && project.embedUrl.includes('youtube.com'))) {
     let videoId = '';
     if (project.embedUrl.includes('embed/')) {
@@ -18,14 +26,6 @@ export function getCardMediaPreview(project) {
         url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
       };
     }
-  }
-
-  // 2. Behance Direct Embed Preview (Live Iframe in Card)
-  if (project.platform === 'behance' || (project.embedUrl && project.embedUrl.includes('behance.net'))) {
-    return {
-      type: 'iframe',
-      url: project.embedUrl
-    };
   }
 
   // 3. Direct Video MP4
@@ -107,7 +107,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 onClick={() => setSelectedProject(project)}
                 className="neon-card group overflow-hidden border-cyan-500/20 hover:border-cyan-400 cursor-pointer flex flex-col justify-between"
               >
-                {/* Media Thumbnail Container (Auto-Renders Behance Iframe / YouTube Auto-Thumbnail) */}
+                {/* Media Thumbnail Container (Direct Live Behance Iframe / YouTube Auto-Thumbnail) */}
                 <div className="relative aspect-video overflow-hidden bg-slate-950">
                   {media.type === 'iframe' ? (
                     <div className="w-full h-full relative">
@@ -116,7 +116,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                         className="w-full h-full border-0 pointer-events-none scale-100 group-hover:scale-105 transition-transform"
                         title={project.title}
                       />
-                      {/* Transparent overlay for click to open modal */}
+                      {/* Transparent overlay for click to open full lightbox modal */}
                       <div className="absolute inset-0 bg-cyan-950/10 group-hover:bg-cyan-950/20 transition-colors" />
                     </div>
                   ) : media.type === 'video' ? (

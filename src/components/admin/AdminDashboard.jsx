@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { 
   Users, FolderKanban, Clock, DollarSign, Cpu, Activity, 
-  CheckCircle2, AlertCircle, Plus, Search, Filter, ShieldCheck, Sparkles, UserCheck
+  Film, Video, Sparkles
 } from 'lucide-react';
 
 import EmployeeManager from './EmployeeManager';
 import ProjectKanban from './ProjectKanban';
 import TimesheetTracker from './TimesheetTracker';
+import PortfolioManager from './PortfolioManager';
 
-import { EMPLOYEES, CLIENT_PROJECTS_PIPELINE, RECENT_TIMESHEETS, PTO_REQUESTS } from '../../data/creativeData';
+import { EMPLOYEES, CLIENT_PROJECTS_PIPELINE } from '../../data/creativeData';
 
-export default function AdminDashboard({ userRole }) {
-  const [activeTab, setActiveTab] = useState('overview'); // overview, employees, projects, timesheets
+export default function AdminDashboard({ userRole, projects, onAddProject, onDeleteProject }) {
+  const [activeTab, setActiveTab] = useState('overview'); // overview, portfolio, employees, projects, timesheets
 
   return (
     <div className="min-h-screen bg-[#070913] text-white p-4 sm:p-6 lg:p-8 space-y-8">
@@ -23,23 +24,23 @@ export default function AdminDashboard({ userRole }) {
             <span className="neon-badge text-[10px]">INTERNAL STUDIO WORKSPACE</span>
             <span className="text-xs text-cyan-400 font-semibold">• Logged in as <strong className="text-white">{userRole}</strong></span>
           </div>
-          <h1 className="font-['Syne'] text-2xl sm:text-3xl font-extrabold text-white mt-1">
-            Studio Operations & Talent Dashboard
+          <h1 className="font-['Creato_Display'] text-2xl sm:text-3xl font-extrabold text-white mt-1">
+            FramEmpire Operations & Studio Manager
           </h1>
           <p className="text-xs sm:text-sm text-slate-300">
-            Manage creative staff, active renders, video cuts, client approvals & employee time tracking.
+            Manage creative staff, YouTube/Vimeo/Behance portfolio embeds, active renders & client project pipelines.
           </p>
         </div>
 
         {/* Action Quick Stats */}
         <div className="flex items-center gap-3">
           <div className="bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl text-right">
-            <span className="text-[10px] text-slate-400 font-bold block uppercase">Render Farm Load</span>
-            <span className="text-base font-extrabold text-cyan-400 font-['Syne']">16 / 16 Nodes Active</span>
+            <span className="text-[10px] text-slate-400 font-bold block uppercase font-mono">Render Farm Load</span>
+            <span className="text-base font-extrabold text-cyan-400 font-['Creato_Display']">24 / 24 Nodes Active</span>
           </div>
           <div className="bg-slate-900/90 border border-blue-500/30 p-3 rounded-xl text-right">
-            <span className="text-[10px] text-slate-400 font-bold block uppercase">Monthly Revenue</span>
-            <span className="text-base font-extrabold text-green-400 font-['Syne']">$166,000 USD</span>
+            <span className="text-[10px] text-slate-400 font-bold block uppercase font-mono">Monthly Revenue</span>
+            <span className="text-base font-extrabold text-green-400 font-['Creato_Display']">$185,000 USD</span>
           </div>
         </div>
       </div>
@@ -48,6 +49,7 @@ export default function AdminDashboard({ userRole }) {
       <div className="flex flex-wrap items-center gap-2 border-b border-cyan-500/20 pb-4">
         {[
           { id: 'overview', label: 'Dashboard Overview', icon: Activity },
+          { id: 'portfolio', label: `Portfolio Embed Manager (${projects.length})`, icon: Video },
           { id: 'employees', label: `Employee Directory (${EMPLOYEES.length})`, icon: Users },
           { id: 'projects', label: `Project Pipeline (${CLIENT_PROJECTS_PIPELINE.length})`, icon: FolderKanban },
           { id: 'timesheets', label: 'Timesheets & PTO', icon: Clock },
@@ -83,8 +85,8 @@ export default function AdminDashboard({ userRole }) {
                 <span className="text-xs font-bold text-slate-400 uppercase">Monthly Revenue</span>
                 <DollarSign className="w-5 h-5" />
               </div>
-              <p className="text-2xl font-extrabold text-white font-['Syne']">$166,000</p>
-              <p className="text-xs text-green-400 font-semibold">+18.4% vs last month</p>
+              <p className="text-2xl font-extrabold text-white font-['Creato_Display']">$185,000</p>
+              <p className="text-xs text-green-400 font-semibold">+22.4% vs last month</p>
             </div>
 
             <div className="neon-card p-5 border-blue-500/30 space-y-2">
@@ -92,7 +94,7 @@ export default function AdminDashboard({ userRole }) {
                 <span className="text-xs font-bold text-slate-400 uppercase">Active Creative Projects</span>
                 <FolderKanban className="w-5 h-5" />
               </div>
-              <p className="text-2xl font-extrabold text-white font-['Syne']">{CLIENT_PROJECTS_PIPELINE.length} Sprints</p>
+              <p className="text-2xl font-extrabold text-white font-['Creato_Display']">{CLIENT_PROJECTS_PIPELINE.length} Sprints</p>
               <p className="text-xs text-cyan-300 font-semibold">2 Projects in Final Review</p>
             </div>
 
@@ -101,17 +103,17 @@ export default function AdminDashboard({ userRole }) {
                 <span className="text-xs font-bold text-slate-400 uppercase">Employee Roster</span>
                 <Users className="w-5 h-5" />
               </div>
-              <p className="text-2xl font-extrabold text-white font-['Syne']">{EMPLOYEES.length} Specialists</p>
+              <p className="text-2xl font-extrabold text-white font-['Creato_Display']">{EMPLOYEES.length} Specialists</p>
               <p className="text-xs text-slate-300 font-semibold">Average Workload: 82%</p>
             </div>
 
             <div className="neon-card p-5 border-cyan-400/30 space-y-2">
               <div className="flex items-center justify-between text-cyan-300">
-                <span className="text-xs font-bold text-slate-400 uppercase">Pending Approvals</span>
-                <Clock className="w-5 h-5" />
+                <span className="text-xs font-bold text-slate-400 uppercase">Live Portfolio Items</span>
+                <Video className="w-5 h-5" />
               </div>
-              <p className="text-2xl font-extrabold text-white font-['Syne']">4 Requests</p>
-              <p className="text-xs text-yellow-400 font-semibold">2 Timesheets, 2 PTO</p>
+              <p className="text-2xl font-extrabold text-white font-['Creato_Display']">{projects.length} Embeds</p>
+              <p className="text-xs text-cyan-400 font-semibold">YouTube, Vimeo, Behance</p>
             </div>
 
           </div>
@@ -122,7 +124,7 @@ export default function AdminDashboard({ userRole }) {
             {/* Left: Active Projects Overview */}
             <div className="lg:col-span-7 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-['Syne'] font-bold text-lg text-white">Active Creative Sprints</h3>
+                <h3 className="font-['Creato_Display'] font-bold text-lg text-white">Active Animation & Video Sprints</h3>
                 <button onClick={() => setActiveTab('projects')} className="text-xs text-cyan-400 font-bold hover:underline">
                   View Full Pipeline &rarr;
                 </button>
@@ -169,7 +171,7 @@ export default function AdminDashboard({ userRole }) {
                 <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
                   <div className="flex items-center gap-2">
                     <Cpu className="w-5 h-5 text-cyan-400" />
-                    <h3 className="font-['Syne'] text-base font-bold text-white">GPU Render Node Status</h3>
+                    <h3 className="font-['Creato_Display'] text-base font-bold text-white">GPU Render Node Status</h3>
                   </div>
                   <span className="neon-badge text-[9px]">OCTANE 2026.1</span>
                 </div>
@@ -184,13 +186,13 @@ export default function AdminDashboard({ userRole }) {
                 </div>
 
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  All 16 GPU render nodes operating at 100% efficiency. 4K frame caching for <i>AETHERIA 3D Reveal</i> estimated finish at 18:30 UTC.
+                  All GPU render nodes operating at 100% efficiency. 4K frame caching for <i>FramEmpire 3D Reel</i> estimated finish at 18:30 UTC.
                 </p>
               </div>
 
               {/* Quick Team Workload Summary */}
               <div className="neon-card p-6 border-blue-500/30 space-y-4">
-                <h3 className="font-['Syne'] text-base font-bold text-white">Team Availability</h3>
+                <h3 className="font-['Creato_Display'] text-base font-bold text-white">Team Availability</h3>
                 <div className="space-y-3">
                   {EMPLOYEES.slice(0, 3).map(emp => (
                     <div key={emp.id} className="flex items-center justify-between text-xs">
@@ -212,6 +214,15 @@ export default function AdminDashboard({ userRole }) {
           </div>
 
         </div>
+      )}
+
+      {/* Portfolio Embed Manager Tab */}
+      {activeTab === 'portfolio' && (
+        <PortfolioManager
+          projects={projects}
+          onAddProject={onAddProject}
+          onDeleteProject={onDeleteProject}
+        />
       )}
 
       {/* Employee Directory Tab */}

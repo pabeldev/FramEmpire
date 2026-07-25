@@ -9,6 +9,7 @@ import Footer from './components/public/Footer';
 
 import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
+import { PORTFOLIO_PROJECTS } from './data/creativeData';
 
 export default function App() {
   const [viewMode, setViewMode] = useState('public'); // 'public' | 'admin'
@@ -16,6 +17,17 @@ export default function App() {
   const [estimatorOpen, setEstimatorOpen] = useState(false);
   const [estimatorService, setEstimatorService] = useState('motion-graphics');
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+  // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
+  const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
+
+  const handleAddProject = (newProject) => {
+    setProjectsList([newProject, ...projectsList]);
+  };
+
+  const handleDeleteProject = (projectId) => {
+    setProjectsList(projectsList.filter(p => p.id !== projectId));
+  };
 
   const handleOpenEstimator = (serviceId = 'motion-graphics') => {
     setEstimatorService(serviceId);
@@ -60,7 +72,7 @@ export default function App() {
           <ServicesSection
             onOpenEstimator={(serviceId) => handleOpenEstimator(serviceId)}
           />
-          <PortfolioSection />
+          <PortfolioSection projects={projectsList} />
           <AboutSection
             onOpenEstimator={() => handleOpenEstimator()}
           />
@@ -71,7 +83,12 @@ export default function App() {
         </main>
       ) : (
         <main className="flex-1">
-          <AdminDashboard userRole={userRole} />
+          <AdminDashboard
+            userRole={userRole}
+            projects={projectsList}
+            onAddProject={handleAddProject}
+            onDeleteProject={handleDeleteProject}
+          />
         </main>
       )}
 

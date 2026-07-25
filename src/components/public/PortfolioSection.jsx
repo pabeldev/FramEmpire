@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag } from 'lucide-react';
+import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag, Video } from 'lucide-react';
 import { PORTFOLIO_PROJECTS } from '../../data/creativeData';
 
-export default function PortfolioSection() {
+export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
   const [filter, setFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
 
   const filteredProjects = filter === 'all'
-    ? PORTFOLIO_PROJECTS
-    : PORTFOLIO_PROJECTS.filter(p => p.categoryKey === filter);
+    ? projects
+    : projects.filter(p => p.categoryKey === filter);
 
   return (
     <section id="portfolio" className="py-20 px-4 bg-[#070913]/90 relative border-t border-cyan-500/20">
@@ -18,7 +18,7 @@ export default function PortfolioSection() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-cyan-500/20 pb-8">
           <div className="space-y-3">
             <span className="neon-badge">FEATURED WORK SHOWCASE</span>
-            <h2 className="font-['Syne'] text-3xl sm:text-4xl font-extrabold text-white">
+            <h2 className="font-['Creato_Display'] text-3xl sm:text-4xl font-extrabold text-white">
               Selected <span className="text-gradient">Client Showcase & Motion Reels</span>
             </h2>
             <p className="text-slate-400 text-sm max-w-xl">
@@ -72,21 +72,24 @@ export default function PortfolioSection() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070913] via-transparent to-transparent opacity-90" />
                 
-                {/* Category Badge */}
-                <div className="absolute top-3 left-3">
+                {/* Category Badge & Platform Badge */}
+                <div className="absolute top-3 left-3 flex items-center gap-2">
                   <span className="neon-badge text-[10px] bg-slate-950/80 backdrop-blur-md">
                     {project.category}
                   </span>
+                  {project.platform && (
+                    <span className="bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 text-[9px] font-bold px-2 py-0.5 rounded uppercase">
+                      {project.platform}
+                    </span>
+                  )}
                 </div>
 
-                {/* Play Button Overlay for Video / Motion */}
-                {(project.videoPreview || project.categoryKey === 'motion-graphics' || project.categoryKey === 'video-editing') && (
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-12 h-12 rounded-full bg-cyan-400 text-black flex items-center justify-center shadow-[0_0_25px_rgba(0,243,255,0.8)]">
-                      <Play className="w-5 h-5 fill-black ml-0.5" />
-                    </div>
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-12 h-12 rounded-full bg-cyan-400 text-black flex items-center justify-center shadow-[0_0_25px_rgba(0,243,255,0.8)]">
+                    <Play className="w-5 h-5 fill-black ml-0.5" />
                   </div>
-                )}
+                </div>
               </div>
 
               {/* Card Body */}
@@ -96,7 +99,7 @@ export default function PortfolioSection() {
                     <span className="font-semibold">{project.client}</span>
                     <span className="text-slate-500">{project.year}</span>
                   </div>
-                  <h3 className="font-['Syne'] text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  <h3 className="font-['Creato_Display'] text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
                     {project.title}
                   </h3>
                   <p className="text-xs text-slate-300 line-clamp-2">
@@ -110,7 +113,7 @@ export default function PortfolioSection() {
                     {project.stats}
                   </span>
                   <span className="text-xs font-bold text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    <span>Details</span>
+                    <span>Watch Embed</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -120,14 +123,14 @@ export default function PortfolioSection() {
           ))}
         </div>
 
-        {/* Project Detail Lightbox Modal */}
+        {/* Project Detail Lightbox Modal with Embed Support */}
         {selectedProject && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-fadeIn">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fadeIn">
             <div className="neon-card max-w-3xl w-full max-h-[90vh] overflow-y-auto border-cyan-400 p-6 sm:p-8 relative space-y-6">
               
               <button
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white hover:bg-cyan-500/20 border border-cyan-500/30 transition-colors"
+                className="absolute top-4 right-4 p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white hover:bg-cyan-500/20 border border-cyan-500/30 transition-colors z-10"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -136,16 +139,29 @@ export default function PortfolioSection() {
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <span className="neon-badge">{selectedProject.category}</span>
+                  {selectedProject.platform && (
+                    <span className="neon-badge border-blue-500/40 text-blue-300 bg-blue-950/40">
+                      EMBED: {selectedProject.platform.toUpperCase()}
+                    </span>
+                  )}
                   <span className="text-xs text-slate-400">Client: <strong className="text-cyan-300">{selectedProject.client}</strong></span>
                 </div>
-                <h2 className="font-['Syne'] text-2xl sm:text-3xl font-extrabold text-white">
+                <h2 className="font-['Creato_Display'] text-2xl sm:text-3xl font-extrabold text-white">
                   {selectedProject.title}
                 </h2>
               </div>
 
-              {/* Media Preview Box inside Modal */}
+              {/* Embed Video / Iframe Box inside Modal */}
               <div className="relative rounded-2xl overflow-hidden aspect-video bg-slate-950 border border-cyan-500/30">
-                {selectedProject.videoPreview ? (
+                {selectedProject.embedUrl ? (
+                  <iframe
+                    src={selectedProject.embedUrl}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={selectedProject.title}
+                  />
+                ) : selectedProject.videoPreview ? (
                   <video
                     src={selectedProject.videoPreview}
                     controls
@@ -165,7 +181,7 @@ export default function PortfolioSection() {
               {/* Modal Overview & Deliverables */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300">
                 <div className="space-y-3">
-                  <h4 className="font-bold text-sm text-white font-['Syne']">Project Scope & Executive Summary</h4>
+                  <h4 className="font-bold text-sm text-white font-['Creato_Display']">Project Scope & Executive Summary</h4>
                   <p className="leading-relaxed text-slate-300">{selectedProject.summary}</p>
                   <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/20">
                     <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-1">Performance Stats</span>
@@ -174,7 +190,7 @@ export default function PortfolioSection() {
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="font-bold text-sm text-white font-['Syne']">Studio Deliverables</h4>
+                  <h4 className="font-bold text-sm text-white font-['Creato_Display']">Studio Deliverables</h4>
                   <ul className="space-y-2">
                     {selectedProject.deliverables.map((d, i) => (
                       <li key={i} className="flex items-center gap-2 bg-slate-900/60 p-2 rounded-lg border border-slate-800">

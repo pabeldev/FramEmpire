@@ -1,0 +1,301 @@
+// Creative Agency Data for FramEmpire Studio
+
+export const AGENCY_INFO = {
+  name: "FramEmpire",
+  subtitle: "3D Animation, Motion & Digital Creative Studio",
+  tagline: "A Revolution of Animation",
+  fullTagline: "A Revolution of Animation — We craft ultra-futuristic 3D motion graphics, frame-by-frame character animation, video post-production & web builds.",
+  established: 2022,
+  completedProjects: 312,
+  clientSatisfaction: "99.6%",
+  activeRenderNodes: 24,
+};
+
+export const SERVICES = [
+  {
+    id: "motion-graphics",
+    title: "3D Motion Graphics & Animation",
+    category: "Animation",
+    icon: "Sparkles",
+    gradient: "from-cyan-500 to-blue-600",
+    description: "Cinematic 3D kinetic typography, product reveals, Octane/Redshift 3D renders, and frame-by-frame character animation.",
+    deliverables: ["3D Kinetic Teasers", "Character Animation", "Octane Render Assets", "Lottie Web Animations"],
+    popularFor: "Product Launches, Web3 & Commercials",
+    leadTime: "2-3 Weeks",
+  },
+  {
+    id: "graphic-design",
+    title: "Graphic Design & Brand Identity",
+    category: "Design",
+    icon: "Palette",
+    gradient: "from-blue-500 to-indigo-600",
+    description: "High-voltage visual identities, 3D brand guidelines, futuristic UI kits, and vector art assets created for disruptor brands.",
+    deliverables: ["Brand Strategy & Guidelines", "3D Logo Systems", "Design System UI Kits", "Marketing & Social Assets"],
+    popularFor: "Startups, Tech Brands & Fintech",
+    leadTime: "1-2 Weeks",
+  },
+  {
+    id: "video-editing",
+    title: "Video Editing & Post-Production",
+    category: "Video",
+    icon: "Film",
+    gradient: "from-indigo-500 to-purple-600",
+    description: "High-pace commercial video editing, DaVinci Resolve color grading, VFX compositing, sound design & hype reels.",
+    deliverables: ["Commercial Ad Cuts", "Color Grading & FX", "Sound Design & Mixing", "Social Reels & Shorts"],
+    popularFor: "Commercials & Event Recaps",
+    leadTime: "1-2 Weeks",
+  },
+  {
+    id: "web-dev",
+    title: "Web & Interactive Development",
+    category: "Development",
+    icon: "Code2",
+    gradient: "from-cyan-400 to-purple-600",
+    description: "Bespoke Three.js / WebGL experiences, React applications, fluid CSS animations, and ultra-responsive landing pages.",
+    deliverables: ["Fullstack React/Vite Apps", "Interactive 3D WebGL", "Headless CMS Integration", "SEO & Performance Tuning"],
+    popularFor: "Enterprise & Modern Web Apps",
+    leadTime: "3-4 Weeks",
+  }
+];
+
+export const PORTFOLIO_PROJECTS = [
+  {
+    id: "proj-1",
+    title: "FramEmpire 3D Kinetic Reel 2026",
+    client: "FramEmpire Studios",
+    category: "Motion Graphics",
+    categoryKey: "motion-graphics",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-beams-in-the-dark-42861-large.mp4",
+    year: "2026",
+    summary: "A Revolution of Animation — flagship 3D frame-by-frame reveal and volumetric render showcase.",
+    stats: "4.8M Impressions • 99% Client Rating",
+    deliverables: ["3D Kinetic Teaser", "Character Rigging", "Octane Render Assets"],
+    featured: true,
+  },
+  {
+    id: "proj-2",
+    title: "SYNTHWAVE AI App & Web Platform",
+    client: "Synthwave Audio",
+    category: "Web Development",
+    categoryKey: "web-dev",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "",
+    year: "2026",
+    summary: "React SPA dashboard featuring real-time audio visualization, dark glassmorphism UI, and ultra-fast page loads.",
+    stats: "60fps WebGL Animation • 100 PageSpeed",
+    deliverables: ["React App Architecture", "Audio Wave Visualizer", "Admin Dashboard"],
+    featured: true,
+  },
+  {
+    id: "proj-3",
+    title: "HYPERION Commercial Video Edit",
+    client: "Hyperion EV Motors",
+    category: "Video Editing",
+    categoryKey: "video-editing",
+    image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-waves-of-light-in-a-dark-space-42865-large.mp4",
+    year: "2025",
+    summary: "Fast-paced broadcast commercial featuring custom sound design, DaVinci HDR color grade, and 3D overlay tracking.",
+    stats: "Broadcast TV & Super Bowl Spot",
+    deliverables: ["60s Broadcast Cut", "15s Social Cutdowns", "HDR Color Grade"],
+    featured: true,
+  },
+  {
+    id: "proj-4",
+    title: "NEXUS UI System & Graphic Identity",
+    client: "Nexus Financial",
+    category: "Graphic Design",
+    categoryKey: "graphic-design",
+    image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "",
+    year: "2026",
+    summary: "Electric neon visual identity, typography spec sheets, 3D icon library, and brand guidelines manual.",
+    stats: "50+ Design Tokens • 120 Page Brandbook",
+    deliverables: ["Visual Identity System", "Custom 3D Icon Set", "Brandbook PDF"],
+    featured: false,
+  },
+  {
+    id: "proj-5",
+    title: "CYBER-KINGDOM 3D Animation Reel",
+    client: "Tokyo Interactive",
+    category: "Motion Graphics",
+    categoryKey: "motion-graphics",
+    image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-blue-and-purple-lights-42858-large.mp4",
+    year: "2025",
+    summary: "Octane Render 3D environment walkthrough with volumetric neon lighting and custom glitch sound FX.",
+    stats: "Vimeo Staff Pick Award",
+    deliverables: ["Full 4K Reel", "Sound Design", "VFX Compositing"],
+    featured: false,
+  },
+  {
+    id: "proj-6",
+    title: "VORTEX E-Commerce Portal",
+    client: "Vortex Apparel",
+    category: "Web Development",
+    categoryKey: "web-dev",
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1200&auto=format&fit=crop",
+    videoPreview: "",
+    year: "2026",
+    summary: "Next-gen e-commerce platform with 3D product configurator and seamless instant checkout.",
+    stats: "+140% Conversion Rate Increase",
+    deliverables: ["3D Product Viewer", "Custom Checkout Flow", "CMS Panel"],
+    featured: false,
+  }
+];
+
+export const EMPLOYEES = [
+  {
+    id: "emp-101",
+    name: "Elena Vance",
+    role: "Lead Motion Designer & 3D Animator",
+    department: "Motion Graphics",
+    email: "elena@framempire.agency",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop",
+    status: "Active - Rendering",
+    skills: ["Cinema 4D", "Octane Render", "After Effects", "Houdini"],
+    currentProject: "FramEmpire 3D Reel",
+    workloadPercent: 85,
+    rating: 4.9,
+    hoursThisWeek: 38.5,
+  },
+  {
+    id: "emp-102",
+    name: "Marcus Vance",
+    role: "Senior Video Editor & Colorist",
+    department: "Video Editing",
+    email: "marcus@framempire.agency",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop",
+    status: "Active - In Suite",
+    skills: ["DaVinci Resolve", "Premiere Pro", "Sound Design", "VFX"],
+    currentProject: "HYPERION Commercial",
+    workloadPercent: 70,
+    rating: 4.85,
+    hoursThisWeek: 36.0,
+  },
+  {
+    id: "emp-103",
+    name: "Sophia Chen",
+    role: "Principal Graphic Designer & UI Lead",
+    department: "Graphic Design",
+    email: "sophia@framempire.agency",
+    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop",
+    status: "Active - Client Review",
+    skills: ["Figma", "Illustrator", "Photoshop", "3D Typography"],
+    currentProject: "NEXUS UI System",
+    workloadPercent: 90,
+    rating: 5.0,
+    hoursThisWeek: 40.0,
+  },
+  {
+    id: "emp-104",
+    name: "David Kross",
+    role: "Lead Fullstack & WebGL Developer",
+    department: "Web Development",
+    email: "david@framempire.agency",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop",
+    status: "Active - Coding",
+    skills: ["React", "Three.js", "Vite", "Tailwind CSS", "Node.js"],
+    currentProject: "SYNTHWAVE Web Platform",
+    workloadPercent: 75,
+    rating: 4.95,
+    hoursThisWeek: 37.5,
+  },
+  {
+    id: "emp-105",
+    name: "Aria Thorne",
+    role: "Junior Character Animator",
+    department: "Motion Graphics",
+    email: "aria@framempire.agency",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300&auto=format&fit=crop",
+    status: "On Leave (PTO)",
+    skills: ["After Effects", "Spline 3D", "Illustrator"],
+    currentProject: "Internal Branding",
+    workloadPercent: 0,
+    rating: 4.7,
+    hoursThisWeek: 0.0,
+  }
+];
+
+export const CLIENT_PROJECTS_PIPELINE = [
+  {
+    id: "proj-pipe-1",
+    name: "FramEmpire 3D Reel",
+    client: "FramEmpire Studios",
+    lead: "Elena Vance",
+    discipline: "Motion Graphics",
+    budget: "$55,000",
+    progress: 85,
+    status: "In Client Review",
+    dueDate: "2026-08-05",
+    tasks: [
+      { id: 1, title: "3D Character Rigging", done: true },
+      { id: 2, title: "Octane Render Lighting & Textures", done: true },
+      { id: 3, title: "Soundtrack & SFX Sync", done: true },
+      { id: 4, title: "Client Master Approval", done: false }
+    ]
+  },
+  {
+    id: "proj-pipe-2",
+    name: "SYNTHWAVE Web App",
+    client: "Synthwave Audio",
+    lead: "David Kross",
+    discipline: "Web Development",
+    budget: "$35,000",
+    progress: 92,
+    status: "Final Polish",
+    dueDate: "2026-07-30",
+    tasks: [
+      { id: 1, title: "React Component System", done: true },
+      { id: 2, title: "Audio Visualizer Canvas", done: true },
+      { id: 3, title: "Mobile & Tablet Optimization", done: true },
+      { id: 4, title: "Production Deployment", done: false }
+    ]
+  },
+  {
+    id: "proj-pipe-3",
+    name: "HYPERION SuperBowl Commercial",
+    client: "Hyperion EV",
+    lead: "Marcus Vance",
+    discipline: "Video Editing",
+    budget: "$65,000",
+    progress: 60,
+    status: "Color Grading & FX",
+    dueDate: "2026-08-15",
+    tasks: [
+      { id: 1, title: "Offline Assembly Cut", done: true },
+      { id: 2, title: "VFX Track & Compositing", done: true },
+      { id: 3, title: "DaVinci HDR Color Pass", done: false },
+      { id: 4, title: "Final Audio Mix", done: false }
+    ]
+  },
+  {
+    id: "proj-pipe-4",
+    name: "NEO-GLOW Brand Redesign",
+    client: "Glow Tech",
+    lead: "Sophia Chen",
+    discipline: "Graphic Design",
+    budget: "$24,000",
+    progress: 35,
+    status: "Concept Phase",
+    dueDate: "2026-08-28",
+    tasks: [
+      { id: 1, title: "Client Discovery & Moodboards", done: true },
+      { id: 2, title: "3D Logo Explorations", done: false },
+      { id: 3, title: "Typography & Color Tokens", done: false }
+    ]
+  }
+];
+
+export const RECENT_TIMESHEETS = [
+  { id: "ts-1", employee: "Elena Vance", project: "FramEmpire 3D Reel", hours: 8.5, date: "2026-07-24", category: "3D Rendering", status: "Approved" },
+  { id: "ts-2", employee: "Marcus Vance", project: "HYPERION Commercial", hours: 7.5, date: "2026-07-24", category: "Color Grading", status: "Approved" },
+  { id: "ts-3", employee: "Sophia Chen", project: "NEO-GLOW Brand Redesign", hours: 8.0, date: "2026-07-25", category: "Vector Design", status: "Pending Approval" },
+  { id: "ts-4", employee: "David Kross", project: "SYNTHWAVE Web App", hours: 9.0, date: "2026-07-25", category: "Frontend Coding", status: "Pending Approval" }
+];
+
+export const PTO_REQUESTS = [
+  { id: "pto-1", employee: "Aria Thorne", dates: "Jul 24 - Jul 28", reason: "Vacation", status: "Approved" },
+  { id: "pto-2", employee: "Marcus Vance", dates: "Aug 18 - Aug 20", reason: "Conference / Workshop", status: "Pending Approval" }
+];

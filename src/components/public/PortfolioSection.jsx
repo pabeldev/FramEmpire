@@ -2,6 +2,47 @@ import React, { useState } from 'react';
 import { Play, ExternalLink, X, Film, Palette, Sparkles, Code2, CheckCircle, Tag, Video, Globe } from 'lucide-react';
 import { PORTFOLIO_PROJECTS } from '../../data/creativeData';
 
+// Helper to auto-generate thumbnail or embed preview
+export function getCardMediaPreview(project) {
+  // 1. YouTube Auto Thumbnail
+  if (project.platform === 'youtube' || (project.embedUrl && project.embedUrl.includes('youtube.com'))) {
+    let videoId = '';
+    if (project.embedUrl.includes('embed/')) {
+      videoId = project.embedUrl.split('embed/')[1]?.split('?')[0];
+    } else if (project.embedUrl.includes('watch?v=')) {
+      videoId = project.embedUrl.split('watch?v=')[1]?.split('&')[0];
+    }
+    if (videoId) {
+      return {
+        type: 'image',
+        url: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+      };
+    }
+  }
+
+  // 2. Behance Direct Embed Preview (Live Iframe in Card)
+  if (project.platform === 'behance' || (project.embedUrl && project.embedUrl.includes('behance.net'))) {
+    return {
+      type: 'iframe',
+      url: project.embedUrl
+    };
+  }
+
+  // 3. Direct Video MP4
+  if (project.videoPreview) {
+    return {
+      type: 'video',
+      url: project.videoPreview
+    };
+  }
+
+  // 4. Default Cover Image or Fallback
+  return {
+    type: 'image',
+    url: project.image || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop'
+  };
+}
+
 export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
   const [filter, setFilter] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
@@ -30,9 +71,9 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
           <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 scrollbar-none no-scrollbar">
             {[
               { id: 'all', label: 'All Projects' },
+              { id: 'graphic-design', label: 'Graphic Design', icon: Palette },
               { id: 'motion-graphics', label: 'Motion', icon: Sparkles },
               { id: 'video-editing', label: 'Video', icon: Film },
-              { id: 'graphic-design', label: 'Design', icon: Palette },
               { id: 'web-dev', label: 'Web Dev', icon: Code2 },
             ].map(tab => {
               const IconComp = tab.icon;
@@ -57,77 +98,103 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              onClick={() => setSelectedProject(project)}
-              className="neon-card group overflow-hidden border-cyan-500/20 hover:border-cyan-400 cursor-pointer flex flex-col justify-between"
-            >
-              {/* Media Thumbnail Container */}
-              <div className="relative aspect-video overflow-hidden bg-slate-950">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-85 group-hover:opacity-100"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070913] via-transparent to-transparent opacity-90" />
-                
-                {/* Category Badge & Platform Badge */}
-                <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                  <span className="neon-badge text-[9px] bg-slate-950/80 backdrop-blur-md">
-                    {project.category}
-                  </span>
-                  {project.platform && (
-                    <span className="bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">
-                      {project.platform}
-                    </span>
-                  )}
-                </div>
+          {filteredProjects.map((project) => {
+            const media = getCardMediaPreview(project);
 
-                {/* Play / Visit Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-cyan-400 text-black flex items-center justify-center shadow-[0_0_20px_rgba(0,243,255,0.8)]">
-                    {project.liveUrl ? (
-                      <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
-                    ) : (
-                      <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-black ml-0.5" />
+            return (
+              <div
+                key={project.id}
+                onClick={() => setSelectedProject(project)}
+                className="neon-card group overflow-hidden border-cyan-500/20 hover:border-cyan-400 cursor-pointer flex flex-col justify-between"
+              >
+                {/* Media Thumbnail Container (Auto-Renders Behance Iframe / YouTube Auto-Thumbnail) */}
+                <div className="relative aspect-video overflow-hidden bg-slate-950">
+                  {media.type === 'iframe' ? (
+                    <div className="w-full h-full relative">
+                      <iframe
+                        src={media.url}
+                        className="w-full h-full border-0 pointer-events-none scale-100 group-hover:scale-105 transition-transform"
+                        title={project.title}
+                      />
+                      {/* Transparent overlay for click to open modal */}
+                      <div className="absolute inset-0 bg-cyan-950/10 group-hover:bg-cyan-950/20 transition-colors" />
+                    </div>
+                  ) : media.type === 'video' ? (
+                    <video
+                      src={media.url}
+                      muted
+                      autoPlay
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={media.url}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                    />
+                  )}
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070913] via-transparent to-transparent opacity-80" />
+                  
+                  {/* Category Badge & Platform Badge */}
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
+                    <span className="neon-badge text-[9px] bg-slate-950/80 backdrop-blur-md">
+                      {project.category}
+                    </span>
+                    {project.platform && (
+                      <span className="bg-cyan-950/90 text-cyan-300 border border-cyan-500/40 text-[8px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded uppercase">
+                        {project.platform}
+                      </span>
                     )}
                   </div>
-                </div>
-              </div>
 
-              {/* Card Body */}
-              <div className="p-4 sm:p-6 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="space-y-1.5 sm:space-y-2">
-                  <div className="flex items-center justify-between text-xs text-cyan-400">
-                    <span className="font-semibold">{project.client}</span>
-                    <span className="text-slate-500">{project.year}</span>
+                  {/* Play / Visit Button Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-cyan-400 text-black flex items-center justify-center shadow-[0_0_20px_rgba(0,243,255,0.8)]">
+                      {project.liveUrl ? (
+                        <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
+                      ) : (
+                        <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-black ml-0.5" />
+                      )}
+                    </div>
                   </div>
-                  <h3 className="font-['Creato_Display'] text-base sm:text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs text-slate-300 line-clamp-2">
-                    {project.summary}
-                  </p>
                 </div>
 
-                {/* Deliverables Tags & View CTA */}
-                <div className="pt-3 sm:pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                  <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate max-w-[150px]">
-                    {project.stats}
-                  </span>
-                  <span className="text-xs font-bold text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform shrink-0">
-                    <span>{project.liveUrl ? 'Visit Website' : 'Watch Embed'}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </span>
+                {/* Card Body */}
+                <div className="p-4 sm:p-6 space-y-3 flex-1 flex flex-col justify-between">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <div className="flex items-center justify-between text-xs text-cyan-400">
+                      <span className="font-semibold">{project.client}</span>
+                      <span className="text-slate-500">{project.year}</span>
+                    </div>
+                    <h3 className="font-['Creato_Display'] text-base sm:text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="text-xs text-slate-300 line-clamp-2">
+                      {project.summary}
+                    </p>
+                  </div>
+
+                  {/* Deliverables Tags & View CTA */}
+                  <div className="pt-3 sm:pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 truncate max-w-[150px]">
+                      {project.stats}
+                    </span>
+                    <span className="text-xs font-bold text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform shrink-0">
+                      <span>{project.liveUrl ? 'Visit Website' : 'Open Embed'}</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
                 </div>
+
               </div>
-
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Project Detail Lightbox Modal with Live Embed / Link Support */}
+        {/* Project Detail Lightbox Modal with Full Live Embed */}
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-xl animate-fadeIn">
             <div className="neon-card max-w-3xl w-full max-h-[92vh] overflow-y-auto border-cyan-400 p-4 sm:p-8 relative space-y-4 sm:space-y-6">
@@ -155,7 +222,7 @@ export default function PortfolioSection({ projects = PORTFOLIO_PROJECTS }) {
                 </h2>
               </div>
 
-              {/* Embed / Live Link Player Box inside Modal */}
+              {/* Embed Video / Behance / Iframe Box inside Modal */}
               <div className="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-video bg-slate-950 border border-cyan-500/30">
                 {selectedProject.embedUrl ? (
                   <iframe

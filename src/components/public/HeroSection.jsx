@@ -90,53 +90,41 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
 
         </div>
 
-        {/* Right Column: Dynamic Welcome Card & Creative Reel Preview */}
+        {/* Right Column: Vimeo Video Preview Showcase */}
         <div className="lg:col-span-5 relative mt-4 lg:mt-0">
           
-          {/* Main Floating Preview Card */}
-          <div className="neon-card p-4 sm:p-6 border-cyan-500/40 relative z-10 space-y-4 sm:space-y-5 animate-float shadow-[0_0_50px_rgba(0,243,255,0.15)]">
+          {/* Main Floating Video Card */}
+          <div className="neon-card p-4 sm:p-6 border-cyan-500/40 relative z-10 space-y-4 sm:space-y-5 animate-float shadow-[0_0_40px_rgba(0,243,255,0.12)]">
             
             {/* Card Top Bar */}
             <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-                <span className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider">FRAMEMPIRE REEL 2026</span>
+                <span className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider">SHIKOR TV – CANADA THRILL AD</span>
               </div>
-              <span className="neon-badge text-[9px]">4K ULTRA HDR</span>
+              <span className="neon-badge text-[9px]">VIMEO SHOWCASE</span>
             </div>
 
-            {/* Video Preview Box */}
-            <div className="relative rounded-xl overflow-hidden group aspect-video bg-slate-950 border border-cyan-500/30">
-              <img
-                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
-                alt="FramEmpire Animation Reel"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80"
+            {/* Vimeo Live Video Player Box */}
+            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border border-cyan-500/30 shadow-2xl">
+              <iframe
+                src="https://player.vimeo.com/video/1133437679?badge=0&autopause=0&player_id=0&app_id=58479"
+                className="w-full h-full border-0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                allowFullScreen
+                title="Shikor TV – Canada Thrill Ad"
+                referrerPolicy="strict-origin-when-cross-origin"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070913] via-transparent to-transparent opacity-80" />
-              
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button
-                  onClick={onExplorePortfolio}
-                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-cyan-400/90 text-black flex items-center justify-center shadow-[0_0_30px_rgba(0,243,255,0.8)] group-hover:scale-110 transition-transform cursor-pointer"
-                >
-                  <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-black ml-0.5 sm:ml-1" />
-                </button>
-              </div>
-
-              <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-[11px] sm:text-xs text-white">
-                <span className="font-semibold text-cyan-300 truncate">FramEmpire 3D Animation</span>
-                <span className="bg-black/60 px-1.5 py-0.5 rounded text-[9px] shrink-0">01:45</span>
-              </div>
             </div>
 
-            {/* Welcome Message Card Body */}
+            {/* Video Guarantee & Info */}
             <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-cyan-500/20 space-y-1.5 sm:space-y-2">
               <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>FramEmpire Client Guarantee</span>
+                <span>FramEmpire Video Post-Production</span>
               </div>
               <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed">
-                Dedicated Slack/Teams channel, weekly render reviews, zero-latency feedback proofing, and direct line to Lead Animators.
+                Featured commercial production cut for <strong>Shikor TV – Canada Thrill Ad</strong>. Produced & color graded by FramEmpire Studio.
               </p>
             </div>
 

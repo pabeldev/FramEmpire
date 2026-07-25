@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, ArrowRight, Play, Palette, Film, Code2, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ArrowRight, Play, Palette, Film, Code2, CheckCircle2, Star, Flame, Award } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
 export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
@@ -90,23 +90,25 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
 
         </div>
 
-        {/* Right Column: Vimeo Video Preview Showcase */}
+        {/* Right Column: Highlighting "One of our most client's choice projects" */}
         <div className="lg:col-span-5 relative mt-4 lg:mt-0">
           
-          {/* Main Floating Video Card */}
-          <div className="neon-card p-4 sm:p-6 border-cyan-500/40 relative z-10 space-y-4 sm:space-y-5 animate-float shadow-[0_0_40px_rgba(0,243,255,0.12)]">
+          {/* Main Floating Video Card with Glowing Border */}
+          <div className="neon-card p-4 sm:p-6 border-cyan-400/60 relative z-10 space-y-4 sm:space-y-5 animate-float shadow-[0_0_35px_rgba(0,243,255,0.3)]">
             
-            {/* Card Top Bar */}
-            <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
-                <span className="text-[11px] sm:text-xs font-bold text-cyan-300 tracking-wider">SHIKOR TV – CANADA THRILL AD</span>
+            {/* Top Eye-Catching Banner */}
+            <div className="flex flex-col gap-1.5 border-b border-cyan-500/30 pb-3">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 text-yellow-300 border border-yellow-500/40 text-[10px] sm:text-[11px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+                  <Flame className="w-3.5 h-3.5 text-yellow-400 animate-bounce fill-yellow-400" />
+                  <span>ONE OF OUR MOST CLIENT'S CHOICE PROJECTS</span>
+                </span>
+                <span className="neon-badge text-[9px] border-cyan-400 text-cyan-300">VIMEO HD</span>
               </div>
-              <span className="neon-badge text-[9px]">VIMEO SHOWCASE</span>
             </div>
 
             {/* Vimeo Live Video Player Box */}
-            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border border-cyan-500/30 shadow-2xl">
+            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border-2 border-cyan-400/80 shadow-[0_0_30px_rgba(0,243,255,0.25)]">
               <iframe
                 src="https://player.vimeo.com/video/1133437679?badge=0&autopause=0&player_id=0&app_id=58479"
                 className="w-full h-full border-0"
@@ -117,14 +119,22 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
               />
             </div>
 
-            {/* Video Guarantee & Info */}
-            <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-cyan-500/20 space-y-1.5 sm:space-y-2">
-              <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs">
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
-                <span>FramEmpire Video Post-Production</span>
+            {/* Highlighted Client Praise Banner */}
+            <div className="bg-gradient-to-br from-cyan-950/80 via-slate-900 to-[#070913] p-4 rounded-xl border border-cyan-400/40 space-y-2 shadow-[inset_0_0_20px_rgba(0,243,255,0.1)]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-yellow-400 font-bold text-xs">
+                  <Star className="w-4 h-4 fill-yellow-400" />
+                  <span className="font-['Creato_Display'] text-sm text-white">Shikor TV – Canada Thrill Ad</span>
+                </div>
+                <div className="flex items-center gap-0.5 text-yellow-400">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="w-3 h-3 fill-yellow-400" />
+                  ))}
+                </div>
               </div>
-              <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed">
-                Featured commercial production cut for <strong>Shikor TV – Canada Thrill Ad</strong>. Produced & color graded by FramEmpire Studio.
+
+              <p className="text-[11px] sm:text-xs text-slate-200 leading-relaxed font-medium">
+                Extremely praised and loved by the client for its high-impact visual storytelling, color grade precision, and thrilling motion pace.
               </p>
             </div>
 

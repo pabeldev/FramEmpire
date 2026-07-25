@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Users, FolderKanban, Clock, DollarSign, Cpu, Activity, 
-  Film, Video, Sparkles
+  Film, Video, Sparkles, Plus, Upload
 } from 'lucide-react';
 
 import EmployeeManager from './EmployeeManager';
@@ -13,6 +13,12 @@ import { EMPLOYEES, CLIENT_PROJECTS_PIPELINE } from '../../data/creativeData';
 
 export default function AdminDashboard({ userRole, projects, onAddProject, onDeleteProject }) {
   const [activeTab, setActiveTab] = useState('overview'); // overview, portfolio, employees, projects, timesheets
+  const [showAddProjectModal, setShowAddProjectModal] = useState(false);
+
+  const handleOpenAddProjectModal = () => {
+    setActiveTab('portfolio');
+    setShowAddProjectModal(true);
+  };
 
   return (
     <div className="min-h-screen bg-[#070913] text-white p-4 sm:p-6 lg:p-8 space-y-8">
@@ -21,26 +27,30 @@ export default function AdminDashboard({ userRole, projects, onAddProject, onDel
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-cyan-950/80 via-blue-950/60 to-[#070913] p-6 rounded-2xl border border-cyan-500/30 shadow-[0_0_30px_rgba(0,243,255,0.15)]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="neon-badge text-[10px]">INTERNAL STUDIO WORKSPACE</span>
+            <span className="neon-badge text-[10px]">FRAMEMPIRE STUDIO PANEL</span>
             <span className="text-xs text-cyan-400 font-semibold">• Logged in as <strong className="text-white">{userRole}</strong></span>
           </div>
           <h1 className="font-['Creato_Display'] text-2xl sm:text-3xl font-extrabold text-white mt-1">
             FramEmpire Operations & Studio Manager
           </h1>
           <p className="text-xs sm:text-sm text-slate-300">
-            Manage creative staff, YouTube/Vimeo/Behance portfolio embeds, active renders & client project pipelines.
+            Upload video files, embed projects from YouTube/Vimeo/Behance, manage staff & client pipelines.
           </p>
         </div>
 
-        {/* Action Quick Stats */}
+        {/* Quick Action Buttons */}
         <div className="flex items-center gap-3">
-          <div className="bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl text-right">
-            <span className="text-[10px] text-slate-400 font-bold block uppercase font-mono">Render Farm Load</span>
-            <span className="text-base font-extrabold text-cyan-400 font-['Creato_Display']">24 / 24 Nodes Active</span>
-          </div>
-          <div className="bg-slate-900/90 border border-blue-500/30 p-3 rounded-xl text-right">
-            <span className="text-[10px] text-slate-400 font-bold block uppercase font-mono">Monthly Revenue</span>
-            <span className="text-base font-extrabold text-green-400 font-['Creato_Display']">$185,000 USD</span>
+          <button
+            onClick={handleOpenAddProjectModal}
+            className="neon-button-primary py-2.5 px-5 text-xs shadow-[0_0_25px_rgba(0,243,255,0.5)] flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ Add / Upload Project</span>
+          </button>
+
+          <div className="hidden sm:block bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl text-right">
+            <span className="text-[10px] text-slate-400 font-bold block uppercase font-mono">Render Farm</span>
+            <span className="text-sm font-extrabold text-cyan-400 font-['Creato_Display']">24 / 24 Active</span>
           </div>
         </div>
       </div>
@@ -49,7 +59,7 @@ export default function AdminDashboard({ userRole, projects, onAddProject, onDel
       <div className="flex flex-wrap items-center gap-2 border-b border-cyan-500/20 pb-4">
         {[
           { id: 'overview', label: 'Dashboard Overview', icon: Activity },
-          { id: 'portfolio', label: `Portfolio Embed Manager (${projects.length})`, icon: Video },
+          { id: 'portfolio', label: `Portfolio & Files Manager (${projects.length})`, icon: Video },
           { id: 'employees', label: `Employee Directory (${EMPLOYEES.length})`, icon: Users },
           { id: 'projects', label: `Project Pipeline (${CLIENT_PROJECTS_PIPELINE.length})`, icon: FolderKanban },
           { id: 'timesheets', label: 'Timesheets & PTO', icon: Clock },
@@ -91,7 +101,7 @@ export default function AdminDashboard({ userRole, projects, onAddProject, onDel
 
             <div className="neon-card p-5 border-blue-500/30 space-y-2">
               <div className="flex items-center justify-between text-blue-400">
-                <span className="text-xs font-bold text-slate-400 uppercase">Active Creative Projects</span>
+                <span className="text-xs font-bold text-slate-400 uppercase">Active Animation Sprints</span>
                 <FolderKanban className="w-5 h-5" />
               </div>
               <p className="text-2xl font-extrabold text-white font-['Creato_Display']">{CLIENT_PROJECTS_PIPELINE.length} Sprints</p>
@@ -107,13 +117,13 @@ export default function AdminDashboard({ userRole, projects, onAddProject, onDel
               <p className="text-xs text-slate-300 font-semibold">Average Workload: 82%</p>
             </div>
 
-            <div className="neon-card p-5 border-cyan-400/30 space-y-2">
+            <div className="neon-card p-5 border-cyan-400/30 space-y-2 cursor-pointer hover:border-cyan-300 transition-colors" onClick={() => setActiveTab('portfolio')}>
               <div className="flex items-center justify-between text-cyan-300">
                 <span className="text-xs font-bold text-slate-400 uppercase">Live Portfolio Items</span>
                 <Video className="w-5 h-5" />
               </div>
-              <p className="text-2xl font-extrabold text-white font-['Creato_Display']">{projects.length} Embeds</p>
-              <p className="text-xs text-cyan-400 font-semibold">YouTube, Vimeo, Behance</p>
+              <p className="text-2xl font-extrabold text-white font-['Creato_Display']">{projects.length} Uploads</p>
+              <p className="text-xs text-cyan-400 font-semibold">+ Upload / Embed New &rarr;</p>
             </div>
 
           </div>
@@ -216,12 +226,14 @@ export default function AdminDashboard({ userRole, projects, onAddProject, onDel
         </div>
       )}
 
-      {/* Portfolio Embed Manager Tab */}
+      {/* Portfolio & Files Manager Tab */}
       {activeTab === 'portfolio' && (
         <PortfolioManager
           projects={projects}
           onAddProject={onAddProject}
           onDeleteProject={onDeleteProject}
+          showAddModalDirectly={showAddProjectModal}
+          setShowAddModalDirectly={setShowAddProjectModal}
         />
       )}
 

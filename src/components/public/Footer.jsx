@@ -15,7 +15,7 @@ export default function Footer({ onOpenEstimator, onOpenLoginModal }) {
               <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400">
                 <Sparkles className="w-4 h-4" />
               </div>
-              <span className="font-['Syne'] font-extrabold text-lg tracking-wider text-white">
+              <span className="font-['Creato_Display'] font-extrabold text-lg tracking-wider text-white">
                 {AGENCY_INFO.name}
               </span>
             </div>
@@ -24,13 +24,13 @@ export default function Footer({ onOpenEstimator, onOpenLoginModal }) {
             </p>
             <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-semibold">
               <Cpu className="w-3.5 h-3.5" />
-              <span>Octane 3D Render Cluster Online (16 Nodes)</span>
+              <span>Octane 3D Render Cluster Online (24 Nodes)</span>
             </div>
           </div>
 
           {/* Col 2: Creative Disciplines */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Syne']">Disciplines</h4>
+            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Disciplines</h4>
             <ul className="space-y-2">
               <li><a href="#services" className="hover:text-cyan-300 transition-colors">3D Motion Graphics & Animation</a></li>
               <li><a href="#services" className="hover:text-cyan-300 transition-colors">Graphic Design & Brand Identity</a></li>
@@ -41,19 +41,19 @@ export default function Footer({ onOpenEstimator, onOpenLoginModal }) {
 
           {/* Col 3: Client Resources */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Syne']">Client Portal</h4>
+            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Client Portal</h4>
             <ul className="space-y-2">
               <li><button onClick={onOpenEstimator} className="hover:text-cyan-300 transition-colors text-left">Interactive Project Estimator</button></li>
               <li><a href="#portfolio" className="hover:text-cyan-300 transition-colors">Showcase Reel 2026</a></li>
-              <li><a href="#services" className="hover:text-cyan-300 transition-colors">Client Proofing Workspace</a></li>
+              <li><a href="#about" className="hover:text-cyan-300 transition-colors">About FramEmpire</a></li>
             </ul>
           </div>
 
           {/* Col 4: Studio Specs & Staff Portal */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Syne']">Studio Specs</h4>
-            <p className="text-slate-400">Headquarters: Silicon Valley & Remote Worldwide</p>
-            <p className="text-slate-400">Direct Inquiries: <span className="text-cyan-300">hello@cybernexus.agency</span></p>
+            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Studio Specs</h4>
+            <p className="text-slate-400">Direct Inquiries: <span className="text-cyan-300">hello@framempire.agency</span></p>
+            <p className="text-slate-400">Tagline: <span className="text-white font-semibold">"A Revolution of Animation"</span></p>
             <div className="pt-2 flex items-center justify-between">
               <span className="neon-badge text-[9px] py-1 px-3">EST. {AGENCY_INFO.established}</span>
               
@@ -70,12 +70,12 @@ export default function Footer({ onOpenEstimator, onOpenLoginModal }) {
 
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-          <p>© {new Date().getFullYear()} CYBERNEXUS Creative Studio. All Rights Reserved.</p>
-          <div className="flex items-center gap-1 text-slate-400">
-            <span>Built with</span>
-            <span className="text-cyan-400">Neon Blue Gradient Design System</span>
+        {/* Bottom Bar: Clean FramEmpire Credits */}
+        <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+          <p>© {new Date().getFullYear()} <strong className="text-white">FramEmpire Studio</strong>. All Rights Reserved.</p>
+          <div className="flex items-center gap-1 text-slate-300">
+            <span>Designed & Engineered by</span>
+            <strong className="text-cyan-400 font-['Creato_Display']">FramEmpire</strong>
           </div>
         </div>
 

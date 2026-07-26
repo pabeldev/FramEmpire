@@ -159,18 +159,18 @@ export default function WhatsAppWidget() {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src="/framempire_logo_white.png"
-                  alt="FramEmpire Support"
-                  className="w-10 h-10 rounded-full bg-slate-950 p-1 border border-cyan-400 object-contain shadow-md"
+                  src="/ampabel.jpg"
+                  alt="A M Pabel - FramEmpire Creative Lead"
+                  className="w-10 h-10 rounded-full border-2 border-cyan-400 object-cover shadow-md shrink-0"
                 />
                 <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-slate-950 rounded-full animate-pulse" />
               </div>
               <div>
                 <h4 className="font-bold text-white text-sm font-['Creato_Display'] flex items-center gap-1.5">
-                  <span>FramEmpire Smart Assistant</span>
+                  <span>A M Pabel</span>
                   <CheckCheck className="w-4 h-4 text-cyan-400" />
                 </h4>
-                <p className="text-[11px] text-cyan-300/80 font-medium">Auto-Reply FAQ & Live Chat Support</p>
+                <p className="text-[11px] text-cyan-300/90 font-medium">Founder & Creative Director • Online</p>
               </div>
             </div>
 
@@ -186,9 +186,9 @@ export default function WhatsAppWidget() {
           {/* Messages Scroll Area */}
           <div className="p-4 space-y-3 bg-[#060814]/95 text-xs h-[320px] overflow-y-auto custom-scrollbar">
             <div className="text-center">
-              <span className="bg-slate-900/90 text-cyan-400 text-[10px] px-3 py-1 rounded-full border border-cyan-500/30 font-semibold inline-flex items-center gap-1">
-                <Bot className="w-3 h-3 text-cyan-300" />
-                <span>Automated FAQ & Live Support</span>
+              <span className="bg-slate-900/90 text-cyan-400 text-[10px] px-3 py-1 rounded-full border border-cyan-500/30 font-semibold inline-flex items-center gap-1.5">
+                <img src="/ampabel.jpg" alt="A M Pabel" className="w-3.5 h-3.5 rounded-full object-cover border border-cyan-400" />
+                <span>A M Pabel • Live Studio Support</span>
               </span>
             </div>
 
@@ -199,9 +199,11 @@ export default function WhatsAppWidget() {
                 className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'agent' && (
-                  <div className="w-7 h-7 rounded-full bg-cyan-950 border border-cyan-400 flex items-center justify-center text-cyan-300 shrink-0">
-                    <Bot className="w-4 h-4" />
-                  </div>
+                  <img 
+                    src="/ampabel.jpg" 
+                    alt="A M Pabel" 
+                    className="w-7 h-7 rounded-full border border-cyan-400 object-cover shadow-sm shrink-0" 
+                  />
                 )}
 
                 <div
@@ -223,8 +225,8 @@ export default function WhatsAppWidget() {
             {/* Is Typing Indicator */}
             {isTyping && (
               <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-semibold pt-1">
-                <Bot className="w-4 h-4 animate-bounce" />
-                <span className="animate-pulse">FramEmpire Assistant is typing answer...</span>
+                <img src="/ampabel.jpg" alt="A M Pabel" className="w-4 h-4 rounded-full border border-cyan-400 object-cover animate-bounce" />
+                <span className="animate-pulse">A M Pabel is typing answer...</span>
               </div>
             )}
 

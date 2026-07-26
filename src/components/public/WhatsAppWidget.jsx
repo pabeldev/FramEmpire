@@ -37,7 +37,7 @@ const FAQ_ITEMS = [
     label: '📞 Studio Direct Line',
     question: 'How can I contact the creative team directly?',
     keywords: ['contact', 'call', 'phone', 'human', 'whatsapp', 'email', 'mail', 'team', 'number'],
-    answer: 'Direct Studio Line: +880 1615-288259\nEmail: team.framempire.com / team.framempire@gmail.com\nWhatsApp: +8801615288259 📱'
+    answer: 'Direct Studio Line: +880 1615-288259\nEmail: team.framempire@gmail.com\nWhatsApp: +8801615288259 📱'
   }
 ];
 

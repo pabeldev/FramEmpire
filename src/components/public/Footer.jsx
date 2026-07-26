@@ -53,7 +53,7 @@ export default function Footer({ onOpenEstimator }) {
               Phone: <a href="tel:+8801615288259" className="text-cyan-400 font-bold hover:underline">+880 1615-288259</a>
             </p>
             <p className="text-slate-300 font-medium">
-              Mail: <a href="mailto:team.framempire@gmail.com" className="text-cyan-400 font-bold hover:underline">team.framempire.com</a>
+              Mail: <a href="mailto:team.framempire@gmail.com" className="text-cyan-400 font-bold hover:underline">team.framempire@gmail.com</a>
             </p>
             <p className="text-slate-300 font-medium">
               WhatsApp: <a href={AGENCY_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-bold hover:underline">Direct WhatsApp Chat</a>

@@ -79,27 +79,47 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
               <img 
                 className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
-                alt="Client Sarah" 
+                alt="FramEmpire Client Sarah - 5 Star Review" 
+                width="36"
+                height="36"
+                loading="lazy"
+                decoding="async"
               />
               <img 
                 className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
-                alt="Client Alex" 
+                alt="FramEmpire Client Alex - 5 Star Review" 
+                width="36"
+                height="36"
+                loading="lazy"
+                decoding="async"
               />
               <img 
                 className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
                 src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" 
-                alt="Client Jessica" 
+                alt="FramEmpire Client Jessica - 5 Star Review" 
+                width="36"
+                height="36"
+                loading="lazy"
+                decoding="async"
               />
               <img 
                 className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
                 src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" 
-                alt="Client Marcus" 
+                alt="FramEmpire Client Marcus - 5 Star Review" 
+                width="36"
+                height="36"
+                loading="lazy"
+                decoding="async"
               />
               <img 
                 className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
                 src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" 
-                alt="Client Emily" 
+                alt="FramEmpire Client Emily - 5 Star Review" 
+                width="36"
+                height="36"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -159,7 +179,8 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
                 className="w-full h-full border-0"
                 allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
                 allowFullScreen
-                title="Shikor TV – Canada Thrill Ad"
+                loading="lazy"
+                title="FramEmpire Vimeo Showcase - Shikor TV Commercial Video"
                 referrerPolicy="strict-origin-when-cross-origin"
               />
             </div>

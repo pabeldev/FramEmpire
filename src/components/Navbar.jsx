@@ -47,10 +47,10 @@ export default function Navbar({
               src="/framempire_logo_white.png" 
               alt="FramEmpire Studio" 
               loading="eager"
-              className={`object-contain shrink-0 transition-all duration-300 drop-shadow-[0_0_12px_rgba(0,243,255,0.4)] ${
+              className={`object-contain shrink-0 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,243,255,0.4)] ${
                 isScrolled 
-                  ? 'h-6 sm:h-7 md:h-8 max-w-[160px] sm:max-w-[190px]' 
-                  : 'h-7 sm:h-8 md:h-10 max-w-[190px] sm:max-w-[230px]'
+                  ? 'h-8 sm:h-9 md:h-10 max-w-[200px] sm:max-w-[240px]' 
+                  : 'h-10 sm:h-12 md:h-14 max-w-[250px] sm:max-w-[310px]'
               }`} 
             />
             {viewMode === 'admin' && (

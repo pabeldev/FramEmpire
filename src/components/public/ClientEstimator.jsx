@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   X, Sparkles, Calculator, CheckCircle2, Send, Clock, DollarSign, 
-  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Download, Printer, Copy, Check, FileText 
+  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Download, Printer, Copy, Check, FileText, MessageSquare, CreditCard 
 } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
@@ -26,6 +26,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
   
   const [copiedInvoice, setCopiedInvoice] = useState(false);
   const [invoiceId, setInvoiceId] = useState('');
+  const [issueDate, setIssueDate] = useState('');
 
   if (!isOpen) return null;
 
@@ -63,6 +64,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
 
   const finalOriginalTotal = baseOriginal + expressSurcharge;
   const finalPayableTotal = baseDiscounted + expressSurcharge;
+  const totalDiscount = baseOriginal - baseDiscounted;
 
   const serviceLabels = {
     'graphic-design': 'Graphic Design',
@@ -75,8 +77,12 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     e.preventDefault();
     setIsSubmitting(true);
 
-    const generatedId = `FE-INV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const stamp = Math.floor(100000 + Math.random() * 900000);
+    const generatedId = `#INV-${stamp}`;
+    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    
     setInvoiceId(generatedId);
+    setIssueDate(today);
 
     const emailSubject = `🚀 New Brief & Auto Invoice ${generatedId}: ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD)`;
     const emailBody = `FRAMEMPIRE OFFICIAL AUTO-GENERATED INVOICE (${generatedId})
@@ -89,7 +95,7 @@ Delivery Speed: ${expressDelivery ? 'Express Fast Delivery (+$10 USD)' : 'Standa
 
 INVOICE FINANCIAL BREAKDOWN:
 - Subtotal Original: $${finalOriginalTotal} USD
-- Welcome Offer Discount: 50% OFF (-$${baseOriginal - baseDiscounted} USD)
+- Welcome Offer Discount: 50% OFF (-$${totalDiscount} USD)
 - Express Speed Surcharge: $${expressSurcharge} USD
 - TOTAL PAYABLE QUOTE: $${finalPayableTotal} USD ${billingType === 'monthly' ? '/ month' : ''}
 
@@ -99,8 +105,7 @@ ${customRequirementText || 'None'}
 ADDITIONAL NOTES:
 ${additionalNotes || 'None'}
 
-Issue Date: ${new Date().toLocaleDateString()}
-Due Date: ${new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+Issue Date: ${today}
 Studio: FramEmpire (A Revolution of Animation)`;
 
     // Silent background API dispatch
@@ -150,27 +155,27 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fadeIn print:bg-white print:p-0">
-      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-8 relative space-y-6 max-h-[92vh] overflow-y-auto print:max-h-none print:border-0 print:shadow-none print:bg-white print:text-black">
+      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-7 relative space-y-5 max-h-[92vh] overflow-y-auto print:max-h-none print:border-0 print:shadow-none print:bg-white print:text-black print:w-full">
         
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4 print:hidden">
+        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3 print:hidden">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
-              <Calculator className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
+              <Calculator className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-['Creato_Display'] text-lg sm:text-xl font-extrabold text-white">
+              <h3 className="font-['Creato_Display'] text-base sm:text-lg font-extrabold text-white">
                 Interactive Project Estimator & Auto-Invoice
               </h3>
-              <p className="text-xs text-slate-400">Step {step} of 4 • Instant Auto-Generated Invoice System</p>
+              <p className="text-[11px] text-slate-400">Step {step} of 4 • Instant Single-Page Invoice Template</p>
             </div>
           </div>
 
           <button
             onClick={handleResetAndClose}
-            className="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
+            className="p-1.5 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -199,171 +204,191 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
         {/* 🏷️ 50% OFF WELCOME OFFER BANNER */}
         {!submitted && (
-          <div className="p-3.5 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)] print:hidden">
+          <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)] print:hidden">
             <div className="flex items-center gap-2">
               <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
-              <span className="font-extrabold text-white text-xs sm:text-sm">🏷️ Special Welcome Offer: 50% OFF Applied on First Order!</span>
+              <span className="font-extrabold text-white text-xs">🏷️ Special Welcome Offer: 50% OFF Applied on First Order!</span>
             </div>
-            <span className="neon-badge text-[9px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
+            <span className="neon-badge text-[8px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
               50% DISCOUNT 🚀
             </span>
           </div>
         )}
 
         {submitted ? (
-          /* OFFICIAL AUTO-GENERATED INVOICE SCREEN */
-          <div className="space-y-6 animate-fadeIn print:space-y-4">
+          /* OFFICIAL HIGH-CONVERTING SINGLE-PAGE INVOICE HTML TEMPLATE */
+          <div className="space-y-4 animate-fadeIn print:space-y-3">
             
-            {/* Success Header (Hidden in Print) */}
-            <div className="text-center space-y-2 border-b border-cyan-500/20 pb-4 print:hidden">
-              <div className="w-14 h-14 rounded-full bg-green-500/20 border-2 border-green-400 text-green-400 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(74,222,128,0.3)] animate-bounce">
-                <CheckCircle2 className="w-8 h-8" />
+            {/* Top Action Bar (Hidden in Print) */}
+            <div className="flex items-center justify-between bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl print:hidden">
+              <div className="flex items-center gap-2 text-xs text-green-400 font-bold">
+                <CheckCircle2 className="w-4 h-4 text-green-400" />
+                <span>Single-Page Invoice Ready</span>
               </div>
-              <h4 className="font-['Creato_Display'] text-xl sm:text-2xl font-extrabold text-white">
-                Official Studio Invoice Generated!
-              </h4>
-              <p className="text-xs text-slate-300">
-                Your order brief has been submitted. Here is your official auto-generated FramEmpire Invoice receipt.
-              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrintInvoice}
+                  className="neon-button-primary py-1.5 px-3 text-xs"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Download PDF / Print</span>
+                </button>
+                <button
+                  onClick={handleResetAndClose}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-white"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {/* FORMAL OFFICIAL INVOICE DOCUMENT CARD */}
-            <div className="print-invoice-area p-5 sm:p-7 rounded-2xl bg-slate-950 border-2 border-cyan-400 text-slate-200 text-xs space-y-6 print:bg-white print:text-black print:p-0 print:border-0 print:shadow-none">
-
+            {/* SINGLE-PAGE CRISP INVOICE CONTAINER */}
+            <div className="print-invoice-area p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 text-slate-200 text-xs space-y-4 print:bg-white print:text-black print:p-0 print:border-0">
               
-              {/* Invoice Header: Brand & Invoice Ref */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5 print:border-slate-300">
+              {/* HEADER SECTION */}
+              <div className="flex items-start justify-between border-b border-slate-800 pb-4 print:border-slate-300">
                 <div>
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-cyan-400 print:text-black" />
-                    <span className="font-['Creato_Display'] text-xl font-extrabold text-white print:text-black tracking-wider">
+                    <span className="font-['Creato_Display'] text-xl font-black text-white print:text-black tracking-wider">
                       {AGENCY_INFO.name}
                     </span>
                   </div>
-                  <p className="text-[11px] text-cyan-300/80 font-semibold print:text-slate-600">
+                  <p className="text-[10px] text-cyan-300 print:text-slate-600 font-medium">
                     {AGENCY_INFO.subtitle} • {AGENCY_INFO.tagline}
                   </p>
                 </div>
 
-                <div className="sm:text-right space-y-1">
-                  <span className="neon-badge border-cyan-400 text-cyan-300 bg-cyan-950/80 print:bg-slate-100 print:text-black print:border-black font-mono font-bold text-xs">
-                    INVOICE #: {invoiceId}
+                <div className="text-right space-y-1">
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase print:bg-amber-100 print:text-amber-800 print:border-amber-400">
+                    PENDING APPROVAL / UNPAID
                   </span>
-                  <p className="text-[10px] text-slate-400 print:text-slate-600">Issue Date: <strong>{new Date().toLocaleDateString()}</strong></p>
-                  <p className="text-[10px] text-slate-400 print:text-slate-600">Due Date: <strong>{new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()}</strong></p>
+                  <p className="font-mono text-xs font-bold text-white print:text-black">{invoiceId}</p>
+                  <p className="text-[10px] text-slate-400 print:text-slate-600">Issue Date: {issueDate}</p>
                 </div>
               </div>
 
-              {/* Billed To & Studio Address */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl bg-slate-900/80 border border-slate-800 print:bg-slate-50 print:border-slate-200">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Billed To (Client):</span>
-                  <p className="font-bold text-white text-sm mt-0.5 print:text-black">{contactInfo}</p>
-                  <p className="text-[11px] text-cyan-300 print:text-slate-700">Status: <strong className="text-green-400">Order Confirmed (50% OFF Applied)</strong></p>
+              {/* CLIENT & SERVICE SUMMARY BANNERS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 print:bg-slate-50 print:border-slate-300 space-y-1">
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Client Details:</span>
+                  <p className="font-bold text-white print:text-black text-xs">{contactInfo}</p>
+                  <p className="text-[10px] text-cyan-400 print:text-slate-700">Discipline: <strong>{customServiceText || serviceLabels[service]}</strong></p>
                 </div>
 
-                <div className="sm:text-right">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Issued By (Agency):</span>
-                  <p className="font-bold text-white text-sm mt-0.5 print:text-black">FramEmpire Studio Executive</p>
-                  <p className="text-[11px] text-slate-400 print:text-slate-600">Dhaka, Bangladesh • Official Digital Desk</p>
+                <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-cyan-500/10 border border-yellow-500/30 text-yellow-300 print:bg-amber-50 print:border-amber-300 print:text-amber-900 space-y-1 flex flex-col justify-center">
+                  <div className="flex items-center gap-1.5">
+                    <Flame className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
+                    <span className="font-extrabold text-xs">🎉 Welcome Offer Applied!</span>
+                  </div>
+                  <p className="text-[10px] text-slate-300 print:text-slate-700">50% OFF First Month / Project Discount Claimed.</p>
                 </div>
               </div>
 
-              {/* Line Items Breakdown Table */}
-              <div className="space-y-3">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Itemized Service Scope & Charges:</span>
-                
+              {/* ITEMIZED ITEMIZATION TABLE */}
+              <div className="space-y-2">
                 <div className="border border-slate-800 rounded-xl overflow-hidden print:border-slate-300">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-900 text-slate-300 border-b border-slate-800 print:bg-slate-100 print:text-black">
-                        <th className="p-3">Service & Package Deliverable</th>
-                        <th className="p-3">Billing Model</th>
-                        <th className="p-3 text-right">Price (USD)</th>
+                      <tr className="bg-slate-900 text-slate-300 border-b border-slate-800 print:bg-slate-100 print:text-black font-bold">
+                        <th className="p-2.5">Item Description</th>
+                        <th className="p-2.5">Delivery Type</th>
+                        <th className="p-2.5 text-right">Base Price</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800 print:divide-slate-200">
+                    <tbody className="divide-y divide-slate-800/80 print:divide-slate-200">
                       <tr>
-                        <td className="p-3">
-                          <strong className="text-white print:text-black block">{customServiceText || serviceLabels[service]}</strong>
-                          <span className="text-[10px] text-slate-400 print:text-slate-600">{selectedPkg.title} — {selectedPkg.desc}</span>
+                        <td className="p-2.5">
+                          <strong className="text-white print:text-black block">{selectedPkg.title}</strong>
+                          <span className="text-[10px] text-slate-400 print:text-slate-600">{selectedPkg.desc}</span>
                         </td>
-                        <td className="p-3 font-semibold text-purple-300 print:text-purple-700">
+                        <td className="p-2.5 text-purple-300 print:text-purple-800 font-medium">
                           {customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}
                         </td>
-                        <td className="p-3 text-right font-bold line-through text-slate-500">
+                        <td className="p-2.5 text-right font-semibold text-slate-400 line-through">
                           ${baseOriginal} USD
                         </td>
                       </tr>
 
-                      {expressDelivery && (
-                        <tr>
-                          <td className="p-3 font-bold text-amber-300 print:text-amber-700">⚡ Express Fast Delivery Surcharge (24-48 Hours)</td>
-                          <td className="p-3 text-slate-400 print:text-slate-600">Rush Service</td>
-                          <td className="p-3 text-right font-bold text-amber-300 print:text-amber-700">+$10 USD</td>
-                        </tr>
-                      )}
+                      <tr>
+                        <td className="p-2.5">
+                          <strong className="text-white print:text-black block">
+                            {expressDelivery ? '⚡ Express Fast Turnaround (24-48 hrs)' : '🐢 Standard Delivery Timeline'}
+                          </strong>
+                        </td>
+                        <td className="p-2.5 text-slate-400 print:text-slate-600">
+                          {expressDelivery ? 'Rush Speed' : 'Standard'}
+                        </td>
+                        <td className="p-2.5 text-right font-semibold text-amber-400 print:text-amber-700">
+                          {expressDelivery ? '+$10 USD' : '$0 USD'}
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
 
-              {/* Financial Totals & Discounts */}
-              <div className="flex justify-end pt-2">
-                <div className="w-full sm:w-72 space-y-2 p-4 rounded-xl bg-slate-900 border border-slate-800 print:bg-slate-50 print:border-slate-200 text-xs">
+              {/* FINANCIAL SUMMARY TOTALS */}
+              <div className="flex justify-end pt-1">
+                <div className="w-full sm:w-64 space-y-1.5 p-3 rounded-xl bg-slate-900 border border-slate-800 print:bg-slate-50 print:border-slate-300 text-xs">
                   <div className="flex justify-between text-slate-400">
                     <span>Subtotal Original:</span>
-                    <span className="font-bold line-through">${finalOriginalTotal} USD</span>
+                    <span className="font-semibold line-through">${finalOriginalTotal} USD</span>
                   </div>
 
                   <div className="flex justify-between text-green-400 font-bold">
-                    <span>Welcome Discount (50% OFF):</span>
-                    <span>-${baseOriginal - baseDiscounted} USD</span>
+                    <span>50% Welcome Discount:</span>
+                    <span>-${totalDiscount} USD</span>
                   </div>
 
-                  <div className="flex justify-between text-base font-extrabold border-t border-slate-800 pt-2 print:border-slate-300 text-white print:text-black">
-                    <span>Total Payable Quote:</span>
-                    <span className="text-green-400 font-['Creato_Display']">${finalPayableTotal} USD {billingType === 'monthly' ? '/mo' : ''}</span>
+                  <div className="flex justify-between text-sm font-extrabold border-t border-slate-800 pt-2 print:border-slate-300 text-white print:text-black">
+                    <span>Total Amount Due:</span>
+                    <span className="text-green-400 print:text-green-700 font-['Creato_Display']">${finalPayableTotal} USD</span>
                   </div>
                 </div>
               </div>
 
-              {/* Custom Requirements & Notes */}
-              {customRequirementText && (
-                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] space-y-1">
-                  <span className="font-bold text-cyan-400 uppercase text-[9px] block">Client Specific Instructions:</span>
-                  <p className="text-slate-300 italic">{customRequirementText}</p>
-                </div>
-              )}
-
-            </div>
-
-            {/* Print, Download & Action Buttons (Hidden in Print) */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 print:hidden">
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handlePrintInvoice}
-                  className="neon-button-primary py-2.5 px-5 text-xs justify-center"
-                >
-                  <Printer className="w-4 h-4" />
-                  <span>Download / Print PDF Invoice</span>
-                </button>
-
-                <button
-                  onClick={handleCopyInvoiceRef}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:border-cyan-400 font-bold text-xs flex items-center gap-1.5 transition-colors"
-                >
-                  {copiedInvoice ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                  <span>{copiedInvoice ? 'Invoice Reference Copied!' : 'Copy Reference'}</span>
-                </button>
+              {/* CUSTOM NOTES & INSTRUCTIONS SECTION */}
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 print:bg-slate-50 print:border-slate-300 space-y-1">
+                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Custom Client Notes & Instructions:</span>
+                <p className="text-slate-300 print:text-slate-700 italic text-[11px]">
+                  {customRequirementText || additionalNotes || "No custom notes added."}
+                </p>
               </div>
 
-              <button
-                onClick={handleResetAndClose}
-                className="px-4 py-2 text-xs text-slate-400 hover:text-white"
-              >
-                Close Window
-              </button>
+              {/* FOOTER & NEXT STEPS CTA */}
+              <div className="pt-2 border-t border-slate-800 print:border-slate-300 space-y-3">
+                <p className="text-[10px] text-slate-400 print:text-slate-600 italic">
+                  * Note: This is an automated estimated quote. Final invoice will be confirmed upon brief review.
+                </p>
+
+                {/* Interactive Action Buttons (Hidden in Print) */}
+                <div className="flex flex-wrap items-center gap-2 print:hidden">
+                  <button
+                    onClick={() => alert(`Redirecting to secure checkout for Quote ${invoiceId}...`)}
+                    className="neon-button-primary py-2 px-4 text-xs font-extrabold"
+                  >
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span>💳 Pay Now / Claim Offer (${finalPayableTotal} USD)</span>
+                  </button>
+
+                  <a
+                    href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hi FramEmpire Studio, I submitted brief ${invoiceId} for ${serviceLabels[service]} ($${finalPayableTotal} USD). I would like to discuss custom adjustments.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-green-950/80 border border-green-500/40 text-green-300 hover:text-white font-bold text-xs flex items-center gap-1.5"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-green-400" />
+                    <span>📲 Connect via WhatsApp</span>
+                  </a>
+                </div>
+
+                <div className="flex items-center justify-between text-[9px] text-slate-500 print:text-slate-600 pt-1">
+                  <span>Support: team.framempire@gmail.com</span>
+                  <span>© {new Date().getFullYear()} FramEmpire Studio. All rights reserved.</span>
+                </div>
+              </div>
+
             </div>
 
           </div>
@@ -729,7 +754,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
                     disabled={isSubmitting}
                     className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
                   >
-                    <span>{isSubmitting ? 'Generating Invoice...' : '🚀 Submit Brief & Generate Official Invoice'}</span>
+                    <span>{isSubmitting ? 'Generating Invoice...' : '🚀 Submit Brief & Generate Single-Page Invoice'}</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>

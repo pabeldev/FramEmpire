@@ -90,10 +90,9 @@ ${customRequirementText || 'None'}
 ADDITIONAL NOTES:
 ${additionalNotes || 'None'}
 
-Target Email: team.framempire@gmail.com
 Submitted at: ${new Date().toLocaleString()}`;
 
-    // Silent background dispatch via Web3Forms & FormSubmit API (No popups, no redirects)
+    // Silent background dispatch
     try {
       await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
@@ -141,7 +140,7 @@ Submitted at: ${new Date().toLocaleString()}`;
               <h3 className="font-['Creato_Display'] text-lg sm:text-xl font-extrabold text-white">
                 Interactive Project Estimator
               </h3>
-              <p className="text-xs text-slate-400">Step {step} of 4 • Instant Quote & Brief Dispatch</p>
+              <p className="text-xs text-slate-400">Step {step} of 4 • Instant Studio Quote & Brief</p>
             </div>
           </div>
 
@@ -188,7 +187,7 @@ Submitted at: ${new Date().toLocaleString()}`;
         )}
 
         {submitted ? (
-          /* SEAMLESS IN-APP SUCCESS CARD (No popups, no external tabs) */
+          /* SEAMLESS IN-APP SUCCESS CARD */
           <div className="text-center py-8 sm:py-10 space-y-6 animate-fadeIn">
             
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400/20 to-cyan-400/20 border-2 border-green-400 text-green-400 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(74,222,128,0.3)] animate-bounce">
@@ -197,10 +196,10 @@ Submitted at: ${new Date().toLocaleString()}`;
 
             <div className="space-y-2">
               <span className="neon-badge border-green-400 text-green-300 bg-green-950/60 text-[10px] px-3 py-1">
-                DISPATCHED TO TEAM.FRAMEMPIRE@GMAIL.COM
+                BRIEF SUBMITTED SUCCESSFULLY
               </span>
               <h4 className="font-['Creato_Display'] text-2xl sm:text-3xl font-extrabold text-white">
-                Brief Submitted Successfully!
+                Project Brief Submitted!
               </h4>
               <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
                 Thank you, <strong className="text-white">{contactInfo}</strong>! Our Executive Producer & Lead Specialist have received your project brief. We will reach out within <strong>2 hours</strong>.

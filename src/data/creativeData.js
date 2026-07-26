@@ -9,6 +9,10 @@ export const AGENCY_INFO = {
   completedProjects: 312,
   clientSatisfaction: "99.6%",
   activeRenderNodes: 24,
+  phone: "+880 1615-288259",
+  email: "team.framempire.com",
+  dispatchEmail: "team.framempire@gmail.com",
+  whatsappUrl: "https://wa.me/8801615288259"
 };
 
 export const SERVICES = [

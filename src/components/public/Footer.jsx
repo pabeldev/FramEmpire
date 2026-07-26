@@ -46,11 +46,18 @@ export default function Footer({ onOpenEstimator }) {
             </ul>
           </div>
 
-          {/* Col 4: Studio Specs */}
+          {/* Col 4: Studio Specs & Direct Contact */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Studio Specs</h4>
-            <p className="text-slate-400">Direct Inquiries: <span className="text-cyan-300">hello@framempire.agency</span></p>
-            <p className="text-slate-400">Tagline: <span className="text-white font-semibold">"A Revolution of Animation"</span></p>
+            <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Direct Contact</h4>
+            <p className="text-slate-300 font-medium">
+              Phone: <a href="tel:+8801615288259" className="text-cyan-400 font-bold hover:underline">+880 1615-288259</a>
+            </p>
+            <p className="text-slate-300 font-medium">
+              Mail: <a href="mailto:team.framempire@gmail.com" className="text-cyan-400 font-bold hover:underline">team.framempire.com</a>
+            </p>
+            <p className="text-slate-300 font-medium">
+              WhatsApp: <a href={AGENCY_INFO.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-bold hover:underline">Direct WhatsApp Chat</a>
+            </p>
             <div className="pt-2 flex items-center justify-between">
               <span className="neon-badge text-[9px] py-1 px-3">EST. {AGENCY_INFO.established}</span>
             </div>

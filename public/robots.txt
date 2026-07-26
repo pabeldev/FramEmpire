@@ -1,0 +1,6 @@
+# FramEmpire Studio Official Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://framempire.agency/sitemap.xml

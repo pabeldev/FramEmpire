@@ -1,4 +1,4 @@
-// Creative Agency Data for FramEmpire Studio
+// Creative Agency Master Data for FramEmpire Studio
 
 export const AGENCY_INFO = {
   name: "FramEmpire",
@@ -59,7 +59,7 @@ export const SERVICES = [
 ];
 
 export const PORTFOLIO_PROJECTS = [
-  // 1. Behance Projects -> Direct Embed (No static image needed)
+  // 1. Behance Projects
   {
     id: "behance-1",
     title: "FramEmpire Graphic Design #1",
@@ -131,7 +131,7 @@ export const PORTFOLIO_PROJECTS = [
     featured: false,
   },
 
-  // 2. YouTube Video Editing Projects (Auto YouTube Thumbnails)
+  // 2. YouTube Video Editing Projects
   {
     id: "yt-1",
     title: "FramEmpire Commercial Video Edit #1",
@@ -238,7 +238,7 @@ export const PORTFOLIO_PROJECTS = [
   }
 ];
 
-// Master Studio Tasks (Task Manager with Status: Pending, In Progress, Ready to Deliver)
+// Master Studio Tasks
 export const INITIAL_STUDIO_TASKS = [
   {
     id: "task-201",
@@ -258,7 +258,7 @@ export const INITIAL_STUDIO_TASKS = [
   },
   {
     id: "task-202",
-    title: "Commercial Commercial Ad Post-Production",
+    title: "Shikor TV Canada Ad Post-Production",
     description: "DaVinci Resolve HDR color grading cut and sound design mixing for 60-second broadcast ad.",
     client: "Shikor TV Canada",
     assignedTo: "Marcus Vance",
@@ -287,71 +287,133 @@ export const INITIAL_STUDIO_TASKS = [
     category: "Graphic Design",
     embedUrl: "https://www.behance.net/embed/project/252254261?ilo0=1",
     addedToPortfolio: false
-  },
-  {
-    id: "task-204",
-    title: "Interactive Web Portal & Dashboard Engine",
-    description: "Develop responsive React WebGL dashboard portal with dark glassmorphism and fast page load.",
-    client: "Ibnu Abil Khair",
-    assignedTo: "David Kross",
-    assignedBy: "Studio Manager",
-    reportingBoss: "A M Pabel",
-    status: "Pending",
-    progressPercent: 30,
-    dueDate: "2026-08-15",
-    categoryKey: "web-dev",
-    category: "Web Development",
-    liveUrl: "https://ibnuabilkhair.ampabel.com/",
-    addedToPortfolio: false
   }
 ];
 
-// Master Clients Directory
-export const INITIAL_CLIENTS_LIST = [
+// 🔒 Confidential Executive Clients Directory & Financial Vault
+export const CONFIDENTIAL_CLIENTS = [
   {
-    id: "client-1",
-    name: "Education BD Team",
+    id: "client-101",
+    name: "Education BD Directorate",
     company: "Education BD Ltd.",
+    phone: "+880 1711-000000",
     email: "contact@education-bd.com",
-    activeProjects: 2,
-    totalSpent: "$45,000",
+    whatsapp: "+880 1711-000000",
+    retainerAmount: "$45,000",
+    lifetimeValue: "$98,000",
+    invoicedAmount: "$45,000",
+    paidAmount: "$35,000",
+    unpaidAmount: "$10,000",
+    financialStatus: "Partial Paid",
     status: "Active - Retainer",
     lead: "David Kross",
-    website: "https://education-bd.com/"
+    website: "https://education-bd.com/",
+    vaultDriveUrl: "https://drive.google.com/drive/folders/education-bd-vault",
+    ndaSigned: true,
+    privateNotes: "VIP Retainer Client. Requires 24-hour turnaround on UI modifications and portal maintenance."
   },
   {
-    id: "client-2",
-    name: "A M Pabel Official",
+    id: "client-102",
+    name: "A M Pabel Corporate",
     company: "AMPabel Digital",
+    phone: "+880 1800-000000",
     email: "pabel@ampabel.com",
-    activeProjects: 3,
-    totalSpent: "$68,000",
+    whatsapp: "+880 1800-000000",
+    retainerAmount: "$68,000",
+    lifetimeValue: "$150,000",
+    invoicedAmount: "$68,000",
+    paidAmount: "$68,000",
+    unpaidAmount: "$0",
+    financialStatus: "Fully Paid",
     status: "Active - Retainer",
     lead: "A M Pabel",
-    website: "https://ampabel.com/"
+    website: "https://ampabel.com/",
+    vaultDriveUrl: "https://drive.google.com/drive/folders/ampabel-vault",
+    ndaSigned: true,
+    privateNotes: "Internal Core Brand. Executive oversight by A M Pabel."
   },
   {
-    id: "client-3",
-    name: "Shikor TV Canada",
-    company: "Shikor Media Group",
+    id: "client-103",
+    name: "Shikor TV Canada Executive",
+    company: "Shikor Media Group Toronto",
+    phone: "+1 (416) 555-0199",
     email: "media@shikortv.ca",
-    activeProjects: 1,
-    totalSpent: "$35,000",
+    whatsapp: "+1 (416) 555-0199",
+    retainerAmount: "$35,000",
+    lifetimeValue: "$45,000",
+    invoicedAmount: "$35,000",
+    paidAmount: "$35,000",
+    unpaidAmount: "$0",
+    financialStatus: "Fully Paid",
     status: "Completed",
     lead: "Marcus Vance",
-    website: "https://player.vimeo.com/video/1133437679"
+    website: "https://player.vimeo.com/video/1133437679",
+    vaultDriveUrl: "https://drive.google.com/drive/folders/shikor-tv-vault",
+    ndaSigned: true,
+    privateNotes: "Extremely happy with 'Canada Thrill Ad'. Wants to renew Q4 commercial campaign contract."
   },
   {
-    id: "client-4",
-    name: "Ibnu Abil Khair Group",
-    company: "Ibnu Abil Khair Enterprise",
+    id: "client-104",
+    name: "Ibnu Abil Khair Enterprise",
+    company: "Ibnu Abil Khair Group",
+    phone: "+880 1900-000000",
     email: "admin@ibnuabilkhair.ampabel.com",
-    activeProjects: 1,
-    totalSpent: "$28,000",
+    whatsapp: "+880 1900-000000",
+    retainerAmount: "$28,000",
+    lifetimeValue: "$32,000",
+    invoicedAmount: "$28,000",
+    paidAmount: "$20,000",
+    unpaidAmount: "$8,000",
+    financialStatus: "Unpaid / Due",
     status: "Active",
     lead: "David Kross",
-    website: "https://ibnuabilkhair.ampabel.com/"
+    website: "https://ibnuabilkhair.ampabel.com/",
+    vaultDriveUrl: "https://drive.google.com/drive/folders/ibnu-vault",
+    ndaSigned: true,
+    privateNotes: "Milestone payment #2 due on 10th August."
   }
+];
+
+// HR & Payroll Data Hub
+export const INITIAL_PAYROLL = [
+  { id: "pay-1", empId: "emp-101", name: "A M Pabel", role: "Studio Founder & Team Captain", baseSalary: "$12,500", status: "Paid", disburseDate: "2026-07-25", notes: "Executive Base" },
+  { id: "pay-2", empId: "emp-102", name: "Elena Vance", role: "Lead Motion Designer & 3D Animator", baseSalary: "$8,200", status: "Paid", disburseDate: "2026-07-25", notes: "Disbursed via Direct Transfer" },
+  { id: "pay-3", empId: "emp-103", name: "Marcus Vance", role: "Senior Video Editor & Colorist", baseSalary: "$7,500", status: "Unpaid / Due", disburseDate: "Pending", notes: "Awaiting Monthly Approval" },
+  { id: "pay-4", empId: "emp-104", name: "Sophia Chen", role: "Principal Graphic Designer & HR Lead", baseSalary: "$7,800", status: "Paid", disburseDate: "2026-07-25", notes: "Disbursed via Direct Transfer" },
+  { id: "pay-5", empId: "emp-105", name: "David Kross", role: "Lead Fullstack & WebGL Developer", baseSalary: "$8,500", status: "Hold / Delayed", disburseDate: "Hold", notes: "Pending Milestone Clearance" },
+];
+
+// Global 6-Stage Master Production Pipeline
+export const MASTER_PIPELINE_STAGES = [
+  { id: "pipe-1", title: "FramEmpire 3D Motion Reel", client: "FramEmpire", stage: "Client Review", lead: "Elena Vance", revisions: 1, bottleneck: false },
+  { id: "pipe-2", title: "Education BD Web Platform", client: "Education BD", stage: "Delivered", lead: "David Kross", revisions: 0, bottleneck: false },
+  { id: "pipe-3", title: "Shikor TV Canada Ad Cut", client: "Shikor TV", stage: "Invoiced", lead: "Marcus Vance", revisions: 2, bottleneck: false },
+  { id: "pipe-4", title: "Ibnu Abil Khair Portal", client: "Ibnu Enterprise", stage: "In-Production", lead: "David Kross", revisions: 4, bottleneck: true },
+  { id: "pipe-5", title: "Cyber Brand Identity System", client: "Cyber Tech", stage: "Internal Review", lead: "Sophia Chen", revisions: 1, bottleneck: false },
+];
+
+// Agency Software Subscriptions & Expenses
+export const OVERHEAD_EXPENSES = [
+  { id: "exp-1", item: "Adobe Creative Cloud All Apps", category: "Software", monthlyCost: "$599", status: "Active", renewalDate: "2026-08-15" },
+  { id: "exp-2", item: "Octane / OTOY GPU Render Licenses", category: "Render Engine", monthlyCost: "$850", status: "Active", renewalDate: "2026-08-10" },
+  { id: "exp-3", item: "Frame.io Video Review Pro", category: "Software", monthlyCost: "$240", status: "Active", renewalDate: "2026-08-20" },
+  { id: "exp-4", item: "Midjourney & AI Asset Cluster", category: "AI Tools", monthlyCost: "$120", status: "Active", renewalDate: "2026-08-05" },
+  { id: "exp-5", item: "Studio Server & WebGL Hosting", category: "Infrastructure", monthlyCost: "$450", status: "Active", renewalDate: "2026-08-01" },
+];
+
+// Business Development & Lead Funnel
+export const INITIAL_LEADS = [
+  { id: "lead-1", clientName: "Aether AI Robotics", contact: "sarah@aether.ai", stage: "Negotiation", dealValue: "$42,000", proposalSent: true, contractSigned: false },
+  { id: "lead-2", clientName: "Dhaka FinTech Global", contact: "ceo@dhakafintech.com", stage: "Proposal Sent", dealValue: "$38,000", proposalSent: true, contractSigned: false },
+  { id: "lead-3", clientName: "Kuro 3D Metaverse", contact: "kuro@metaverse.jp", stage: "Won / Onboarded", dealValue: "$65,000", proposalSent: true, contractSigned: true },
+  { id: "lead-4", clientName: "Vanguard Commercials", contact: "ad@vanguard.ca", stage: "New Lead", dealValue: "$25,000", proposalSent: false, contractSigned: false }
+];
+
+// System Audit Logs
+export const INITIAL_AUDIT_LOGS = [
+  { id: "log-1", timestamp: "2026-07-26 10:14:05", user: "A M Pabel", action: "Approved Monthly Payroll for Elena Vance", severity: "Info" },
+  { id: "log-2", timestamp: "2026-07-26 09:45:22", user: "A M Pabel", action: "Updated Confidential Client Retainer for Education BD", severity: "Warning" },
+  { id: "log-3", timestamp: "2026-07-25 18:30:10", user: "Sophia Chen", action: "Assigned Studio Manager role to Elena Vance", severity: "Info" }
 ];
 
 export const EMPLOYEES = [
@@ -359,31 +421,33 @@ export const EMPLOYEES = [
     id: "emp-101",
     name: "A M Pabel",
     role: "Studio Founder & Team Captain",
-    department: "Executive & Creative Lead",
+    department: "Executive & Operations",
     email: "pabel@ampabel.com",
     avatar: "/ampabel.jpg",
     status: "Active - Directing",
-    skills: ["Graphic Design", "3D Motion Kinetics", "Digital Content", "Studio Leadership"],
+    skills: ["Operations", "3D Motion", "Executive Leadership"],
     currentProject: "FramEmpire 3D Reel",
     workloadPercent: 95,
     rating: 5.0,
     hoursThisWeek: 42.0,
-    canPromoteRoles: true,
+    activeAccess: true,
+    permissions: { tasks: true, clients: true, hr: true, financial: true, emergency: true }
   },
   {
     id: "emp-102",
     name: "Elena Vance",
-    role: "Lead Motion Designer & 3D Animator",
+    role: "Studio Manager & Lead Motion Designer",
     department: "Motion Graphics",
     email: "elena@framempire.agency",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop",
     status: "Active - Rendering",
-    skills: ["Cinema 4D", "Octane Render", "After Effects", "Houdini"],
+    skills: ["Cinema 4D", "Octane Render", "Studio Management"],
     currentProject: "FramEmpire 3D Reel",
     workloadPercent: 85,
     rating: 4.9,
     hoursThisWeek: 38.5,
-    canPromoteRoles: false,
+    activeAccess: true,
+    permissions: { tasks: true, clients: false, hr: false, financial: false, emergency: false }
   },
   {
     id: "emp-103",
@@ -393,27 +457,29 @@ export const EMPLOYEES = [
     email: "marcus@framempire.agency",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop",
     status: "Active - In Suite",
-    skills: ["DaVinci Resolve", "Premiere Pro", "Sound Design", "VFX"],
+    skills: ["DaVinci Resolve", "Premiere Pro", "Color Grading"],
     currentProject: "Shikor TV Canada",
     workloadPercent: 70,
     rating: 4.85,
     hoursThisWeek: 36.0,
-    canPromoteRoles: false,
+    activeAccess: true,
+    permissions: { tasks: true, clients: false, hr: false, financial: false, emergency: false }
   },
   {
     id: "emp-104",
     name: "Sophia Chen",
-    role: "Principal Graphic Designer & HR Lead",
-    department: "Graphic Design / HR",
+    role: "HR Manager & Principal Designer",
+    department: "HR & Graphic Design",
     email: "sophia@framempire.agency",
     avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop",
     status: "Active - HR & Design",
-    skills: ["Figma", "Illustrator", "HR Management", "3D Typography"],
+    skills: ["Figma", "HR Roster", "Brand Systems"],
     currentProject: "Education BD Branding",
     workloadPercent: 90,
     rating: 5.0,
     hoursThisWeek: 40.0,
-    canPromoteRoles: true,
+    activeAccess: true,
+    permissions: { tasks: true, clients: false, hr: true, financial: false, emergency: false }
   },
   {
     id: "emp-105",
@@ -423,12 +489,13 @@ export const EMPLOYEES = [
     email: "david@framempire.agency",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop",
     status: "Active - Coding",
-    skills: ["React", "Three.js", "Vite", "Tailwind CSS", "Node.js"],
+    skills: ["React", "Three.js", "Vite", "Tailwind CSS"],
     currentProject: "Education BD Platform",
     workloadPercent: 75,
     rating: 4.95,
     hoursThisWeek: 37.5,
-    canPromoteRoles: false,
+    activeAccess: true,
+    permissions: { tasks: true, clients: false, hr: false, financial: false, emergency: false }
   }
 ];
 
@@ -484,16 +551,4 @@ export const CLIENT_PROJECTS_PIPELINE = [
       { id: 4, title: "Final Audio Mix", done: true }
     ]
   }
-];
-
-export const RECENT_TIMESHEETS = [
-  { id: "ts-1", employee: "Elena Vance", project: "FramEmpire 3D Motion Reel", hours: 8.5, date: "2026-07-24", category: "3D Rendering", status: "Approved" },
-  { id: "ts-2", employee: "Marcus Vance", project: "Shikor TV Canada", hours: 7.5, date: "2026-07-24", category: "Color Grading", status: "Approved" },
-  { id: "ts-3", employee: "Sophia Chen", project: "Education BD Branding", hours: 8.0, date: "2026-07-25", category: "Vector Design", status: "Approved" },
-  { id: "ts-4", employee: "David Kross", project: "Education BD Platform", hours: 9.0, date: "2026-07-25", category: "Frontend Coding", status: "Approved" }
-];
-
-export const PTO_REQUESTS = [
-  { id: "pto-1", employee: "Elena Vance", dates: "Aug 10 - Aug 12", reason: "Vacation", status: "Approved" },
-  { id: "pto-2", employee: "Marcus Vance", dates: "Aug 18 - Aug 20", reason: "Conference / Workshop", status: "Pending Approval" }
 ];

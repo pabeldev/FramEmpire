@@ -25,7 +25,7 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-1.5 sm:top-2.5 z-50 px-2 sm:px-4 max-w-[1480px] mx-auto transition-all duration-300">
+    <header className="sticky top-1.5 sm:top-2.5 z-50 px-2 sm:px-4 max-w-[1800px] mx-auto transition-all duration-300">
       {/* Dark Neomorphism Floating Pill Shape Bar */}
       <div className={`w-full rounded-full transition-all duration-300 relative overflow-hidden ${
         isScrolled 

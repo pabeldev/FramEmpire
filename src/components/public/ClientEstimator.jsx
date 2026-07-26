@@ -50,7 +50,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
       return;
     }
 
-    // Extract numbers from the code string (e.g. WEL50 -> 50, WEL40 -> 40, WEL30 -> 30, VIP70 -> 70)
     const matchNumber = rawCode.match(/\d+/);
     let extractedPercent = 0;
 
@@ -58,7 +57,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
       extractedPercent = parseInt(matchNumber[0], 10);
     }
 
-    // Sanitize percentage range (Max 90%)
     if (extractedPercent > 90) extractedPercent = 90;
     if (extractedPercent < 0) extractedPercent = 0;
 
@@ -71,7 +69,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
       });
       setCouponError('');
     } else {
-      // Default to 50% if non-numeric code entered e.g. VIPOFFER
       setAppliedCoupon({
         code: rawCode,
         percent: 50,
@@ -194,8 +191,141 @@ Studio: FramEmpire (A Revolution of Animation)`;
     setSubmitted(true);
   };
 
+  // 100% BULLETPROOF PRINT WINDOW ENGINE (Opens an isolated, crisp, single-page print document)
   const handlePrintInvoice = () => {
-    window.print();
+    const printWin = window.open('', '_blank', 'width=800,height=900');
+    if (!printWin) return;
+
+    const printableHTML = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Invoice ${invoiceId} - FramEmpire Studio</title>
+          <script src="https://cdn.tailwindcss.com"></script>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+          <style>
+            body { font-family: 'Inter', sans-serif; background: #ffffff; color: #000000; padding: 24px; }
+            .font-heading { font-family: 'Outfit', sans-serif; }
+            @page { size: portrait; margin: 10mm; }
+          </style>
+        </head>
+        <body class="p-6">
+          <div class="max-w-2xl mx-auto border-2 border-slate-900 rounded-3xl p-6 sm:p-8 space-y-6 shadow-none">
+            
+            <!-- HEADER -->
+            <div class="flex items-start justify-between border-b border-slate-300 pb-5">
+              <div>
+                <h1 class="font-heading text-2xl font-black text-black tracking-wider">${AGENCY_INFO.name}</h1>
+                <p class="text-xs text-slate-600 font-semibold">${AGENCY_INFO.subtitle} • ${AGENCY_INFO.tagline}</p>
+              </div>
+              <div class="text-right space-y-1">
+                <span class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-900 border border-slate-400 text-[10px] font-bold uppercase">
+                  STATUS: PENDING APPROVAL / UNPAID
+                </span>
+                <p class="font-mono text-sm font-bold text-black">${invoiceId}</p>
+                <p class="text-xs text-slate-600">Issue Date: ${issueDate}</p>
+              </div>
+            </div>
+
+            <!-- BANNERS -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-300 space-y-1">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Billed To (Client):</span>
+                <p class="font-bold text-black text-sm">${contactInfo}</p>
+                <p class="text-xs text-slate-700">Discipline: <strong>${customServiceText || serviceLabels[service]}</strong></p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-900 space-y-1 flex flex-col justify-center">
+                <span class="font-extrabold text-xs">🎉 Coupon ${appliedCoupon.code} Applied!</span>
+                <p class="text-xs text-amber-800">${discountPercent}% OFF Discount Code Successfully Claimed.</p>
+              </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="border border-slate-300 rounded-2xl overflow-hidden">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-100 text-slate-900 border-b border-slate-300 font-bold">
+                    <th class="p-3">Description</th>
+                    <th class="p-3">Delivery Type</th>
+                    <th class="p-3 text-right">Base Price</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                  <tr>
+                    <td class="p-3">
+                      <strong class="text-black text-sm block">${selectedPkg.title}</strong>
+                      <span class="text-xs text-slate-600">${selectedPkg.desc}</span>
+                    </td>
+                    <td class="p-3 font-semibold text-purple-900">
+                      ${customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}
+                    </td>
+                    <td class="p-3 text-right font-semibold text-slate-400 line-through">
+                      $${baseOriginal} USD
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="p-3">
+                      <strong class="text-black text-xs block">
+                        ${expressDelivery ? '⚡ Express Fast Turnaround (24-48 hrs)' : '🐢 Standard Delivery Timeline'}
+                      </strong>
+                    </td>
+                    <td class="p-3 text-slate-600">${expressDelivery ? 'Rush Speed' : 'Standard'}</td>
+                    <td class="p-3 text-right font-semibold text-amber-700">${expressDelivery ? '+$10 USD' : '$0 USD'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- TOTALS -->
+            <div class="flex justify-end">
+              <div class="w-72 space-y-2 p-4 rounded-2xl bg-slate-50 border border-slate-300 text-xs">
+                <div class="flex justify-between text-slate-600">
+                  <span>Subtotal Original:</span>
+                  <span className="font-semibold line-through">$${finalOriginalTotal} USD</span>
+                </div>
+                <div class="flex justify-between text-green-700 font-bold">
+                  <span>Coupon (${appliedCoupon.code} - ${discountPercent}% OFF):</span>
+                  <span>-$${discountAmount} USD</span>
+                </div>
+                <div class="flex justify-between text-base font-extrabold border-t border-slate-300 pt-2 text-black">
+                  <span>Total Amount Due:</span>
+                  <span class="text-green-700 font-heading text-xl">$${finalPayableTotal} USD</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- NOTES -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-300 space-y-1">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Custom Notes & Instructions:</span>
+              <p class="text-slate-700 italic text-xs">
+                ${customRequirementText || additionalNotes || "No custom notes added."}
+              </p>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="pt-3 border-t border-slate-300 flex items-center justify-between text-[11px] text-slate-500">
+              <span>Support: team.framempire@gmail.com</span>
+              <span>© ${new Date().getFullYear()} FramEmpire Studio. All rights reserved.</span>
+            </div>
+
+          </div>
+
+          <script>
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 300);
+            };
+          </script>
+        </body>
+      </html>
+    `;
+
+    printWin.document.open();
+    printWin.document.write(printableHTML);
+    printWin.document.close();
   };
 
   const handleCopyInvoiceRef = () => {
@@ -214,11 +344,11 @@ Studio: FramEmpire (A Revolution of Animation)`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fadeIn print:bg-white print:p-0">
-      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-7 relative space-y-5 max-h-[92vh] overflow-y-auto print:max-h-none print:border-0 print:shadow-none print:bg-white print:text-black print:w-full">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fadeIn">
+      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-7 relative space-y-5 max-h-[92vh] overflow-y-auto">
         
         {/* Top Header */}
-        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3 print:hidden">
+        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
               <Calculator className="w-4 h-4" />
@@ -235,13 +365,13 @@ Studio: FramEmpire (A Revolution of Animation)`;
             onClick={handleResetAndClose}
             className="p-1.5 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Wizard Step Progress Tracker Bar */}
         {!submitted && (
-          <div className="grid grid-cols-4 gap-2 print:hidden">
+          <div className="grid grid-cols-4 gap-2">
             {[
               { num: 1, label: "1. Service" },
               { num: 2, label: "2. Billing" },
@@ -264,7 +394,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
         {/* 🏷️ DYNAMIC COUPON APPLIED BANNER */}
         {!submitted && (
-          <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)] print:hidden">
+          <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)]">
             <div className="flex items-center gap-2">
               <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
               <span className="font-extrabold text-white text-xs">
@@ -279,10 +409,10 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
         {submitted ? (
           /* OFFICIAL HIGH-CONVERTING SINGLE-PAGE INVOICE HTML TEMPLATE */
-          <div className="space-y-4 animate-fadeIn print:space-y-3">
+          <div className="space-y-4 animate-fadeIn">
             
-            {/* Top Action Bar (Hidden in Print) */}
-            <div className="flex items-center justify-between bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl print:hidden">
+            {/* Top Action Bar */}
+            <div className="flex items-center justify-between bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl">
               <div className="flex items-center gap-2 text-xs text-green-400 font-bold">
                 <CheckCircle2 className="w-4 h-4 text-green-400" />
                 <span>Single-Page Invoice Generated ({appliedCoupon.code} Applied)</span>
@@ -304,67 +434,67 @@ Studio: FramEmpire (A Revolution of Animation)`;
               </div>
             </div>
 
-            {/* SINGLE-PAGE CRISP INVOICE CONTAINER */}
-            <div className="print-invoice-area p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 text-slate-200 text-xs space-y-4 print:bg-white print:text-black print:p-0 print:border-0">
+            {/* SINGLE-PAGE CRISP INVOICE CONTAINER (High-Contrast Dark Mode Screen View) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 text-slate-200 text-xs space-y-4 shadow-xl">
               
               {/* HEADER SECTION */}
-              <div className="flex items-start justify-between border-b border-slate-800 pb-4 print:border-slate-300">
+              <div className="flex items-start justify-between border-b border-slate-800 pb-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-cyan-400 print:text-black" />
-                    <span className="font-['Creato_Display'] text-xl font-black text-white print:text-black tracking-wider">
+                    <Sparkles className="w-5 h-5 text-cyan-400" />
+                    <span className="font-['Creato_Display'] text-xl font-black text-white tracking-wider">
                       {AGENCY_INFO.name}
                     </span>
                   </div>
-                  <p className="text-[10px] text-cyan-300 print:text-slate-600 font-medium">
+                  <p className="text-[10px] text-cyan-300 font-medium">
                     {AGENCY_INFO.subtitle} • {AGENCY_INFO.tagline}
                   </p>
                 </div>
 
                 <div className="text-right space-y-1">
-                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase print:bg-amber-100 print:text-amber-800 print:border-amber-400">
+                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-bold uppercase">
                     PENDING APPROVAL / UNPAID
                   </span>
-                  <p className="font-mono text-xs font-bold text-white print:text-black">{invoiceId}</p>
-                  <p className="text-[10px] text-slate-400 print:text-slate-600">Issue Date: {issueDate}</p>
+                  <p className="font-mono text-xs font-bold text-white">{invoiceId}</p>
+                  <p className="text-[10px] text-slate-400">Issue Date: {issueDate}</p>
                 </div>
               </div>
 
               {/* CLIENT & SERVICE SUMMARY BANNERS */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 print:bg-slate-50 print:border-slate-300 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
                   <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Client Details:</span>
-                  <p className="font-bold text-white print:text-black text-xs">{contactInfo}</p>
-                  <p className="text-[10px] text-cyan-400 print:text-slate-700">Discipline: <strong>{customServiceText || serviceLabels[service]}</strong></p>
+                  <p className="font-bold text-white text-xs">{contactInfo}</p>
+                  <p className="text-[10px] text-cyan-400">Discipline: <strong>{customServiceText || serviceLabels[service]}</strong></p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-cyan-500/10 border border-yellow-500/30 text-yellow-300 print:bg-amber-50 print:border-amber-300 print:text-amber-900 space-y-1 flex flex-col justify-center">
+                <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-cyan-500/10 border border-yellow-500/30 text-yellow-300 space-y-1 flex flex-col justify-center">
                   <div className="flex items-center gap-1.5">
                     <Flame className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
                     <span className="font-extrabold text-xs">🎉 Coupon {appliedCoupon.code} Applied!</span>
                   </div>
-                  <p className="text-[10px] text-slate-300 print:text-slate-700">{discountPercent}% OFF Discount Code Successfully Claimed.</p>
+                  <p className="text-[10px] text-slate-300">{discountPercent}% OFF Discount Code Successfully Claimed.</p>
                 </div>
               </div>
 
               {/* ITEMIZED ITEMIZATION TABLE */}
               <div className="space-y-2">
-                <div className="border border-slate-800 rounded-xl overflow-hidden print:border-slate-300">
+                <div className="border border-slate-800 rounded-xl overflow-hidden">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-900 text-slate-300 border-b border-slate-800 print:bg-slate-100 print:text-black font-bold">
+                      <tr className="bg-slate-900 text-slate-300 border-b border-slate-800 font-bold">
                         <th className="p-2.5">Item Description</th>
                         <th className="p-2.5">Delivery Type</th>
                         <th className="p-2.5 text-right">Base Price</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800/80 print:divide-slate-200">
+                    <tbody className="divide-y divide-slate-800/80">
                       <tr>
                         <td className="p-2.5">
-                          <strong className="text-white print:text-black block">{selectedPkg.title}</strong>
-                          <span className="text-[10px] text-slate-400 print:text-slate-600">{selectedPkg.desc}</span>
+                          <strong className="text-white block">{selectedPkg.title}</strong>
+                          <span className="text-[10px] text-slate-400">{selectedPkg.desc}</span>
                         </td>
-                        <td className="p-2.5 text-purple-300 print:text-purple-800 font-medium">
+                        <td className="p-2.5 text-purple-300 font-medium">
                           {customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}
                         </td>
                         <td className="p-2.5 text-right font-semibold text-slate-400 line-through">
@@ -374,14 +504,14 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
                       <tr>
                         <td className="p-2.5">
-                          <strong className="text-white print:text-black block">
+                          <strong className="text-white block">
                             {expressDelivery ? '⚡ Express Fast Turnaround (24-48 hrs)' : '🐢 Standard Delivery Timeline'}
                           </strong>
                         </td>
-                        <td className="p-2.5 text-slate-400 print:text-slate-600">
+                        <td className="p-2.5 text-slate-400">
                           {expressDelivery ? 'Rush Speed' : 'Standard'}
                         </td>
-                        <td className="p-2.5 text-right font-semibold text-amber-400 print:text-amber-700">
+                        <td className="p-2.5 text-right font-semibold text-amber-400">
                           {expressDelivery ? '+$10 USD' : '$0 USD'}
                         </td>
                       </tr>
@@ -392,7 +522,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
 
               {/* FINANCIAL SUMMARY TOTALS */}
               <div className="flex justify-end pt-1">
-                <div className="w-full sm:w-64 space-y-1.5 p-3 rounded-xl bg-slate-900 border border-slate-800 print:bg-slate-50 print:border-slate-300 text-xs">
+                <div className="w-full sm:w-64 space-y-1.5 p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
                   <div className="flex justify-between text-slate-400">
                     <span>Subtotal Original:</span>
                     <span className="font-semibold line-through">${finalOriginalTotal} USD</span>
@@ -403,29 +533,29 @@ Studio: FramEmpire (A Revolution of Animation)`;
                     <span>-${discountAmount} USD</span>
                   </div>
 
-                  <div className="flex justify-between text-sm font-extrabold border-t border-slate-800 pt-2 print:border-slate-300 text-white print:text-black">
+                  <div className="flex justify-between text-sm font-extrabold border-t border-slate-800 pt-2 text-white">
                     <span>Total Amount Due:</span>
-                    <span className="text-green-400 print:text-green-700 font-['Creato_Display']">${finalPayableTotal} USD</span>
+                    <span className="text-green-400 font-['Creato_Display']">${finalPayableTotal} USD</span>
                   </div>
                 </div>
               </div>
 
               {/* CUSTOM NOTES & INSTRUCTIONS SECTION */}
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 print:bg-slate-50 print:border-slate-300 space-y-1">
+              <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Custom Client Notes & Instructions:</span>
-                <p className="text-slate-300 print:text-slate-700 italic text-[11px]">
+                <p className="text-slate-300 italic text-[11px]">
                   {customRequirementText || additionalNotes || "No custom notes added."}
                 </p>
               </div>
 
               {/* FOOTER & NEXT STEPS CTA */}
-              <div className="pt-2 border-t border-slate-800 print:border-slate-300 space-y-3">
-                <p className="text-[10px] text-slate-400 print:text-slate-600 italic">
+              <div className="pt-2 border-t border-slate-800 space-y-3">
+                <p className="text-[10px] text-slate-400 italic">
                   * Note: This is an automated estimated quote. Final invoice will be confirmed upon brief review.
                 </p>
 
-                {/* Interactive Action Buttons with WhatsApp Number 01615288259 (Hidden in Print) */}
-                <div className="flex flex-wrap items-center gap-2 print:hidden">
+                {/* Interactive Action Buttons with WhatsApp Number 01615288259 */}
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={() => alert(`Redirecting to secure checkout for Quote ${invoiceId}...`)}
                     className="neon-button-primary py-2 px-4 text-xs font-extrabold"
@@ -445,7 +575,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
                   </a>
                 </div>
 
-                <div className="flex items-center justify-between text-[9px] text-slate-500 print:text-slate-600 pt-1">
+                <div className="flex items-center justify-between text-[9px] text-slate-500 pt-1">
                   <span>Support: team.framempire@gmail.com</span>
                   <span>© {new Date().getFullYear()} FramEmpire Studio. All rights reserved.</span>
                 </div>

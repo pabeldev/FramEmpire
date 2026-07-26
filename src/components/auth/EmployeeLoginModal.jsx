@@ -8,22 +8,30 @@ export default function EmployeeLoginModal({ isOpen, onClose, onLoginSuccess }) 
 
   if (!isOpen) return null;
 
+  const ROLE_PASSCODES = {
+    'Admin / Executive': 'admin123',
+    'Studio Manager': 'manager123',
+    'HR Manager': 'hr123',
+    'Creative Lead / Designer': 'designer123'
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
-    // Demo password validation or quick entry
-    if (password === 'admin123' || password === '1234' || password === '') {
+    const expectedPasscode = ROLE_PASSCODES[role] || 'admin123';
+    
+    if (password.trim() === expectedPasscode) {
       onLoginSuccess(role);
       onClose();
       setPassword('');
       setError('');
     } else {
-      setError('Invalid password. Demo password is: admin123 (or click Quick Demo Login below)');
+      setError(`Access Denied! Passcode for ${role} is invalid. Try: ${expectedPasscode}`);
     }
   };
 
-  const handleQuickDemoLogin = (selectedRole) => {
-    onLoginSuccess(selectedRole);
-    onClose();
+  const handleFillDemoPasscode = (selectedRole) => {
+    setRole(selectedRole);
+    setPassword(ROLE_PASSCODES[selectedRole] || 'admin123');
     setError('');
   };
 
@@ -44,8 +52,8 @@ export default function EmployeeLoginModal({ isOpen, onClose, onLoginSuccess }) 
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400 flex items-center justify-center text-cyan-400 mx-auto shadow-[0_0_20px_rgba(0,243,255,0.4)]">
             <Lock className="w-6 h-6" />
           </div>
-          <h3 className="font-['Syne'] text-2xl font-extrabold text-white">CYBERNEXUS Staff Portal</h3>
-          <p className="text-xs text-slate-400">Internal Login for Employees, Creative Leads & Management</p>
+          <h3 className="font-['Creato_Display'] text-2xl font-extrabold text-white">FramEmpire Staff Portal</h3>
+          <p className="text-xs text-slate-400">Secure Internal Login for Admin, Managers, HR & Designers</p>
         </div>
 
         {error && (
@@ -58,16 +66,19 @@ export default function EmployeeLoginModal({ isOpen, onClose, onLoginSuccess }) 
         <form onSubmit={handleLogin} className="space-y-4 text-xs">
           
           <div className="space-y-1.5">
-            <label className="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Select Role Perspective</label>
+            <label className="font-bold text-slate-300 uppercase tracking-wider text-[10px]">Select Staff Role</label>
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value)}
+              onChange={(e) => {
+                setRole(e.target.value);
+                setError('');
+              }}
               className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-cyan-300 font-semibold outline-none focus:border-cyan-400"
             >
               <option value="Admin / Executive">Admin / Executive</option>
-              <option value="Creative Director">Creative Director</option>
-              <option value="Motion & Video Lead">Motion & Video Lead</option>
-              <option value="Senior Developer">Senior Developer</option>
+              <option value="Studio Manager">Studio Manager</option>
+              <option value="HR Manager">HR Manager</option>
+              <option value="Creative Lead / Designer">Creative Lead / Designer</option>
             </select>
           </div>
 
@@ -77,7 +88,7 @@ export default function EmployeeLoginModal({ isOpen, onClose, onLoginSuccess }) 
               <KeyRound className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
               <input
                 type="password"
-                placeholder="Enter password (default: admin123)"
+                placeholder="Enter security passcode..."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl pl-10 pr-4 py-3 text-white placeholder-slate-500 outline-none focus:border-cyan-400"
@@ -90,27 +101,39 @@ export default function EmployeeLoginModal({ isOpen, onClose, onLoginSuccess }) 
             className="neon-button-primary w-full justify-center py-3 text-xs"
           >
             <ShieldCheck className="w-4 h-4" />
-            <span>Authenticate & Access Workspace</span>
+            <span>Authenticate & Access Portal</span>
           </button>
 
         </form>
 
-        {/* Quick Demo Access Buttons */}
-        <div className="pt-4 border-t border-slate-800 text-center space-y-3">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Or Instant Demo Access:</span>
+        {/* Quick Passcode Fill Buttons */}
+        <div className="pt-4 border-t border-slate-800 text-center space-y-2.5">
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Role Passcode Shortcuts:</span>
           
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 text-[11px]">
             <button
-              onClick={() => handleQuickDemoLogin('Admin / Executive')}
-              className="p-2.5 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:border-cyan-400 text-xs font-semibold transition-all"
+              onClick={() => handleFillDemoPasscode('Admin / Executive')}
+              className="p-2 rounded-xl bg-slate-900 border border-cyan-500/30 text-cyan-300 hover:border-cyan-400 text-xs font-semibold"
             >
-              🔑 Login as Admin
+              🔑 Fill Admin (`admin123`)
             </button>
             <button
-              onClick={() => handleQuickDemoLogin('Creative Director')}
-              className="p-2.5 rounded-xl bg-slate-900 border border-blue-500/30 text-blue-300 hover:border-blue-400 text-xs font-semibold transition-all"
+              onClick={() => handleFillDemoPasscode('Studio Manager')}
+              className="p-2 rounded-xl bg-slate-900 border border-blue-500/30 text-blue-300 hover:border-blue-400 text-xs font-semibold"
             >
-              🎨 Login as Manager
+              💼 Fill Manager (`manager123`)
+            </button>
+            <button
+              onClick={() => handleFillDemoPasscode('HR Manager')}
+              className="p-2 rounded-xl bg-slate-900 border border-purple-500/30 text-purple-300 hover:border-purple-400 text-xs font-semibold"
+            >
+              👥 Fill HR (`hr123`)
+            </button>
+            <button
+              onClick={() => handleFillDemoPasscode('Creative Lead / Designer')}
+              className="p-2 rounded-xl bg-slate-900 border border-yellow-500/30 text-yellow-300 hover:border-yellow-400 text-xs font-semibold"
+            >
+              🎨 Fill Designer (`designer123`)
             </button>
           </div>
         </div>

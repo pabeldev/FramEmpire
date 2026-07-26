@@ -131,37 +131,7 @@ export const PORTFOLIO_PROJECTS = [
     featured: false,
   },
 
-  // 2. Motion Graphics Projects
-  {
-    id: "motion-1",
-    title: "FramEmpire 3D Kinetic Motion Reel",
-    client: "FramEmpire Studios",
-    category: "Motion Graphics",
-    categoryKey: "motion-graphics",
-    platform: "direct",
-    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-abstract-laser-beams-in-the-dark-42861-large.mp4",
-    year: "2026",
-    summary: "Flagship 3D kinetic character animation & Octane volumetric render showcase.",
-    stats: "4K Motion Reel • 99.6% Rating",
-    deliverables: ["3D Kinetic Motion", "Character Rigging", "Octane Render Assets"],
-    featured: true,
-  },
-  {
-    id: "motion-2",
-    title: "CYBER-KINGDOM 3D Animation Reel",
-    client: "Tokyo Interactive",
-    category: "Motion Graphics",
-    categoryKey: "motion-graphics",
-    platform: "direct",
-    videoPreview: "https://assets.mixkit.co/videos/preview/mixkit-tunnel-of-blue-and-purple-lights-42858-large.mp4",
-    year: "2025",
-    summary: "Octane Render 3D environment walkthrough with volumetric neon lighting.",
-    stats: "Vimeo Staff Pick Award",
-    deliverables: ["Full 4K Reel", "Sound Design", "VFX Compositing"],
-    featured: true,
-  },
-
-  // 3. YouTube Video Editing Projects (Auto YouTube Thumbnails)
+  // 2. YouTube Video Editing Projects (Auto YouTube Thumbnails)
   {
     id: "yt-1",
     title: "FramEmpire Commercial Video Edit #1",
@@ -205,7 +175,7 @@ export const PORTFOLIO_PROJECTS = [
     featured: false,
   },
 
-  // 4. Web Development Live Projects
+  // 3. Web Development Live Projects
   {
     id: "web-1",
     title: "Education BD Web Platform",
@@ -268,9 +238,140 @@ export const PORTFOLIO_PROJECTS = [
   }
 ];
 
+// Master Studio Tasks (Task Manager with Status: Pending, In Progress, Ready to Deliver)
+export const INITIAL_STUDIO_TASKS = [
+  {
+    id: "task-201",
+    title: "3D Kinetic Teaser & Character Rigging",
+    description: "Create 4K Octane 3D character animation sequence with volumetric lighting pass and kinetic typography overlay.",
+    client: "FramEmpire Showcase",
+    assignedTo: "Elena Vance",
+    assignedBy: "A M Pabel (Team Captain)",
+    reportingBoss: "A M Pabel",
+    status: "Ready to Deliver",
+    progressPercent: 100,
+    dueDate: "2026-08-01",
+    categoryKey: "motion-graphics",
+    category: "Motion Graphics",
+    embedUrl: "https://www.behance.net/embed/project/253103033?ilo0=1",
+    addedToPortfolio: false
+  },
+  {
+    id: "task-202",
+    title: "Commercial Commercial Ad Post-Production",
+    description: "DaVinci Resolve HDR color grading cut and sound design mixing for 60-second broadcast ad.",
+    client: "Shikor TV Canada",
+    assignedTo: "Marcus Vance",
+    assignedBy: "A M Pabel",
+    reportingBoss: "A M Pabel",
+    status: "In Progress",
+    progressPercent: 75,
+    dueDate: "2026-08-10",
+    categoryKey: "video-editing",
+    category: "Video Editing",
+    embedUrl: "https://player.vimeo.com/video/1133437679",
+    addedToPortfolio: false
+  },
+  {
+    id: "task-203",
+    title: "Brand Identity Guidelines & Vector Art System",
+    description: "Design 3D logo identity system, vector icons, and typography tokens for client branding.",
+    client: "Education BD",
+    assignedTo: "Sophia Chen",
+    assignedBy: "A M Pabel",
+    reportingBoss: "Sophia Chen",
+    status: "Ready to Deliver",
+    progressPercent: 100,
+    dueDate: "2026-08-02",
+    categoryKey: "graphic-design",
+    category: "Graphic Design",
+    embedUrl: "https://www.behance.net/embed/project/252254261?ilo0=1",
+    addedToPortfolio: false
+  },
+  {
+    id: "task-204",
+    title: "Interactive Web Portal & Dashboard Engine",
+    description: "Develop responsive React WebGL dashboard portal with dark glassmorphism and fast page load.",
+    client: "Ibnu Abil Khair",
+    assignedTo: "David Kross",
+    assignedBy: "Studio Manager",
+    reportingBoss: "A M Pabel",
+    status: "Pending",
+    progressPercent: 30,
+    dueDate: "2026-08-15",
+    categoryKey: "web-dev",
+    category: "Web Development",
+    liveUrl: "https://ibnuabilkhair.ampabel.com/",
+    addedToPortfolio: false
+  }
+];
+
+// Master Clients Directory
+export const INITIAL_CLIENTS_LIST = [
+  {
+    id: "client-1",
+    name: "Education BD Team",
+    company: "Education BD Ltd.",
+    email: "contact@education-bd.com",
+    activeProjects: 2,
+    totalSpent: "$45,000",
+    status: "Active - Retainer",
+    lead: "David Kross",
+    website: "https://education-bd.com/"
+  },
+  {
+    id: "client-2",
+    name: "A M Pabel Official",
+    company: "AMPabel Digital",
+    email: "pabel@ampabel.com",
+    activeProjects: 3,
+    totalSpent: "$68,000",
+    status: "Active - Retainer",
+    lead: "A M Pabel",
+    website: "https://ampabel.com/"
+  },
+  {
+    id: "client-3",
+    name: "Shikor TV Canada",
+    company: "Shikor Media Group",
+    email: "media@shikortv.ca",
+    activeProjects: 1,
+    totalSpent: "$35,000",
+    status: "Completed",
+    lead: "Marcus Vance",
+    website: "https://player.vimeo.com/video/1133437679"
+  },
+  {
+    id: "client-4",
+    name: "Ibnu Abil Khair Group",
+    company: "Ibnu Abil Khair Enterprise",
+    email: "admin@ibnuabilkhair.ampabel.com",
+    activeProjects: 1,
+    totalSpent: "$28,000",
+    status: "Active",
+    lead: "David Kross",
+    website: "https://ibnuabilkhair.ampabel.com/"
+  }
+];
+
 export const EMPLOYEES = [
   {
     id: "emp-101",
+    name: "A M Pabel",
+    role: "Studio Founder & Team Captain",
+    department: "Executive & Creative Lead",
+    email: "pabel@ampabel.com",
+    avatar: "/ampabel.jpg",
+    status: "Active - Directing",
+    skills: ["Graphic Design", "3D Motion Kinetics", "Digital Content", "Studio Leadership"],
+    currentProject: "FramEmpire 3D Reel",
+    workloadPercent: 95,
+    rating: 5.0,
+    hoursThisWeek: 42.0,
+    canPromoteRoles: true,
+  },
+  {
+    id: "emp-102",
     name: "Elena Vance",
     role: "Lead Motion Designer & 3D Animator",
     department: "Motion Graphics",
@@ -282,9 +383,10 @@ export const EMPLOYEES = [
     workloadPercent: 85,
     rating: 4.9,
     hoursThisWeek: 38.5,
+    canPromoteRoles: false,
   },
   {
-    id: "emp-102",
+    id: "emp-103",
     name: "Marcus Vance",
     role: "Senior Video Editor & Colorist",
     department: "Video Editing",
@@ -292,27 +394,29 @@ export const EMPLOYEES = [
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop",
     status: "Active - In Suite",
     skills: ["DaVinci Resolve", "Premiere Pro", "Sound Design", "VFX"],
-    currentProject: "FramEmpire Commercial",
+    currentProject: "Shikor TV Canada",
     workloadPercent: 70,
     rating: 4.85,
     hoursThisWeek: 36.0,
-  },
-  {
-    id: "emp-103",
-    name: "Sophia Chen",
-    role: "Principal Graphic Designer & UI Lead",
-    department: "Graphic Design",
-    email: "sophia@framempire.agency",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop",
-    status: "Active - Client Review",
-    skills: ["Figma", "Illustrator", "Photoshop", "3D Typography"],
-    currentProject: "FramEmpire Behance Identity",
-    workloadPercent: 90,
-    rating: 5.0,
-    hoursThisWeek: 40.0,
+    canPromoteRoles: false,
   },
   {
     id: "emp-104",
+    name: "Sophia Chen",
+    role: "Principal Graphic Designer & HR Lead",
+    department: "Graphic Design / HR",
+    email: "sophia@framempire.agency",
+    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=300&auto=format&fit=crop",
+    status: "Active - HR & Design",
+    skills: ["Figma", "Illustrator", "HR Management", "3D Typography"],
+    currentProject: "Education BD Branding",
+    workloadPercent: 90,
+    rating: 5.0,
+    hoursThisWeek: 40.0,
+    canPromoteRoles: true,
+  },
+  {
+    id: "emp-105",
     name: "David Kross",
     role: "Lead Fullstack & WebGL Developer",
     department: "Web Development",
@@ -324,20 +428,7 @@ export const EMPLOYEES = [
     workloadPercent: 75,
     rating: 4.95,
     hoursThisWeek: 37.5,
-  },
-  {
-    id: "emp-105",
-    name: "Aria Thorne",
-    role: "Junior Character Animator",
-    department: "Motion Graphics",
-    email: "aria@framempire.agency",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300&auto=format&fit=crop",
-    status: "On Leave (PTO)",
-    skills: ["After Effects", "Spline 3D", "Illustrator"],
-    currentProject: "Internal Branding",
-    workloadPercent: 0,
-    rating: 4.7,
-    hoursThisWeek: 0.0,
+    canPromoteRoles: false,
   }
 ];
 
@@ -378,47 +469,31 @@ export const CLIENT_PROJECTS_PIPELINE = [
   },
   {
     id: "proj-pipe-3",
-    name: "FramEmpire Commercial Cut",
-    client: "FramEmpire Video",
+    name: "Shikor TV Canada Ad Cut",
+    client: "Shikor TV",
     lead: "Marcus Vance",
     discipline: "Video Editing",
     budget: "$65,000",
-    progress: 60,
-    status: "Color Grading & FX",
-    dueDate: "2026-08-15",
+    progress: 100,
+    status: "Ready to Deliver",
+    dueDate: "2026-08-01",
     tasks: [
       { id: 1, title: "Offline Assembly Cut", done: true },
       { id: 2, title: "VFX Track & Compositing", done: true },
-      { id: 3, title: "DaVinci HDR Color Pass", done: false },
-      { id: 4, title: "Final Audio Mix", done: false }
-    ]
-  },
-  {
-    id: "proj-pipe-4",
-    name: "FramEmpire Behance Identity",
-    client: "Glow Tech",
-    lead: "Sophia Chen",
-    discipline: "Graphic Design",
-    budget: "$24,000",
-    progress: 100,
-    status: "Published on Behance",
-    dueDate: "2026-07-20",
-    tasks: [
-      { id: 1, title: "Discovery & Brand Identity", done: true },
-      { id: 2, title: "Vector Asset Explorations", done: true },
-      { id: 3, title: "Behance Presentation Upload", done: true }
+      { id: 3, title: "DaVinci HDR Color Pass", done: true },
+      { id: 4, title: "Final Audio Mix", done: true }
     ]
   }
 ];
 
 export const RECENT_TIMESHEETS = [
   { id: "ts-1", employee: "Elena Vance", project: "FramEmpire 3D Motion Reel", hours: 8.5, date: "2026-07-24", category: "3D Rendering", status: "Approved" },
-  { id: "ts-2", employee: "Marcus Vance", project: "FramEmpire Commercial Cut", hours: 7.5, date: "2026-07-24", category: "Color Grading", status: "Approved" },
-  { id: "ts-3", employee: "Sophia Chen", project: "FramEmpire Behance Identity", hours: 8.0, date: "2026-07-25", category: "Vector Design", status: "Approved" },
+  { id: "ts-2", employee: "Marcus Vance", project: "Shikor TV Canada", hours: 7.5, date: "2026-07-24", category: "Color Grading", status: "Approved" },
+  { id: "ts-3", employee: "Sophia Chen", project: "Education BD Branding", hours: 8.0, date: "2026-07-25", category: "Vector Design", status: "Approved" },
   { id: "ts-4", employee: "David Kross", project: "Education BD Platform", hours: 9.0, date: "2026-07-25", category: "Frontend Coding", status: "Approved" }
 ];
 
 export const PTO_REQUESTS = [
-  { id: "pto-1", employee: "Aria Thorne", dates: "Jul 24 - Jul 28", reason: "Vacation", status: "Approved" },
+  { id: "pto-1", employee: "Elena Vance", dates: "Aug 10 - Aug 12", reason: "Vacation", status: "Approved" },
   { id: "pto-2", employee: "Marcus Vance", dates: "Aug 18 - Aug 20", reason: "Conference / Workshop", status: "Pending Approval" }
 ];

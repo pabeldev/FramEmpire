@@ -72,6 +72,51 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
             </button>
           </div>
 
+          {/* Social Proof Client Rating Badge (80%+ Repeat Clients / 5 Demo User Avatars + Golden Stars) */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2 sm:pt-3">
+            {/* 5 Overlapping Demo User Profile Avatars */}
+            <div className="flex items-center -space-x-2.5 overflow-hidden p-0.5">
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Sarah" 
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Alex" 
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Jessica" 
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Marcus" 
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Emily" 
+              />
+            </div>
+
+            {/* Golden Stars & 80%+ Client Rating Text */}
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-1 text-amber-400">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)]" />
+                ))}
+                <span className="text-xs font-black text-amber-300 ml-1">5.0 Star Rating</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-slate-300 font-semibold">
+                Loved by <strong className="text-cyan-300 font-bold">80%+ Repeat Clients</strong> Worldwide 🚀
+              </p>
+            </div>
+          </div>
+
           {/* Quick Agency Metrics */}
           <div className="pt-4 sm:pt-6 border-t border-slate-800/80 grid grid-cols-3 gap-4 sm:gap-6 max-w-xl">
             <div>

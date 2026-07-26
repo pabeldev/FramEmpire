@@ -25,12 +25,12 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-1.5 sm:top-2.5 z-50 px-1 sm:px-3 w-[98%] max-w-[1800px] mx-auto transition-all duration-300">
+    <header className="sticky top-1 sm:top-2 z-50 px-2 sm:px-4 max-w-[1800px] mx-auto transition-all duration-300">
       {/* Dark Neomorphism Floating Pill Shape Bar */}
       <div className={`w-full rounded-full transition-all duration-300 relative overflow-hidden ${
         isScrolled 
-          ? 'bg-[#090c19]/85 backdrop-blur-2xl border border-cyan-500/40 shadow-[-6px_-6px_16px_rgba(255,255,255,0.03),8px_8px_24px_rgba(0,0,0,0.85),inset_0_0_15px_rgba(0,243,255,0.12)] py-1.5 sm:py-2 px-6 sm:px-8' 
-          : 'bg-[#0b0e1e]/95 backdrop-blur-xl border border-cyan-500/25 shadow-[-8px_-8px_20px_rgba(255,255,255,0.04),10px_10px_30px_rgba(0,0,0,0.9)] py-2 sm:py-3 px-7 sm:px-10'
+          ? 'bg-[#090c19]/90 backdrop-blur-2xl border border-cyan-500/40 shadow-[-4px_-4px_12px_rgba(255,255,255,0.03),6px_6px_18px_rgba(0,0,0,0.85),inset_0_0_12px_rgba(0,243,255,0.15)] py-1 px-4 sm:px-6' 
+          : 'bg-[#0b0e1e]/95 backdrop-blur-xl border border-cyan-500/25 shadow-[-6px_-6px_16px_rgba(255,255,255,0.04),8px_8px_24px_rgba(0,0,0,0.9)] py-1.5 sm:py-2 px-5 sm:px-8'
       }`}>
         
         {/* Ambient Neomorphic Liquid Rim Glow */}
@@ -38,18 +38,19 @@ export default function Navbar({
 
         <div className="flex items-center justify-between gap-4 relative z-10">
           
-          {/* Brand & Logo (Bold High-Visibility Logo Dimensions) */}
+          {/* Brand & Logo (Sleek Compact Vertical Height, Crystal Clear Visibility) */}
           <div 
-            className="flex items-center gap-2.5 cursor-pointer" 
+            className="flex items-center gap-2 cursor-pointer shrink-0" 
             onClick={() => onSignOut && viewMode === 'admin' ? onSignOut() : null}
           >
             <img 
               src="/framempire_logo_white.png" 
               alt="FramEmpire Studio" 
-              className={`object-contain shrink-0 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,243,255,0.35)] ${
+              loading="eager"
+              className={`object-contain shrink-0 transition-all duration-300 drop-shadow-[0_0_12px_rgba(0,243,255,0.4)] ${
                 isScrolled 
-                  ? 'h-11 sm:h-14 md:h-16 max-w-[260px] sm:max-w-[320px]' 
-                  : 'h-14 sm:h-18 md:h-22 max-w-[360px] sm:max-w-[440px]'
+                  ? 'h-6 sm:h-7 md:h-8 max-w-[180px] sm:max-w-[220px]' 
+                  : 'h-8 sm:h-9 md:h-10 max-w-[220px] sm:max-w-[280px]'
               }`} 
             />
             {viewMode === 'admin' && (

@@ -67,8 +67,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
   };
 
   const emailSubject = `🚀 New FramEmpire Brief: ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD)`;
-  const emailBody = `
-NEW PROJECT BRIEF FROM FRAMEMPIRE ESTIMATOR
+  const emailBody = `NEW PROJECT BRIEF FROM FRAMEMPIRE ESTIMATOR
 -------------------------------------------
 Client Contact: ${contactInfo}
 Service Needed: ${customServiceText || serviceLabels[service]}
@@ -86,10 +85,35 @@ ${customRequirementText || 'None'}
 ADDITIONAL NOTES:
 ${additionalNotes || 'None'}
 
-Submitted at: ${new Date().toLocaleString()}
-  `;
+Submitted at: ${new Date().toLocaleString()}`;
 
-  const handleSubmitSuccess = () => {
+  // Direct Web Gmail Compose Trigger (Opens Gmail Web directly in new tab)
+  const gmailWebUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=team.framempire@gmail.com&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+  const mailtoUrl = `mailto:team.framempire@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // 1. Try sending via FormSubmit API in background
+    try {
+      fetch('https://formsubmit.co/ajax/team.framempire@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: emailSubject,
+          clientContact: contactInfo,
+          serviceNeeded: customServiceText || serviceLabels[service],
+          packageSelected: selectedPkg.title,
+          finalPayableQuote: `$${finalPayableTotal} USD`,
+          message: emailBody
+        })
+      });
+    } catch (err) {
+      console.log('Background API dispatch:', err);
+    }
+
+    // 2. Open Gmail Web compose window directly in new tab!
+    window.open(gmailWebUrl, '_blank');
     setSubmitted(true);
   };
 
@@ -158,30 +182,39 @@ Submitted at: ${new Date().toLocaleString()}
             </div>
 
             <div className="space-y-2">
-              <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">Project Brief Dispatched!</h4>
+              <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">Gmail Compose Window Opened!</h4>
               <p className="text-sm text-slate-300 max-w-md mx-auto">
-                Brief details have been sent to <strong className="text-cyan-300">team.framempire@gmail.com</strong>.
+                A new browser tab has opened with all brief details pre-filled directly to <strong className="text-cyan-300">team.framempire@gmail.com</strong>.
               </p>
             </div>
 
+            {/* Direct Instant Action Buttons */}
             <div className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/40 max-w-lg mx-auto text-left text-xs space-y-3">
               <div className="flex items-center gap-2 text-cyan-300 font-bold">
                 <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>DIRECT EMAIL & GMAIL SHORTCUT:</span>
+                <span>100% GUARANTEED DIRECT EMAIL DISPATCH:</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                Click below to open your Gmail / Email app with all brief details pre-filled directly to <strong>team.framempire@gmail.com</strong>:
+                If your popup blocker prevented opening Gmail automatically, click below to open Gmail or your default email app:
               </p>
 
               <div className="flex flex-wrap items-center gap-3">
                 <a
-                  href={`mailto:team.framempire@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`}
+                  href={gmailWebUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="neon-button-primary py-2.5 px-5 text-xs font-bold justify-center"
+                  className="neon-button-primary py-2.5 px-5 text-xs font-extrabold justify-center"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Send via Gmail App Now ↗</span>
+                  <span>Open Gmail Web Compose ↗</span>
+                </a>
+
+                <a
+                  href={mailtoUrl}
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white font-bold flex items-center gap-1.5"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Mail App</span>
                 </a>
 
                 <button
@@ -190,9 +223,9 @@ Submitted at: ${new Date().toLocaleString()}
                     setStep(1);
                     onClose();
                   }}
-                  className="px-4 py-2 text-xs text-slate-400 hover:text-white"
+                  className="px-3 py-2 text-xs text-slate-400 hover:text-white"
                 >
-                  Close Window
+                  Done
                 </button>
               </div>
             </div>
@@ -465,29 +498,12 @@ Submitted at: ${new Date().toLocaleString()}
               </div>
             )}
 
-            {/* STEP 4: FINAL SUMMARY & DIRECT HTML FORM SUBMIT TO team.framempire@gmail.com */}
+            {/* STEP 4: FINAL SUMMARY & DIRECT GMAIL DISPATCH */}
             {step === 4 && (
-              <form 
-                action="https://formsubmit.co/team.framempire@gmail.com" 
-                method="POST" 
-                target="_blank"
-                onSubmit={handleSubmitSuccess}
-                className="space-y-4 animate-fadeIn"
-              >
-                {/* FormSubmit Hidden Fields */}
-                <input type="hidden" name="_subject" value={emailSubject} />
-                <input type="hidden" name="_template" value="table" />
-                <input type="hidden" name="_captcha" value="false" />
-                <input type="hidden" name="Service Needed" value={customServiceText || serviceLabels[service]} />
-                <input type="hidden" name="Package Selected" value={`${selectedPkg.title} (${selectedPkg.desc})`} />
-                <input type="hidden" name="Billing Model" value={customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')} />
-                <input type="hidden" name="Delivery Speed" value={expressDelivery ? 'Express Fast (+$10 USD)' : 'Standard Delivery (Free)'} />
-                <input type="hidden" name="Final Quote" value={`$${finalPayableTotal} USD ${billingType === 'monthly' ? '/mo' : ''}`} />
-                <input type="hidden" name="Custom Requirements" value={customRequirementText || 'None'} />
-
+              <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn">
                 <div className="space-y-1">
-                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Send Brief to team.framempire@gmail.com</h4>
-                  <p className="text-slate-400 text-xs">Review summary and submit to dispatch brief directly to team.framempire@gmail.com.</p>
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Dispatch Brief to team.framempire@gmail.com</h4>
+                  <p className="text-slate-400 text-xs">Review summary and submit to open Gmail Compose window pre-filled to team.framempire@gmail.com.</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 space-y-3">
@@ -541,7 +557,6 @@ Submitted at: ${new Date().toLocaleString()}
                   </label>
                   <textarea
                     rows={2}
-                    name="Additional Notes"
                     placeholder="e.g. Need dynamic subtitles, fast pacing, or specific brand colors..."
                     value={additionalNotes}
                     onChange={(e) => setAdditionalNotes(e.target.value)}
@@ -555,7 +570,6 @@ Submitted at: ${new Date().toLocaleString()}
                   </label>
                   <input
                     type="text"
-                    name="Client Contact"
                     required
                     placeholder="Your Email Address or Direct WhatsApp Number..."
                     value={contactInfo}
@@ -578,7 +592,7 @@ Submitted at: ${new Date().toLocaleString()}
                     type="submit"
                     className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
                   >
-                    <span>🚀 Submit Brief & Send to team.framempire@gmail.com</span>
+                    <span>🚀 Submit Brief & Open Gmail to Send</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>

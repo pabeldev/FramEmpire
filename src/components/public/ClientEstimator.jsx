@@ -8,18 +8,19 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
   const [step, setStep] = useState(1); // 1: Service, 2: Billing, 3: Scope & Packages, 4: Summary & Submit
 
   // Wizard Data State
-  const [service, setService] = useState(initialService); // 'graphic-design' | 'motion-graphics' | 'video-editing' | 'web-dev'
+  const [service, setService] = useState(initialService);
   const [customServiceText, setCustomServiceText] = useState('');
   
-  const [billingType, setBillingType] = useState('project'); // 'project' | 'monthly'
+  const [billingType, setBillingType] = useState('project');
   const [customBillingText, setCustomBillingText] = useState('');
 
-  const [packageId, setPackageId] = useState('starter'); // Dynamic package per service
-  const [expressDelivery, setExpressDelivery] = useState(false); // false (Free) | true (+$10)
+  const [packageId, setPackageId] = useState('starter');
+  const [expressDelivery, setExpressDelivery] = useState(false);
   const [customRequirementText, setCustomRequirementText] = useState('');
 
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [contactInfo, setContactInfo] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
@@ -66,14 +67,71 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     'web-dev': 'Web Design & Dev'
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSending(true);
+
+    const emailSubject = `🚀 New FramEmpire Project Brief: ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD)`;
+    const emailBody = `
+NEW PROJECT BRIEF FROM FRAMEMPIRE ESTIMATOR
+-------------------------------------------
+Client Contact: ${contactInfo}
+Service Needed: ${customServiceText || serviceLabels[service]}
+Package Selected: ${selectedPkg.title} (${selectedPkg.desc})
+Billing Type: ${customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}
+Delivery Speed: ${expressDelivery ? 'Express Fast Delivery (+$10 USD)' : 'Standard Delivery (Free)'}
+
+PRICE DETAILS:
+- Original Price: $${finalOriginalTotal} USD
+- Final Payable (50% OFF Claimed): $${finalPayableTotal} USD ${billingType === 'monthly' ? '/ month' : ''}
+
+CUSTOM REQUIREMENTS:
+${customRequirementText || 'None'}
+
+ADDITIONAL NOTES:
+${additionalNotes || 'None'}
+
+Submitted at: ${new Date().toLocaleString()}
+    `;
+
+    try {
+      // 1. Send HTTP POST to FormSubmit endpoint targeting team.framempire@gmail.com
+      await fetch('https://formsubmit.co/ajax/team.framempire@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: emailSubject,
+          _captcha: "false",
+          clientContact: contactInfo,
+          service: customServiceText || serviceLabels[service],
+          package: selectedPkg.title,
+          billingType: customBillingText || billingType,
+          deliverySpeed: expressDelivery ? 'Express (+$10)' : 'Standard (Free)',
+          finalQuote: `$${finalPayableTotal} USD`,
+          customRequirements: customRequirementText,
+          additionalNotes: additionalNotes,
+          message: emailBody
+        })
+      });
+    } catch (err) {
+      console.log('FormSubmit API notice:', err);
+    }
+
+    // 2. Open Direct Mailto Fallback Link to team.framempire@gmail.com
+    const mailtoUrl = `mailto:team.framempire@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    window.open(mailtoUrl, '_blank');
+
+    setIsSending(false);
     setSubmitted(true);
+
     setTimeout(() => {
       setSubmitted(false);
       setStep(1);
       onClose();
-    }, 3500);
+    }, 4000);
   };
 
   return (
@@ -90,7 +148,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
               <h3 className="font-['Creato_Display'] text-base sm:text-lg font-extrabold text-white">
                 Interactive Project Estimator
               </h3>
-              <p className="text-[11px] text-slate-400">Step {step} of 4 • Configure scope & claim 50% discount</p>
+              <p className="text-[11px] text-slate-400">Step {step} of 4 • Sends directly to team.framempire@gmail.com</p>
             </div>
           </div>
 
@@ -127,7 +185,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
         <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)]">
           <div className="flex items-center gap-2">
             <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
-            <span className="font-extrabold text-white text-xs">🏷️ Special Welcome Offer: 50% OFF Applied on First Order / Month!</span>
+            <span className="font-extrabold text-white text-xs">🏷️ Special Welcome Offer: 50% OFF Sent to team.framempire@gmail.com!</span>
           </div>
           <span className="neon-badge text-[8px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
             CLAIM OFFER 🚀
@@ -139,9 +197,9 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
             <div className="w-16 h-16 rounded-full bg-green-500/20 border-2 border-green-400 text-green-400 flex items-center justify-center mx-auto animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">50% OFF Brief Claimed Successfully!</h4>
+            <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">Project Brief Sent to team.framempire@gmail.com!</h4>
             <p className="text-sm text-slate-300 max-w-md mx-auto">
-              Our Lead Specialist & Executive Producer have received your brief. We will reach out on your Email/WhatsApp within 2 hours.
+              Our Executive Producer & Lead Specialist have received your brief at <strong className="text-cyan-300">team.framempire@gmail.com</strong>. We will contact you within 2 hours.
             </p>
           </div>
         ) : (
@@ -170,7 +228,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                         key={s.id}
                         onClick={() => {
                           setService(s.id);
-                          setPackageId('starter'); // reset to default starter package
+                          setPackageId('starter');
                         }}
                         className={`p-4 rounded-xl border cursor-pointer space-y-1.5 transition-all ${
                           isSelected
@@ -190,7 +248,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   })}
                 </div>
 
-                {/* Safety Net: Custom Input Option */}
                 <div className="space-y-1 pt-2">
                   <label className="font-semibold text-slate-400 text-[11px]">
                     🔳 Don't see what you need? Type your required service here:
@@ -204,7 +261,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   />
                 </div>
 
-                {/* Step 1 Footer Navigation */}
                 <div className="flex justify-end pt-3 border-t border-slate-800">
                   <button
                     type="button"
@@ -264,7 +320,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   </div>
                 </div>
 
-                {/* Safety Net: Custom Billing Note */}
                 <div className="space-y-1 pt-2">
                   <label className="font-semibold text-slate-400 text-[11px]">
                     🔳 Need Custom Billing? (e.g., Hourly, Milestone-based):
@@ -278,7 +333,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   />
                 </div>
 
-                {/* Step 2 Footer Navigation */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-800">
                   <button
                     type="button"
@@ -313,7 +367,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   <p className="text-slate-400 text-xs">50% Welcome Discount is automatically applied on all base packages.</p>
                 </div>
 
-                {/* Package Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {currentPackages.map((pkg) => {
                     const isSelected = packageId === pkg.id;
@@ -348,7 +401,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   })}
                 </div>
 
-                {/* Delivery Speed Selector */}
                 <div className="space-y-2 pt-1">
                   <label className="font-bold text-white uppercase text-[11px] tracking-wider block">
                     Select Delivery Speed
@@ -388,7 +440,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   </div>
                 </div>
 
-                {/* Universal Custom Requirement Box for Step 3 */}
                 <div className="space-y-1 pt-1">
                   <label className="font-semibold text-slate-400 text-[11px]">
                     🔳 I have specific requirements / Not listed above:
@@ -402,7 +453,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   />
                 </div>
 
-                {/* Step 3 Footer Navigation */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-800">
                   <button
                     type="button"
@@ -418,7 +468,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                     onClick={() => setStep(4)}
                     className="neon-button-primary py-2.5 px-5 text-xs"
                   >
-                    <span>Next: Final Summary & Claim Offer</span>
+                    <span>Next: Final Summary & Email Brief</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -431,11 +481,10 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
             {step === 4 && (
               <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn">
                 <div className="space-y-1">
-                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Final Summary & Claim 50% Offer</h4>
-                  <p className="text-slate-400 text-xs">Review your invoice-style summary and submit brief to lock in your discount.</p>
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Send Brief to team.framempire@gmail.com</h4>
+                  <p className="text-slate-400 text-xs">Review summary and submit to automatically dispatch brief to team.framempire@gmail.com.</p>
                 </div>
 
-                {/* Transparent Invoice Style Summary Card */}
                 <div className="p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                     <span className="font-bold text-xs text-white font-['Creato_Display']">🛍️ YOUR ESTIMATED SUMMARY</span>
@@ -466,7 +515,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                     </div>
                   </div>
 
-                  {/* Price Calculation Engine */}
                   <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase font-bold block">Original Estimated Price</span>
@@ -482,7 +530,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   </div>
                 </div>
 
-                {/* Additional Notes Textarea */}
                 <div className="space-y-1">
                   <label className="font-semibold text-slate-300 text-xs">
                     ✍️ Additional Project Notes / Instructions (Optional):
@@ -496,10 +543,9 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   />
                 </div>
 
-                {/* Contact Information Input */}
                 <div className="space-y-1">
                   <label className="font-semibold text-slate-300 text-xs">
-                    📧 Contact Information (Required):
+                    📧 Your Contact Information (Required):
                   </label>
                   <input
                     type="text"
@@ -511,7 +557,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
                   />
                 </div>
 
-                {/* Step 4 Footer Submit Button */}
                 <div className="flex items-center justify-between pt-3 border-t border-slate-800">
                   <button
                     type="button"
@@ -524,9 +569,10 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
 
                   <button
                     type="submit"
+                    disabled={isSending}
                     className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
                   >
-                    <span>🚀 Submit Brief & Claim 50% Discount Offer</span>
+                    <span>{isSending ? 'Sending to team.framempire@gmail.com...' : '🚀 Submit Brief & Send to team.framempire@gmail.com'}</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>

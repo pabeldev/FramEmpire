@@ -1,110 +1,135 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Calculator, CheckCircle2, Send, Clock, DollarSign, Flame, Tag, Zap, ArrowRight, ShieldCheck } from 'lucide-react';
+import { 
+  X, Sparkles, Calculator, CheckCircle2, Send, Clock, DollarSign, 
+  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, HelpCircle 
+} from 'lucide-react';
 
 export default function ClientEstimator({ isOpen, onClose, initialService = 'graphic-design' }) {
-  const [billingType, setBillingType] = useState('project'); // 'project' | 'monthly'
-  const [category, setCategory] = useState(initialService);
-  const [packageType, setPackageType] = useState('standard'); // 'starter', 'standard', 'retainer', 'custom'
-  const [deliverySpeed, setDeliverySpeed] = useState('standard'); // 'standard' | 'express'
-  const [submitted, setSubmitted] = useState(false);
+  const [step, setStep] = useState(1); // 1: Service, 2: Billing, 3: Scope & Packages, 4: Summary & Submit
 
-  // Client Brief Form State
-  const [briefDetails, setBriefDetails] = useState({
-    name: '',
-    email: '',
-    notes: ''
-  });
+  // Wizard Data State
+  const [service, setService] = useState(initialService); // 'graphic-design' | 'motion-graphics' | 'video-editing' | 'web-dev'
+  const [customServiceText, setCustomServiceText] = useState('');
+  
+  const [billingType, setBillingType] = useState('project'); // 'project' | 'monthly'
+  const [customBillingText, setCustomBillingText] = useState('');
+
+  const [packageId, setPackageId] = useState('starter'); // Dynamic package per service
+  const [expressDelivery, setExpressDelivery] = useState(false); // false (Free) | true (+$10)
+  const [customRequirementText, setCustomRequirementText] = useState('');
+
+  const [additionalNotes, setAdditionalNotes] = useState('');
+  const [contactInfo, setContactInfo] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
 
-  // Base Prices (Original Struck-through Prices)
-  const packagesData = {
-    starter: {
-      name: "🚀 Test Us Out – Starter Task",
-      desc: "1 Single Social Media Banner, Background Removal, or Simple Touchup Task.",
-      originalPrice: 10,
-      badge: "LOW-BARRIER TRIAL"
-    },
-    standard: {
-      name: "Standard Campaign / Project",
-      desc: "Logo Design, Social Media Kit, Brand Guidelines, or Commercial Cut.",
-      originalPrice: 300,
-      badge: "MOST POPULAR"
-    },
-    retainer: {
-      name: "Monthly Dedicated Retainer",
-      desc: "15-20 Social Media Graphics, Motion Ads & Dedicated Designer Support.",
-      originalPrice: 600,
-      badge: "MONTHLY SUBSCRIPTION"
-    },
-    custom: {
-      name: "Full Brand & 3D Motion System",
-      desc: "Complete 3D Kinetic Animation, Brand System, WebGL App & Source Assets.",
-      originalPrice: 1200,
-      badge: "ENTERPRISE"
-    }
+  // Dynamic Service-Specific Packages Data
+  const servicePackagesMap = {
+    'graphic-design': [
+      { id: 'starter', title: '🚀 Starter Task', desc: '1 Social Post / Banner / Resize / Background Removal.', original: 10, discounted: 5, badge: '$5 TRIAL' },
+      { id: 'standard', title: '📦 Standard Branding Pack', desc: 'Logo Design, Social Media Kit, Style Guide.', original: 300, discounted: 150, badge: '50% OFF' },
+      { id: 'retainer', title: '🔁 Monthly Design Retainer', desc: '15-20 Social Media Graphics + Ads Banners/mo.', original: 300, discounted: 150, badge: 'FIRST MONTH 50% OFF' },
+    ],
+    'motion-graphics': [
+      { id: 'starter', title: '🚀 Micro Motion', desc: 'Logo Animation / Animated Icon / Lower Thirds.', original: 30, discounted: 15, badge: '$15 TRIAL' },
+      { id: 'standard', title: '🎬 Social Reel / Shorts Motion', desc: '15–30 sec Kinetic Motion Graphics Video.', original: 100, discounted: 50, badge: '50% OFF' },
+      { id: 'retainer', title: '📺 Full Explainer / Promo', desc: '60 sec+ 2D/3D Animation Video.', original: 400, discounted: 200, badge: '50% OFF' },
+    ],
+    'video-editing': [
+      { id: 'starter', title: '🚀 Reel / Short Video', desc: 'TikTok, Reel, Shorts (under 1 min, Subtitles, Hooks).', original: 20, discounted: 10, badge: '$10 TRIAL' },
+      { id: 'standard', title: '📹 Standard YouTube / Promo', desc: 'Vlogs, Commercial Ads, Explainer (5–10 mins).', original: 80, discounted: 40, badge: '50% OFF' },
+      { id: 'retainer', title: '🏢 Corporate / Long-form', desc: 'Advanced Editing, DaVinci Color Grade, Audio Cleanup.', original: 300, discounted: 150, badge: '50% OFF' },
+    ],
+    'web-dev': [
+      { id: 'starter', title: '🚀 Single Landing Page', desc: 'UI Design or Figma-to-Code Landing Page.', original: 100, discounted: 50, badge: '50% OFF' },
+      { id: 'standard', title: '🌐 Full Multi-Page Website', desc: 'Full Web Design & Development App.', original: 400, discounted: 200, badge: '50% OFF' },
+      { id: 'retainer', title: '🛠️ Monthly Web Maintenance', desc: 'Bug Fixes, Updates, Design Tweaks.', original: 200, discounted: 100, badge: 'FIRST MONTH 50% OFF' },
+    ]
   };
 
-  const selectedPkg = packagesData[packageType] || packagesData.standard;
-  let rawPrice = selectedPkg.originalPrice;
+  const currentPackages = servicePackagesMap[service] || servicePackagesMap['graphic-design'];
+  const selectedPkg = currentPackages.find(p => p.id === packageId) || currentPackages[0];
 
-  // Adjust raw price based on billing type
-  if (billingType === 'monthly' && packageType === 'standard') {
-    rawPrice = 500;
-  }
+  // Pricing Engine
+  const baseOriginal = selectedPkg.original;
+  const baseDiscounted = selectedPkg.discounted;
+  const expressSurcharge = expressDelivery ? 10 : 0;
 
-  // Express Delivery Speed Surcharge
-  const speedCost = deliverySpeed === 'express' ? 30 : 0;
-  const originalTotal = rawPrice + speedCost;
+  const finalOriginalTotal = baseOriginal + expressSurcharge;
+  const finalPayableTotal = baseDiscounted + expressSurcharge;
 
-  // 50% Welcome Discount Calculation
-  const discountedTotal = Math.round(originalTotal * 0.5);
+  const serviceLabels = {
+    'graphic-design': 'Graphic Design',
+    'motion-graphics': 'Motion Graphics',
+    'video-editing': 'Video Editing',
+    'web-dev': 'Web Design & Dev'
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
+      setStep(1);
       onClose();
-    }, 3000);
+    }, 3500);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fadeIn">
-      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-8 relative space-y-5 max-h-[92vh] overflow-y-auto">
+      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-7 relative space-y-5 max-h-[92vh] overflow-y-auto">
         
-        {/* Header */}
-        <div className="flex items-start justify-between border-b border-cyan-500/20 pb-4">
+        {/* Top Wizard Bar & Header */}
+        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
-              <Calculator className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
+              <Calculator className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-['Creato_Display'] text-lg sm:text-xl font-extrabold text-white">
+              <h3 className="font-['Creato_Display'] text-base sm:text-lg font-extrabold text-white">
                 Interactive Project Estimator
               </h3>
-              <p className="text-xs text-slate-400">Configure your project scope & claim first-time client discounts</p>
+              <p className="text-[11px] text-slate-400">Step {step} of 4 • Configure scope & claim 50% discount</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
+            className="p-1.5 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
+        {/* Wizard Step Progress Tracker Bar */}
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { num: 1, label: "1. Service" },
+            { num: 2, label: "2. Billing" },
+            { num: 3, label: "3. Scope" },
+            { num: 4, label: "4. Summary" },
+          ].map(st => (
+            <div
+              key={st.num}
+              onClick={() => st.num < step && setStep(st.num)}
+              className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                step >= st.num
+                  ? 'bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_10px_rgba(0,243,255,0.4)]'
+                  : 'bg-slate-800'
+              }`}
+              title={st.label}
+            />
+          ))}
+        </div>
+
         {/* 🏷️ 50% OFF WELCOME OFFER BANNER */}
-        <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+        <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)]">
           <div className="flex items-center gap-2">
             <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
-            <div>
-              <span className="font-extrabold text-white text-xs sm:text-sm block">🏷️ Welcome Offer: 50% OFF</span>
-              <span className="text-[11px] text-slate-200">Get 50% OFF on your first month subscription or first project order!</span>
-            </div>
+            <span className="font-extrabold text-white text-xs">🏷️ Special Welcome Offer: 50% OFF Applied on First Order / Month!</span>
           </div>
-          <span className="neon-badge text-[9px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0 hidden sm:inline-block">
+          <span className="neon-badge text-[8px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
             CLAIM OFFER 🚀
           </span>
         </div>
@@ -116,288 +141,399 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
             </div>
             <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">50% OFF Brief Claimed Successfully!</h4>
             <p className="text-sm text-slate-300 max-w-md mx-auto">
-              Our Executive Producer & Lead Specialist have received your brief. We will contact you via email within 2 hours with your locked 50% discount quote.
+              Our Lead Specialist & Executive Producer have received your brief. We will reach out on your Email/WhatsApp within 2 hours.
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 text-xs text-slate-300">
+          <div className="space-y-5 text-xs text-slate-300">
             
-            {/* 1. PRICING BILLING TYPE SWITCHER */}
-            <div className="space-y-2">
-              <label className="font-bold text-white uppercase text-[11px] tracking-wider block">
-                1. Select Pricing & Billing Type
-              </label>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBillingType('project');
-                    if (packageType === 'retainer') setPackageType('standard');
-                  }}
-                  className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
-                    billingType === 'project'
-                      ? 'bg-gradient-to-r from-cyan-950/80 to-blue-950/80 border-cyan-400 text-white shadow-[0_0_15px_rgba(0,243,255,0.25)]'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="font-bold text-xs">One-Time Project</span>
-                    <span className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${billingType === 'project' ? 'border-cyan-400 bg-cyan-400' : 'border-slate-600'}`} />
-                  </div>
-                  <span className="text-[10px] text-slate-400 mt-1">Single asset, logo, banner or video edit project</span>
-                </button>
+            {/* -------------------------------------------------------------------------------- */}
+            {/* STEP 1: SERVICE SELECTION */}
+            {/* -------------------------------------------------------------------------------- */}
+            {step === 1 && (
+              <div className="space-y-4 animate-fadeIn">
+                <div className="space-y-1">
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 1: Which service do you need?</h4>
+                  <p className="text-slate-400 text-xs">Select your main creative discipline to load customized packages.</p>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBillingType('monthly');
-                    setPackageType('retainer');
-                  }}
-                  className={`p-3 rounded-xl border text-left flex flex-col justify-between transition-all ${
-                    billingType === 'monthly'
-                      ? 'bg-gradient-to-r from-purple-950/80 to-blue-950/80 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.25)]'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="font-bold text-xs">Monthly Retainer / Subscription</span>
-                    <span className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${billingType === 'monthly' ? 'border-purple-400 bg-purple-400' : 'border-slate-600'}`} />
-                  </div>
-                  <span className="text-[10px] text-slate-400 mt-1">Dedicated designer/animator support every month</span>
-                </button>
-              </div>
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    { id: 'graphic-design', icon: Palette, title: '🎨 Graphic Design', desc: 'Logos, Social Media Kits, Brand Guides, Vector Art', startPrice: 'Starts at $5' },
+                    { id: 'motion-graphics', icon: Sparkles, title: '🎬 Motion Graphics', desc: '3D Kinetic Animation, Micro Motion, Octane Renders', startPrice: 'Starts at $15' },
+                    { id: 'video-editing', icon: Film, title: '✂️ Video Editing', desc: 'Shorts, Reels, YouTube Commercials, DaVinci Color Grade', startPrice: 'Starts at $10' },
+                    { id: 'web-dev', icon: Code2, title: '🌐 Web Design / Dev', desc: 'Landing Pages, WebGL Apps, Responsive Web Architecture', startPrice: 'Starts at $20' },
+                  ].map((s) => {
+                    const isSelected = service === s.id;
+                    return (
+                      <div
+                        key={s.id}
+                        onClick={() => {
+                          setService(s.id);
+                          setPackageId('starter'); // reset to default starter package
+                        }}
+                        className={`p-4 rounded-xl border cursor-pointer space-y-1.5 transition-all ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-cyan-950/80 to-blue-950/80 border-cyan-400 text-white shadow-[0_0_15px_rgba(0,243,255,0.25)]'
+                            : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-sm text-white">{s.title}</span>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                            {s.startPrice}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed">{s.desc}</p>
+                      </div>
+                    );
+                  })}
+                </div>
 
-            {/* 2. CREATIVE SERVICE SELECTOR */}
-            <div className="space-y-2">
-              <label className="font-bold text-white uppercase text-[11px] tracking-wider block">
-                2. Select Creative Service
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {[
-                  { id: 'graphic-design', label: 'Graphic Design' },
-                  { id: 'motion-graphics', label: 'Motion Graphics' },
-                  { id: 'video-editing', label: 'Video Editing' },
-                  { id: 'web-dev', label: 'Web Development' },
-                ].map((item) => (
+                {/* Safety Net: Custom Input Option */}
+                <div className="space-y-1 pt-2">
+                  <label className="font-semibold text-slate-400 text-[11px]">
+                    🔳 Don't see what you need? Type your required service here:
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 3D NFT Asset Rendering or Product Packaging Design..."
+                    value={customServiceText}
+                    onChange={(e) => setCustomServiceText(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                {/* Step 1 Footer Navigation */}
+                <div className="flex justify-end pt-3 border-t border-slate-800">
                   <button
-                    key={item.id}
                     type="button"
-                    onClick={() => setCategory(item.id)}
-                    className={`py-2 px-3 rounded-xl font-semibold border text-center transition-all ${
-                      category === item.id
-                        ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300 shadow-[0_0_12px_rgba(0,243,255,0.3)]'
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                    onClick={() => setStep(2)}
+                    className="neon-button-primary py-2.5 px-5 text-xs"
+                  >
+                    <span>Next: Select Billing Type</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* -------------------------------------------------------------------------------- */}
+            {/* STEP 2: SELECT BILLING TYPE */}
+            {/* -------------------------------------------------------------------------------- */}
+            {step === 2 && (
+              <div className="space-y-4 animate-fadeIn">
+                <div className="space-y-1">
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 2: Select Billing Type</h4>
+                  <p className="text-slate-400 text-xs">Choose whether this is a single project or a monthly subscription.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div
+                    onClick={() => setBillingType('project')}
+                    className={`p-4 rounded-2xl border cursor-pointer space-y-2 transition-all ${
+                      billingType === 'project'
+                        ? 'bg-gradient-to-r from-cyan-950/80 to-blue-950/80 border-cyan-400 text-white shadow-[0_0_15px_rgba(0,243,255,0.25)]'
+                        : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700'
                     }`}
                   >
-                    {item.label}
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-white">🎯 One-Time Project</span>
+                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${billingType === 'project' ? 'border-cyan-400 bg-cyan-400' : 'border-slate-600'}`} />
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Best for single deliverables (e.g. 1 logo, 1 banner, 1 video cut or 1 web page).
+                    </p>
+                  </div>
+
+                  <div
+                    onClick={() => setBillingType('monthly')}
+                    className={`p-4 rounded-2xl border cursor-pointer space-y-2 transition-all ${
+                      billingType === 'monthly'
+                        ? 'bg-gradient-to-r from-purple-950/80 to-blue-950/80 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.25)]'
+                        : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-white">🔄 Monthly Subscription / Retainer</span>
+                      <span className={`w-4 h-4 rounded-full border flex items-center justify-center ${billingType === 'monthly' ? 'border-purple-400 bg-purple-400' : 'border-slate-600'}`} />
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Continuous monthly design/motion/editing support for your growing brand.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Safety Net: Custom Billing Note */}
+                <div className="space-y-1 pt-2">
+                  <label className="font-semibold text-slate-400 text-[11px]">
+                    🔳 Need Custom Billing? (e.g., Hourly, Milestone-based):
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Milestone-based payment upon 50% project delivery..."
+                    value={customBillingText}
+                    onChange={(e) => setCustomBillingText(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                {/* Step 2 Footer Navigation */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="px-4 py-2 rounded-xl text-slate-400 hover:text-white flex items-center gap-1.5"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back</span>
                   </button>
-                ))}
-              </div>
-            </div>
 
-            {/* 3. SCOPE & PACKAGE SELECTION WITH 50% OFF DISCOUNTS */}
-            <div className="space-y-2">
-              <label className="font-bold text-white uppercase text-[11px] tracking-wider block">
-                3. Select Scope & Package (50% OFF Applied)
-              </label>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                
-                {/* Option A: Starter Test Task ($5) */}
-                <div
-                  onClick={() => setPackageType('starter')}
-                  className={`p-3.5 rounded-xl border cursor-pointer space-y-1.5 transition-all ${
-                    packageType === 'starter'
-                      ? 'bg-green-950/30 border-green-400 text-white shadow-[0_0_15px_rgba(74,222,128,0.2)]'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-green-300">🚀 Test Us Out – Starter Task</span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
-                      $5 TRIAL
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-slate-300 leading-relaxed">
-                    1 Single Social Banner, Background Removal, or Simple Edit to test our quality risk-free.
-                  </p>
-                  <div className="text-xs font-bold pt-1">
-                    <span className="line-through text-slate-500 mr-2">$10</span>
-                    <span className="text-green-400 text-sm font-extrabold font-['Creato_Display']">$5 USD</span>
-                  </div>
-                </div>
-
-                {/* Option B: Standard Package ($150) */}
-                <div
-                  onClick={() => setPackageType('standard')}
-                  className={`p-3.5 rounded-xl border cursor-pointer space-y-1.5 transition-all ${
-                    packageType === 'standard'
-                      ? 'bg-cyan-950/30 border-cyan-400 text-white shadow-[0_0_15px_rgba(0,243,255,0.2)]'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-cyan-300">Standard Campaign / Project</span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                      POPULAR
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-slate-300 leading-relaxed">
-                    Logo Design, Social Media Kit, Brand Guidelines, or Commercial Ad Cut.
-                  </p>
-                  <div className="text-xs font-bold pt-1">
-                    <span className="line-through text-slate-500 mr-2">$300</span>
-                    <span className="text-cyan-400 text-sm font-extrabold font-['Creato_Display']">$150 USD</span>
-                  </div>
-                </div>
-
-                {/* Option C: Monthly Retainer ($300/mo) */}
-                <div
-                  onClick={() => {
-                    setPackageType('retainer');
-                    setBillingType('monthly');
-                  }}
-                  className={`p-3.5 rounded-xl border cursor-pointer space-y-1.5 transition-all ${
-                    packageType === 'retainer'
-                      ? 'bg-purple-950/30 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-purple-300">Monthly Dedicated Retainer</span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                      SUBSCRIPTION
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-slate-300 leading-relaxed">
-                    15-20 Social Media Graphics + Motion Ads Banners every month with dedicated support.
-                  </p>
-                  <div className="text-xs font-bold pt-1">
-                    <span className="line-through text-slate-500 mr-2">$600</span>
-                    <span className="text-purple-400 text-sm font-extrabold font-['Creato_Display']">$300 USD / mo</span>
-                  </div>
-                </div>
-
-                {/* Option D: Custom Enterprise ($600) */}
-                <div
-                  onClick={() => setPackageType('custom')}
-                  className={`p-3.5 rounded-xl border cursor-pointer space-y-1.5 transition-all ${
-                    packageType === 'custom'
-                      ? 'bg-blue-950/30 border-blue-400 text-white shadow-[0_0_15px_rgba(59,130,246,0.2)]'
-                      : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-xs text-blue-300">Custom Full Brand & 3D System</span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                      ENTERPRISE
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-slate-300 leading-relaxed">
-                    Full 3D kinetic animation, brand manual, WebGL app & open project source files.
-                  </p>
-                  <div className="text-xs font-bold pt-1">
-                    <span className="line-through text-slate-500 mr-2">$1,200</span>
-                    <span className="text-blue-400 text-sm font-extrabold font-['Creato_Display']">$600 USD</span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            {/* 4. DELIVERY SPEED SELECTOR */}
-            <div className="space-y-2">
-              <label className="font-bold text-white uppercase text-[11px] tracking-wider block">
-                4. Select Delivery Speed
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setDeliverySpeed('standard')}
-                  className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                    deliverySpeed === 'standard'
-                      ? 'bg-slate-900 border-cyan-400 text-white'
-                      : 'bg-slate-950 border-slate-800 text-slate-400'
-                  }`}
-                >
-                  <div>
-                    <span className="font-bold text-xs block">Standard Delivery</span>
-                    <span className="text-[10px] text-slate-400">3-5 Business Days</span>
-                  </div>
-                  <span className="text-xs font-bold text-green-400">FREE</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setDeliverySpeed('express')}
-                  className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
-                    deliverySpeed === 'express'
-                      ? 'bg-slate-900 border-amber-400 text-white'
-                      : 'bg-slate-950 border-slate-800 text-slate-400'
-                  }`}
-                >
-                  <div>
-                    <span className="font-bold text-xs block">Express Rush Delivery</span>
-                    <span className="text-[10px] text-slate-400">24-48 Hours</span>
-                  </div>
-                  <span className="text-xs font-bold text-amber-400">+$30 USD</span>
-                </button>
-              </div>
-            </div>
-
-            {/* CLIENT BRIEF INPUTS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
-              <input
-                type="text"
-                required
-                placeholder="Your Name / Business Name"
-                value={briefDetails.name}
-                onChange={(e) => setBriefDetails({ ...briefDetails, name: e.target.value })}
-                className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-cyan-400"
-              />
-              <input
-                type="email"
-                required
-                placeholder="Your Contact Email / WhatsApp"
-                value={briefDetails.email}
-                onChange={(e) => setBriefDetails({ ...briefDetails, email: e.target.value })}
-                className="bg-slate-900 border border-slate-800 rounded-xl p-3 text-white outline-none focus:border-cyan-400"
-              />
-            </div>
-
-            {/* 💰 DYNAMIC QUOTE & DYNAMIC PRICE CALCULATION ENGINE */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-950/90 via-blue-950/90 to-[#070913] border-2 border-cyan-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_0_25px_rgba(0,243,255,0.25)]">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-widest block">Estimated Total Quote</span>
-                  <span className="bg-green-500/20 text-green-300 border border-green-500/40 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase">
-                    50% Welcome Discount Applied
-                  </span>
-                </div>
-
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-base sm:text-lg font-bold line-through text-slate-500">
-                    ${originalTotal.toLocaleString()} USD
-                  </span>
-                  <span className="font-['Creato_Display'] text-2xl sm:text-3xl font-extrabold text-green-400">
-                    ${discountedTotal.toLocaleString()} USD
-                  </span>
-                  {billingType === 'monthly' && <span className="text-xs text-purple-300 font-bold">/ month</span>}
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="neon-button-primary py-2.5 px-5 text-xs"
+                  >
+                    <span>Next: Select Scope & Packages</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
+            )}
 
-              <button
-                type="submit"
-                className="neon-button-primary py-3 px-6 text-xs justify-center shrink-0 shadow-[0_0_20px_rgba(0,243,255,0.4)]"
-              >
-                <span>Submit Brief & Claim Offer 🚀</span>
-                <Send className="w-4 h-4" />
-              </button>
-            </div>
+            {/* -------------------------------------------------------------------------------- */}
+            {/* STEP 3: DYNAMIC SERVICE-SPECIFIC SCOPE & PACKAGES */}
+            {/* -------------------------------------------------------------------------------- */}
+            {step === 3 && (
+              <div className="space-y-4 animate-fadeIn">
+                <div className="space-y-1">
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">
+                    STEP 3: Select Package & Scope for <span className="text-cyan-400">{serviceLabels[service]}</span>
+                  </h4>
+                  <p className="text-slate-400 text-xs">50% Welcome Discount is automatically applied on all base packages.</p>
+                </div>
 
-          </form>
+                {/* Package Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {currentPackages.map((pkg) => {
+                    const isSelected = packageId === pkg.id;
+                    return (
+                      <div
+                        key={pkg.id}
+                        onClick={() => setPackageId(pkg.id)}
+                        className={`p-3.5 rounded-xl border cursor-pointer space-y-2 transition-all flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-cyan-950/80 to-blue-950/80 border-cyan-400 text-white shadow-[0_0_15px_rgba(0,243,255,0.25)]'
+                            : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-slate-700'
+                        }`}
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-xs text-white">{pkg.title}</span>
+                            <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                              {pkg.badge}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-300 leading-relaxed">{pkg.desc}</p>
+                        </div>
+
+                        <div className="text-xs font-bold pt-2 border-t border-slate-800/80">
+                          <span className="line-through text-slate-500 mr-2">${pkg.original}</span>
+                          <span className="text-green-400 text-sm font-extrabold font-['Creato_Display']">
+                            ${pkg.discounted} USD {billingType === 'monthly' ? '/mo' : ''}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Delivery Speed Selector */}
+                <div className="space-y-2 pt-1">
+                  <label className="font-bold text-white uppercase text-[11px] tracking-wider block">
+                    Select Delivery Speed
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setExpressDelivery(false)}
+                      className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                        !expressDelivery
+                          ? 'bg-slate-900 border-cyan-400 text-white'
+                          : 'bg-slate-950 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      <div>
+                        <span className="font-bold text-xs block">🐢 Standard Delivery</span>
+                        <span className="text-[10px] text-slate-400">Regular Timeline</span>
+                      </div>
+                      <span className="text-xs font-bold text-green-400">FREE</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setExpressDelivery(true)}
+                      className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${
+                        expressDelivery
+                          ? 'bg-slate-900 border-amber-400 text-white shadow-[0_0_12px_rgba(245,158,11,0.2)]'
+                          : 'bg-slate-950 border-slate-800 text-slate-400'
+                      }`}
+                    >
+                      <div>
+                        <span className="font-bold text-xs block">⚡ Express Fast Delivery</span>
+                        <span className="text-[10px] text-slate-400">24-48 Hour Turnaround</span>
+                      </div>
+                      <span className="text-xs font-bold text-amber-400">+$10 USD</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Universal Custom Requirement Box for Step 3 */}
+                <div className="space-y-1 pt-1">
+                  <label className="font-semibold text-slate-400 text-[11px]">
+                    🔳 I have specific requirements / Not listed above:
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="Describe dimensions, reference links, specific software, or custom instructions here..."
+                    value={customRequirementText}
+                    onChange={(e) => setCustomRequirementText(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                {/* Step 3 Footer Navigation */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="px-4 py-2 rounded-xl text-slate-400 hover:text-white flex items-center gap-1.5"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setStep(4)}
+                    className="neon-button-primary py-2.5 px-5 text-xs"
+                  >
+                    <span>Next: Final Summary & Claim Offer</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* -------------------------------------------------------------------------------- */}
+            {/* STEP 4: FINAL SUMMARY & LEAD CAPTURE (OFFER SCREEN) */}
+            {/* -------------------------------------------------------------------------------- */}
+            {step === 4 && (
+              <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn">
+                <div className="space-y-1">
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Final Summary & Claim 50% Offer</h4>
+                  <p className="text-slate-400 text-xs">Review your invoice-style summary and submit brief to lock in your discount.</p>
+                </div>
+
+                {/* Transparent Invoice Style Summary Card */}
+                <div className="p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 space-y-3">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <span className="font-bold text-xs text-white font-['Creato_Display']">🛍️ YOUR ESTIMATED SUMMARY</span>
+                    <span className="text-[10px] font-bold text-green-400 bg-green-500/20 px-2 py-0.5 rounded-full border border-green-500/30">
+                      50% OFF APPLIED
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">• Selected Service:</span>
+                      <span className="font-bold text-white">{customServiceText || serviceLabels[service]}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">• Package & Scope:</span>
+                      <span className="font-bold text-cyan-300">{selectedPkg.title}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">• Billing Model:</span>
+                      <span className="font-bold text-purple-300">{customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}</span>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-slate-400">• Delivery Speed:</span>
+                      <span className="font-bold text-amber-300">{expressDelivery ? 'Express Fast (+$10 USD)' : 'Standard Delivery (Free)'}</span>
+                    </div>
+                  </div>
+
+                  {/* Price Calculation Engine */}
+                  <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase font-bold block">Original Estimated Price</span>
+                      <span className="line-through text-slate-500 font-bold text-sm">${finalOriginalTotal} USD</span>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="text-[10px] text-green-400 font-bold uppercase block">Final Payable Quote</span>
+                      <span className="font-['Creato_Display'] text-2xl font-extrabold text-green-400">
+                        ${finalPayableTotal} USD {billingType === 'monthly' ? '/mo' : ''}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Notes Textarea */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-300 text-xs">
+                    ✍️ Additional Project Notes / Instructions (Optional):
+                  </label>
+                  <textarea
+                    rows={2}
+                    placeholder="e.g. Need dynamic subtitles, fast pacing, or specific brand colors..."
+                    value={additionalNotes}
+                    onChange={(e) => setAdditionalNotes(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                {/* Contact Information Input */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-300 text-xs">
+                    📧 Contact Information (Required):
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Your Email Address or Direct WhatsApp Number..."
+                    value={contactInfo}
+                    onChange={(e) => setContactInfo(e.target.value)}
+                    className="w-full bg-slate-900 border border-cyan-500/30 rounded-xl p-3 text-xs text-white placeholder-slate-500 outline-none focus:border-cyan-400 font-semibold"
+                  />
+                </div>
+
+                {/* Step 4 Footer Submit Button */}
+                <div className="flex items-center justify-between pt-3 border-t border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => setStep(3)}
+                    className="px-4 py-2 rounded-xl text-slate-400 hover:text-white flex items-center gap-1.5"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back</span>
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
+                  >
+                    <span>🚀 Submit Brief & Claim 50% Discount Offer</span>
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+            )}
+
+          </div>
         )}
 
       </div>

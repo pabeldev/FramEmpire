@@ -23,7 +23,7 @@ export default function Navbar({
           <img 
             src="/framempire_logo_white.png" 
             alt="FramEmpire Studio" 
-            className="h-9 sm:h-11 object-contain shrink-0" 
+            className="h-12 sm:h-14 md:h-16 object-contain shrink-0 max-w-[240px] sm:max-w-[280px]" 
           />
           {viewMode === 'admin' && (
             <span className="neon-badge text-[8px] sm:text-[9px] py-0.5 px-1.5 sm:px-2 border-yellow-500/40 text-yellow-400 bg-yellow-950/40 ml-1">

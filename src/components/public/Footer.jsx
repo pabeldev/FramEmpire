@@ -14,7 +14,7 @@ export default function Footer({ onOpenEstimator }) {
             <img 
               src="/framempire_logo_white.png" 
               alt="FramEmpire Studio" 
-              className="h-10 object-contain" 
+              className="h-12 md:h-16 object-contain max-w-[260px]" 
             />
             <p className="text-slate-400 leading-relaxed text-xs">
               {AGENCY_INFO.subtitle}

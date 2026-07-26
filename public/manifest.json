@@ -1,0 +1,15 @@
+{
+  "short_name": "FramEmpire",
+  "name": "FramEmpire Studio — Premier 3D Motion Graphics & Creative Agency",
+  "icons": [
+    {
+      "src": "/framempire_logo_white.png",
+      "type": "image/png",
+      "sizes": "1024x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#070913",
+  "theme_color": "#070913",
+  "display": "standalone"
+}

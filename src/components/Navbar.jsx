@@ -102,6 +102,7 @@ export default function Navbar({
                 <select
                   value={userRole}
                   onChange={(e) => setUserRole(e.target.value)}
+                  aria-label="Select Executive User Role"
                   className="bg-transparent text-[11px] sm:text-xs font-bold text-cyan-300 outline-none cursor-pointer max-w-[120px] sm:max-w-none"
                 >
                   <option value="Admin / Executive" className="bg-slate-900 text-white">Admin / Executive</option>
@@ -113,6 +114,7 @@ export default function Navbar({
 
               <button
                 onClick={onSignOut}
+                aria-label="Exit Admin Workspace"
                 className="flex items-center gap-1 py-1.5 px-2.5 sm:px-3 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[11px] sm:text-xs font-semibold transition-all"
               >
                 <LogOut className="w-3.5 h-3.5" />

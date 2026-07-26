@@ -7,6 +7,7 @@ import AboutSection from './components/public/AboutSection';
 import TeamCaptainSection from './components/public/TeamCaptainSection';
 import ClientEstimator from './components/public/ClientEstimator';
 import Footer from './components/public/Footer';
+import WhatsAppWidget from './components/public/WhatsAppWidget';
 
 import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -52,95 +53,108 @@ export default function App() {
     }
   }, [viewMode]);
 
-  const handleAddProject = (newProject) => {
-    setProjectsList([newProject, ...projectsList]);
-  };
-
-  const handleDeleteProject = (projectId) => {
-    setProjectsList(projectsList.filter(p => p.id !== projectId));
-  };
-
-  const handleOpenEstimator = (serviceId = 'motion-graphics') => {
+  const handleOpenEstimatorWithService = (serviceId) => {
     setEstimatorService(serviceId);
     setEstimatorOpen(true);
   };
 
-  const handleLoginSuccess = (role) => {
-    setUserRole(role);
-    setViewMode('admin');
-    window.history.pushState(null, '', '/admin');
+  const handleAddProject = (newProject) => {
+    setProjectsList((prev) => [newProject, ...prev]);
   };
 
-  const handleSignOut = () => {
+  const handleDeleteProject = (id) => {
+    setProjectsList((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const handleSignOutAdmin = () => {
     setViewMode('public');
     window.history.pushState(null, '', '/');
   };
 
-  const scrollToPortfolio = () => {
-    const el = document.getElementById('portfolio');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="min-h-screen bg-[#070913] text-slate-100 flex flex-col font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black relative">
       
-      {/* Global Navbar */}
-      <Navbar
+      {/* Sticky Glassmorphism Header Navbar */}
+      <Navbar 
         viewMode={viewMode}
-        onSignOut={handleSignOut}
-        userRole={userRole}
-        setUserRole={setUserRole}
-        onOpenEstimator={() => handleOpenEstimator()}
-      />
-
-      {/* Main View Router */}
-      {viewMode === 'public' ? (
-        <main className="flex-1">
-          <HeroSection
-            onExplorePortfolio={scrollToPortfolio}
-            onOpenEstimator={() => handleOpenEstimator()}
-          />
-          <ServicesSection
-            onOpenEstimator={(serviceId) => handleOpenEstimator(serviceId)}
-          />
-          <PortfolioSection projects={projectsList} />
-          <AboutSection
-            onOpenEstimator={() => handleOpenEstimator()}
-          />
-          <TeamCaptainSection />
-          <Footer
-            onOpenEstimator={() => handleOpenEstimator()}
-          />
-        </main>
-      ) : (
-        <main className="flex-1">
-          <AdminDashboard
-            userRole={userRole}
-            projects={projectsList}
-            onAddProject={handleAddProject}
-            onDeleteProject={handleDeleteProject}
-          />
-        </main>
-      )}
-
-      {/* Interactive Project Estimator Modal for Clients */}
-      <ClientEstimator
-        isOpen={estimatorOpen}
-        onClose={() => setEstimatorOpen(false)}
-        initialService={estimatorService}
-      />
-
-      {/* Staff & Employee Authentication Modal (Secretly accessible via /admin) */}
-      <EmployeeLoginModal
-        isOpen={loginModalOpen}
-        onClose={() => {
-          setLoginModalOpen(false);
-          if (viewMode !== 'admin') {
+        onToggleViewMode={() => {
+          if (viewMode === 'public') {
+            setViewMode('admin');
+            setLoginModalOpen(true);
+          } else {
+            setViewMode('public');
             window.history.pushState(null, '', '/');
           }
         }}
-        onLoginSuccess={handleLoginSuccess}
+        userRole={userRole}
+        setUserRole={setUserRole}
+        onOpenEstimator={() => setEstimatorOpen(true)}
+        onSignOut={handleSignOutAdmin}
       />
+
+      {/* Main Views Router */}
+      {viewMode === 'public' ? (
+        <main className="space-y-0">
+          <HeroSection 
+            onExplorePortfolio={() => {
+              const el = document.getElementById('portfolio');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            onOpenEstimator={() => setEstimatorOpen(true)}
+          />
+
+          <ServicesSection 
+            onSelectService={handleOpenEstimatorWithService}
+            onOpenEstimator={() => setEstimatorOpen(true)}
+          />
+
+          <PortfolioSection projects={projectsList} />
+
+          <AboutSection onOpenEstimator={() => setEstimatorOpen(true)} />
+
+          <TeamCaptainSection />
+
+          <Footer onOpenEstimator={() => setEstimatorOpen(true)} />
+        </main>
+      ) : (
+        <AdminDashboard 
+          userRole={userRole}
+          projects={projectsList}
+          onAddProject={handleAddProject}
+          onDeleteProject={handleDeleteProject}
+          onSwitchToPublic={() => {
+            setViewMode('public');
+            window.history.pushState(null, '', '/');
+          }}
+        />
+      )}
+
+      {/* Interactive Project Cost Estimator Modal */}
+      <ClientEstimator 
+        isOpen={estimatorOpen}
+        onClose={() => setEstimatorOpen(false)}
+        initialServiceId={estimatorService}
+      />
+
+      {/* Employee & Admin Login Modal */}
+      <EmployeeLoginModal 
+        isOpen={loginModalOpen}
+        onClose={() => {
+          setLoginModalOpen(false);
+          if (viewMode === 'admin') {
+            setViewMode('public');
+            window.history.pushState(null, '', '/');
+          }
+        }}
+        onSuccess={(role) => {
+          setUserRole(role);
+          setViewMode('admin');
+          setLoginModalOpen(false);
+        }}
+      />
+
+      {/* Always-On-Display WhatsApp Live Chat Widget */}
+      <WhatsAppWidget />
 
     </div>
   );

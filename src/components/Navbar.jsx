@@ -20,26 +20,16 @@ export default function Navbar({
           className="flex items-center gap-2.5 cursor-pointer" 
           onClick={() => onSignOut && viewMode === 'admin' ? onSignOut() : null}
         >
-          <div className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 p-[1px] shadow-[0_0_20px_rgba(0,243,255,0.4)] shrink-0">
-            <div className="w-full h-full bg-[#070913] rounded-[11px] flex items-center justify-center">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400 animate-pulse" />
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="font-['Creato_Display'] font-extrabold text-lg sm:text-xl tracking-wider text-white">
-                {AGENCY_INFO.name}
-              </span>
-              {viewMode === 'admin' ? (
-                <span className="neon-badge text-[8px] sm:text-[9px] py-0.5 px-1.5 sm:px-2 border-yellow-500/40 text-yellow-400 bg-yellow-950/40">
-                  ADMIN
-                </span>
-              ) : (
-                <span className="neon-badge text-[8px] sm:text-[9px] py-0.5 px-1.5 sm:px-2">STUDIO</span>
-              )}
-            </div>
-            <p className="text-[10px] sm:text-xs text-cyan-300/60 hidden sm:block">Animation • Motion • Design • Web</p>
-          </div>
+          <img 
+            src="/framempire_logo_white.png" 
+            alt="FramEmpire Studio" 
+            className="h-9 sm:h-11 object-contain shrink-0" 
+          />
+          {viewMode === 'admin' && (
+            <span className="neon-badge text-[8px] sm:text-[9px] py-0.5 px-1.5 sm:px-2 border-yellow-500/40 text-yellow-400 bg-yellow-950/40 ml-1">
+              ADMIN
+            </span>
+          )}
         </div>
 
         {/* Desktop Navigation Links */}

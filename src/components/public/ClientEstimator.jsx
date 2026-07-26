@@ -211,21 +211,13 @@ Studio: FramEmpire (A Revolution of Animation)`;
             
             <div class="flex justify-between items-stretch">
               <div class="p-8 space-y-4 flex-1">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 bg-black flex items-center justify-center rounded-lg">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                      <polyline points="2 17 12 22 22 17" />
-                      <polyline points="2 12 12 17 22 12" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h1 class="font-black text-xl tracking-tight text-black">FramEmpire</h1>
-                    <p class="text-[9px] uppercase font-bold tracking-widest text-slate-500">A Revolution Of Animation</p>
-                  </div>
-                </div>
+                <img 
+                  src="/framempire_logo_black.png" 
+                  alt="FramEmpire Studio" 
+                  class="h-14 object-contain mb-2" 
+                />
 
-                <div class="pt-2 text-xs space-y-1 text-slate-600">
+                <div class="pt-1 text-xs space-y-1 text-slate-600">
                   <p><strong class="text-slate-800 font-semibold">Invoice :</strong> ${invoiceId}</p>
                   <p><strong class="text-slate-800 font-semibold">Date :</strong> ${issueDate}</p>
                 </div>
@@ -477,19 +469,15 @@ Studio: FramEmpire (A Revolution of Animation)`;
               {/* Header Row */}
               <div className="flex justify-between items-stretch border-b border-slate-200 pb-4">
                 <div className="space-y-3 flex-1">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                      ⚡
-                    </div>
-                    <div>
-                      <h1 className="font-extrabold text-lg tracking-tight text-black">FramEmpire</h1>
-                      <p className="text-[9px] uppercase font-bold tracking-widest text-slate-500">A Revolution Of Animation</p>
-                    </div>
-                  </div>
+                  <img 
+                    src="/framempire_logo_black.png" 
+                    alt="FramEmpire Studio" 
+                    className="h-12 sm:h-14 object-contain" 
+                  />
 
                   <div className="text-xs space-y-0.5 text-slate-600">
                     <p><strong className="text-slate-900">Invoice :</strong> {invoiceId}</p>
-                    <p><strong class="text-slate-900">Date :</strong> {issueDate}</p>
+                    <p><strong className="text-slate-900">Date :</strong> {issueDate}</p>
                   </div>
                 </div>
 

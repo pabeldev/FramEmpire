@@ -11,15 +11,12 @@ export default function Footer({ onOpenEstimator }) {
           
           {/* Col 1: Studio Info */}
           <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <span className="font-['Creato_Display'] font-extrabold text-lg tracking-wider text-white">
-                {AGENCY_INFO.name}
-              </span>
-            </div>
-            <p className="text-slate-400 leading-relaxed">
+            <img 
+              src="/framempire_logo_white.png" 
+              alt="FramEmpire Studio" 
+              className="h-10 object-contain" 
+            />
+            <p className="text-slate-400 leading-relaxed text-xs">
               {AGENCY_INFO.subtitle}
             </p>
             <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-semibold">

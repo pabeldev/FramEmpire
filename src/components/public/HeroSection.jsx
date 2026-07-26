@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Sparkles, ArrowRight, Play, Palette, Film, Code2, CheckCircle2, Star, Flame, Award } from 'lucide-react';
+import React from 'react';
+import { Sparkles, ArrowRight, Palette, Film, Code2, Star, Flame } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
 export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
-  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
-
   return (
     <section className="relative min-h-[85vh] flex items-center justify-center pt-20 sm:pt-28 pb-12 sm:pb-16 px-4 overflow-hidden bg-grid-pattern">
       {/* Radial Neon Background Orbs */}
@@ -80,21 +78,46 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2 sm:pt-3">
             {/* 5 Overlapping Demo User Profile Avatars */}
             <div className="flex items-center -space-x-2.5 overflow-hidden p-0.5">
-              {[
-                { name: 'Sarah', bg: 'bg-purple-600', text: 'S' },
-                { name: 'Alex', bg: 'bg-cyan-600', text: 'A' },
-                { name: 'Jessica', bg: 'bg-amber-600', text: 'J' },
-                { name: 'Marcus', bg: 'bg-blue-600', text: 'M' },
-                { name: 'Emily', bg: 'bg-emerald-600', text: 'E' },
-              ].map((usr, idx) => (
-                <div 
-                  key={idx}
-                  className={`inline-flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 ${usr.bg} text-white font-bold text-xs shadow-[0_0_10px_rgba(0,243,255,0.4)] shrink-0`}
-                  title={`Client ${usr.name}`}
-                >
-                  {usr.text}
-                </div>
-              ))}
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Sarah"
+                width="36"
+                height="36"
+                loading="eager"
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Alex"
+                width="36"
+                height="36"
+                loading="eager"
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Jessica"
+                width="36"
+                height="36"
+                loading="eager"
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Marcus"
+                width="36"
+                height="36"
+                loading="eager"
+              />
+              <img 
+                className="inline-block h-8 w-8 sm:h-9 sm:w-9 rounded-full ring-2 ring-cyan-400/80 object-cover shadow-[0_0_10px_rgba(0,243,255,0.4)]" 
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" 
+                alt="Client Emily"
+                width="36"
+                height="36"
+                loading="eager"
+              />
             </div>
 
             {/* Golden Stars & 80%+ Client Rating Text */}
@@ -146,33 +169,16 @@ export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
               </div>
             </div>
 
-            {/* Zero-Lag Instant Video Showcase (Loads Vimeo iframe on user play for 100 Performance Score) */}
-            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(0,243,255,0.2)] flex items-center justify-center group">
-              {isPlayingVideo ? (
-                <iframe
-                  src="https://player.vimeo.com/video/1133437679?autoplay=1&badge=0&autopause=0&player_id=0&app_id=58479"
-                  className="w-full h-full border-0"
-                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                  allowFullScreen
-                  title="FramEmpire Vimeo Showcase - Shikor TV Commercial Video"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
-              ) : (
-                <div 
-                  onClick={() => setIsPlayingVideo(true)}
-                  className="w-full h-full relative cursor-pointer flex flex-col items-center justify-center bg-gradient-to-br from-cyan-950/90 via-slate-950 to-blue-950/90 p-6 text-center space-y-3 group-hover:scale-105 transition-transform duration-500"
-                >
-                  <div className="w-16 h-16 rounded-full bg-cyan-500/20 border-2 border-cyan-400 flex items-center justify-center text-cyan-400 shadow-[0_0_30px_rgba(0,243,255,0.5)] group-hover:bg-cyan-400 group-hover:text-black transition-all">
-                    <Play className="w-8 h-8 fill-current ml-1" />
-                  </div>
-                  <div>
-                    <h3 className="font-['Creato_Display'] text-sm sm:text-base font-extrabold text-white">
-                      Shikor TV – Canada Thrill Ad Showcase
-                    </h3>
-                    <p className="text-[11px] text-cyan-300 font-semibold">Click to Play 1080p Vimeo Reel</p>
-                  </div>
-                </div>
-              )}
+            {/* Vimeo Live Video Player (Direct Embed, Always Visible on Page Load) */}
+            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-950 border-2 border-cyan-400/80 shadow-[0_0_25px_rgba(0,243,255,0.2)]">
+              <iframe
+                src="https://player.vimeo.com/video/1133437679?badge=0&autopause=0&player_id=0&app_id=58479"
+                className="w-full h-full border-0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                allowFullScreen
+                title="FramEmpire Vimeo Showcase - Shikor TV Commercial Video"
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
             </div>
 
             {/* Highlighted Client Praise Banner */}

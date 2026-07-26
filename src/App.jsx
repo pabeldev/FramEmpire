@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/public/HeroSection';
 import ServicesSection from './components/public/ServicesSection';
@@ -22,6 +22,36 @@ export default function App() {
   // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
   const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
 
+  // URL Path & Hash Listener for Dedicated /admin Route Sync
+  useEffect(() => {
+    const checkRoute = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      
+      if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') {
+        setViewMode('admin');
+        setLoginModalOpen(true);
+      }
+    };
+
+    checkRoute();
+    window.addEventListener('popstate', checkRoute);
+    return () => window.removeEventListener('popstate', checkRoute);
+  }, []);
+
+  // Update URL Bar when switching viewMode
+  useEffect(() => {
+    if (viewMode === 'admin') {
+      if (window.location.pathname !== '/admin') {
+        window.history.pushState(null, '', '/admin');
+      }
+    } else {
+      if (window.location.pathname === '/admin') {
+        window.history.pushState(null, '', '/');
+      }
+    }
+  }, [viewMode]);
+
   const handleAddProject = (newProject) => {
     setProjectsList([newProject, ...projectsList]);
   };
@@ -38,10 +68,12 @@ export default function App() {
   const handleLoginSuccess = (role) => {
     setUserRole(role);
     setViewMode('admin');
+    window.history.pushState(null, '', '/admin');
   };
 
   const handleSignOut = () => {
     setViewMode('public');
+    window.history.pushState(null, '', '/');
   };
 
   const scrollToPortfolio = () => {

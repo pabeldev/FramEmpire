@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   X, Sparkles, Calculator, CheckCircle2, Send, Clock, DollarSign, 
-  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Download, Printer, Copy, Check, FileText, MessageSquare, CreditCard 
+  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Download, Printer, Copy, Check, FileText, MessageSquare, CreditCard, Ticket 
 } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
@@ -19,6 +19,11 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
   const [expressDelivery, setExpressDelivery] = useState(false);
   const [customRequirementText, setCustomRequirementText] = useState('');
 
+  // Coupon Engine State (Default pre-applied WEL50 = 50%)
+  const [couponInput, setCouponInput] = useState('WEL50');
+  const [appliedCoupon, setAppliedCoupon] = useState({ code: 'WEL50', percent: 50, isValid: true, message: '50% WELCOME OFFER APPLIED' });
+  const [couponError, setCouponError] = useState('');
+
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [contactInfo, setContactInfo] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,41 +35,66 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
 
   if (!isOpen) return null;
 
-  // Dynamic Service-Specific Packages Data
+  // Coupon Validation Engine
+  const handleApplyCoupon = (codeToApply) => {
+    const code = (codeToApply || couponInput).trim().toUpperCase();
+    if (!code) {
+      setAppliedCoupon({ code: '', percent: 0, isValid: false, message: '' });
+      setCouponError('Please enter a coupon code.');
+      return;
+    }
+
+    if (code === 'WEL50') {
+      setAppliedCoupon({ code: 'WEL50', percent: 50, isValid: true, message: '🎉 WEL50 Applied! 50% OFF Discount Locked' });
+      setCouponError('');
+    } else if (code === 'WEL40') {
+      setAppliedCoupon({ code: 'WEL40', percent: 40, isValid: true, message: '🎉 WEL40 Applied! 40% OFF Discount Locked' });
+      setCouponError('');
+    } else if (code === 'WEL30') {
+      setAppliedCoupon({ code: 'WEL30', percent: 30, isValid: true, message: '🎉 WEL30 Applied! 30% OFF Discount Locked' });
+      setCouponError('');
+    } else {
+      setAppliedCoupon({ code: code, percent: 0, isValid: false, message: '' });
+      setCouponError('Invalid coupon code. Try WEL50, WEL40, or WEL30.');
+    }
+  };
+
+  // Dynamic Service-Specific Base Packages Data
   const servicePackagesMap = {
     'graphic-design': [
-      { id: 'starter', title: '🚀 Starter Task', desc: '1 Social Post / Banner / Resize / Background Removal.', original: 10, discounted: 5, badge: '$5 TRIAL' },
-      { id: 'standard', title: '📦 Standard Branding Pack', desc: 'Logo Design, Social Media Kit, Style Guide.', original: 300, discounted: 150, badge: '50% OFF' },
-      { id: 'retainer', title: '🔁 Monthly Design Retainer', desc: '15-20 Social Media Graphics + Ads Banners/mo.', original: 300, discounted: 150, badge: 'FIRST MONTH 50% OFF' },
+      { id: 'starter', title: '🚀 Starter Task', desc: '1 Social Post / Banner / Resize / Background Removal.', basePrice: 10, badge: '$5 TRIAL' },
+      { id: 'standard', title: '📦 Standard Branding Pack', desc: 'Logo Design, Social Media Kit, Style Guide.', basePrice: 300, badge: '50% OFF' },
+      { id: 'retainer', title: '🔁 Monthly Design Retainer', desc: '15-20 Social Media Graphics + Ads Banners/mo.', basePrice: 300, badge: 'FIRST MONTH 50% OFF' },
     ],
     'motion-graphics': [
-      { id: 'starter', title: '🚀 Micro Motion', desc: 'Logo Animation / Animated Icon / Lower Thirds.', original: 30, discounted: 15, badge: '$15 TRIAL' },
-      { id: 'standard', title: '🎬 Social Reel / Shorts Motion', desc: '15–30 sec Kinetic Motion Graphics Video.', original: 100, discounted: 50, badge: '50% OFF' },
-      { id: 'retainer', title: '📺 Full Explainer / Promo', desc: '60 sec+ 2D/3D Animation Video.', original: 400, discounted: 200, badge: '50% OFF' },
+      { id: 'starter', title: '🚀 Micro Motion', desc: 'Logo Animation / Animated Icon / Lower Thirds.', basePrice: 30, badge: '$15 TRIAL' },
+      { id: 'standard', title: '🎬 Social Reel / Shorts Motion', desc: '15–30 sec Kinetic Motion Graphics Video.', basePrice: 100, badge: '50% OFF' },
+      { id: 'retainer', title: '📺 Full Explainer / Promo', desc: '60 sec+ 2D/3D Animation Video.', basePrice: 400, badge: '50% OFF' },
     ],
     'video-editing': [
-      { id: 'starter', title: '🚀 Reel / Short Video', desc: 'TikTok, Reel, Shorts (under 1 min, Subtitles, Hooks).', original: 20, discounted: 10, badge: '$10 TRIAL' },
-      { id: 'standard', title: '📹 Standard YouTube / Promo', desc: 'Vlogs, Commercial Ads, Explainer (5–10 mins).', original: 80, discounted: 40, badge: '50% OFF' },
-      { id: 'retainer', title: '🏢 Corporate / Long-form', desc: 'Advanced Editing, DaVinci Color Grade, Audio Cleanup.', original: 300, discounted: 150, badge: '50% OFF' },
+      { id: 'starter', title: '🚀 Reel / Short Video', desc: 'TikTok, Reel, Shorts (under 1 min, Subtitles, Hooks).', basePrice: 20, badge: '$10 TRIAL' },
+      { id: 'standard', title: '📹 Standard YouTube / Promo', desc: 'Vlogs, Commercial Ads, Explainer (5–10 mins).', basePrice: 80, badge: '50% OFF' },
+      { id: 'retainer', title: '🏢 Corporate / Long-form', desc: 'Advanced Editing, DaVinci Color Grade, Audio Cleanup.', basePrice: 300, badge: '50% OFF' },
     ],
     'web-dev': [
-      { id: 'starter', title: '🚀 Single Landing Page', desc: 'UI Design or Figma-to-Code Landing Page.', original: 100, discounted: 50, badge: '50% OFF' },
-      { id: 'standard', title: '🌐 Full Multi-Page Website', desc: 'Full Web Design & Development App.', original: 400, discounted: 200, badge: '50% OFF' },
-      { id: 'retainer', title: '🛠️ Monthly Web Maintenance', desc: 'Bug Fixes, Updates, Design Tweaks.', original: 200, discounted: 100, badge: 'FIRST MONTH 50% OFF' },
+      { id: 'starter', title: '🚀 Single Landing Page', desc: 'UI Design or Figma-to-Code Landing Page.', basePrice: 100, badge: '50% OFF' },
+      { id: 'standard', title: '🌐 Full Multi-Page Website', desc: 'Full Web Design & Development App.', basePrice: 400, badge: '50% OFF' },
+      { id: 'retainer', title: '🛠️ Monthly Web Maintenance', desc: 'Bug Fixes, Updates, Design Tweaks.', basePrice: 200, badge: 'FIRST MONTH 50% OFF' },
     ]
   };
 
   const currentPackages = servicePackagesMap[service] || servicePackagesMap['graphic-design'];
   const selectedPkg = currentPackages.find(p => p.id === packageId) || currentPackages[0];
 
-  // Pricing Engine
-  const baseOriginal = selectedPkg.original;
-  const baseDiscounted = selectedPkg.discounted;
+  // Dynamic Calculation Engine based on Applied Coupon Percentage
+  const baseOriginal = selectedPkg.basePrice;
+  const discountPercent = appliedCoupon.isValid ? appliedCoupon.percent : 0;
+  const discountAmount = Math.round((baseOriginal * discountPercent) / 100);
+  const baseDiscounted = baseOriginal - discountAmount;
   const expressSurcharge = expressDelivery ? 10 : 0;
 
   const finalOriginalTotal = baseOriginal + expressSurcharge;
   const finalPayableTotal = baseDiscounted + expressSurcharge;
-  const totalDiscount = baseOriginal - baseDiscounted;
 
   const serviceLabels = {
     'graphic-design': 'Graphic Design',
@@ -72,6 +102,11 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     'video-editing': 'Video Editing',
     'web-dev': 'Web Design & Dev'
   };
+
+  // WhatsApp Link targeting 01615288259 (+8801615288259)
+  const whatsAppUrl = `https://wa.me/8801615288259?text=${encodeURIComponent(
+    `Hi FramEmpire Studio, I submitted brief ${invoiceId} for ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD with Coupon ${appliedCoupon.code}). I would like to connect on WhatsApp.`
+  )}`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,9 +128,10 @@ Package Selected: ${selectedPkg.title} (${selectedPkg.desc})
 Billing Model: ${customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}
 Delivery Speed: ${expressDelivery ? 'Express Fast Delivery (+$10 USD)' : 'Standard Delivery (Free)'}
 
-INVOICE FINANCIAL BREAKDOWN:
+COUPON & FINANCIAL BREAKDOWN:
+- Coupon Code Applied: ${appliedCoupon.code || 'None'} (${discountPercent}% OFF)
 - Subtotal Original: $${finalOriginalTotal} USD
-- Welcome Offer Discount: 50% OFF (-$${totalDiscount} USD)
+- Welcome Offer Discount: -${discountPercent}% (-$${discountAmount} USD)
 - Express Speed Surcharge: $${expressSurcharge} USD
 - TOTAL PAYABLE QUOTE: $${finalPayableTotal} USD ${billingType === 'monthly' ? '/ month' : ''}
 
@@ -120,6 +156,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
           from_name: 'FramEmpire Auto Invoice System',
           invoice_id: generatedId,
           contact_info: contactInfo,
+          coupon_applied: `${appliedCoupon.code} (${discountPercent}% OFF)`,
           service: customServiceText || serviceLabels[service],
           package: selectedPkg.title,
           final_quote: `$${finalPayableTotal} USD`,
@@ -167,7 +204,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
               <h3 className="font-['Creato_Display'] text-base sm:text-lg font-extrabold text-white">
                 Interactive Project Estimator & Auto-Invoice
               </h3>
-              <p className="text-[11px] text-slate-400">Step {step} of 4 • Instant Single-Page Invoice Template</p>
+              <p className="text-[11px] text-slate-400">Step {step} of 4 • Dynamic Coupon & Auto-Invoice Engine</p>
             </div>
           </div>
 
@@ -202,15 +239,17 @@ Studio: FramEmpire (A Revolution of Animation)`;
           </div>
         )}
 
-        {/* 🏷️ 50% OFF WELCOME OFFER BANNER */}
+        {/* 🏷️ DYNAMIC COUPON APPLIED BANNER */}
         {!submitted && (
           <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)] print:hidden">
             <div className="flex items-center gap-2">
               <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
-              <span className="font-extrabold text-white text-xs">🏷️ Special Welcome Offer: 50% OFF Applied on First Order!</span>
+              <span className="font-extrabold text-white text-xs">
+                🏷️ {appliedCoupon.isValid ? appliedCoupon.message : 'Enter Coupon WEL50, WEL40, or WEL30'}
+              </span>
             </div>
             <span className="neon-badge text-[8px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
-              50% DISCOUNT 🚀
+              {discountPercent}% OFF OFFER 🚀
             </span>
           </div>
         )}
@@ -223,7 +262,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
             <div className="flex items-center justify-between bg-slate-900/90 border border-cyan-500/30 p-3 rounded-xl print:hidden">
               <div className="flex items-center gap-2 text-xs text-green-400 font-bold">
                 <CheckCircle2 className="w-4 h-4 text-green-400" />
-                <span>Single-Page Invoice Ready</span>
+                <span>Single-Page Invoice Generated ({appliedCoupon.code} Applied)</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -279,9 +318,9 @@ Studio: FramEmpire (A Revolution of Animation)`;
                 <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/10 via-amber-500/10 to-cyan-500/10 border border-yellow-500/30 text-yellow-300 print:bg-amber-50 print:border-amber-300 print:text-amber-900 space-y-1 flex flex-col justify-center">
                   <div className="flex items-center gap-1.5">
                     <Flame className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
-                    <span className="font-extrabold text-xs">🎉 Welcome Offer Applied!</span>
+                    <span className="font-extrabold text-xs">🎉 Coupon {appliedCoupon.code} Applied!</span>
                   </div>
-                  <p className="text-[10px] text-slate-300 print:text-slate-700">50% OFF First Month / Project Discount Claimed.</p>
+                  <p className="text-[10px] text-slate-300 print:text-slate-700">{discountPercent}% OFF Discount Code Successfully Claimed.</p>
                 </div>
               </div>
 
@@ -337,8 +376,8 @@ Studio: FramEmpire (A Revolution of Animation)`;
                   </div>
 
                   <div className="flex justify-between text-green-400 font-bold">
-                    <span>50% Welcome Discount:</span>
-                    <span>-${totalDiscount} USD</span>
+                    <span>Coupon ({appliedCoupon.code} - {discountPercent}% OFF):</span>
+                    <span>-${discountAmount} USD</span>
                   </div>
 
                   <div className="flex justify-between text-sm font-extrabold border-t border-slate-800 pt-2 print:border-slate-300 text-white print:text-black">
@@ -362,7 +401,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
                   * Note: This is an automated estimated quote. Final invoice will be confirmed upon brief review.
                 </p>
 
-                {/* Interactive Action Buttons (Hidden in Print) */}
+                {/* Interactive Action Buttons with WhatsApp Number 01615288259 (Hidden in Print) */}
                 <div className="flex flex-wrap items-center gap-2 print:hidden">
                   <button
                     onClick={() => alert(`Redirecting to secure checkout for Quote ${invoiceId}...`)}
@@ -373,10 +412,10 @@ Studio: FramEmpire (A Revolution of Animation)`;
                   </button>
 
                   <a
-                    href={`https://wa.me/8801700000000?text=${encodeURIComponent(`Hi FramEmpire Studio, I submitted brief ${invoiceId} for ${serviceLabels[service]} ($${finalPayableTotal} USD). I would like to discuss custom adjustments.`)}`}
+                    href={whatsAppUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3.5 py-2 rounded-xl bg-green-950/80 border border-green-500/40 text-green-300 hover:text-white font-bold text-xs flex items-center gap-1.5"
+                    className="px-3.5 py-2 rounded-xl bg-green-950/80 border border-green-500/40 text-green-300 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all hover:bg-green-900/60"
                   >
                     <MessageSquare className="w-3.5 h-3.5 text-green-400" />
                     <span>📲 Connect via WhatsApp</span>
@@ -548,12 +587,13 @@ Studio: FramEmpire (A Revolution of Animation)`;
                   <h4 className="font-['Creato_Display'] text-base font-bold text-white">
                     STEP 3: Select Package & Scope for <span className="text-cyan-400">{serviceLabels[service]}</span>
                   </h4>
-                  <p className="text-slate-400 text-xs">50% Welcome Discount is automatically applied on all base packages.</p>
+                  <p className="text-slate-400 text-xs">Apply coupon WEL50, WEL40, or WEL30 to claim discount.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {currentPackages.map((pkg) => {
                     const isSelected = packageId === pkg.id;
+                    const pkgDiscounted = pkg.basePrice - Math.round((pkg.basePrice * discountPercent) / 100);
                     return (
                       <div
                         key={pkg.id}
@@ -568,16 +608,16 @@ Studio: FramEmpire (A Revolution of Animation)`;
                           <div className="flex items-center justify-between">
                             <span className="font-bold text-xs text-white">{pkg.title}</span>
                             <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                              {pkg.badge}
+                              {discountPercent}% OFF
                             </span>
                           </div>
                           <p className="text-[10px] text-slate-300 leading-relaxed">{pkg.desc}</p>
                         </div>
 
                         <div className="text-xs font-bold pt-2 border-t border-slate-800/80">
-                          <span className="line-through text-slate-500 mr-2">${pkg.original}</span>
+                          <span className="line-through text-slate-500 mr-2">${pkg.basePrice}</span>
                           <span className="text-green-400 text-sm font-extrabold font-['Creato_Display']">
-                            ${pkg.discounted} USD {billingType === 'monthly' ? '/mo' : ''}
+                            ${pkgDiscounted} USD {billingType === 'monthly' ? '/mo' : ''}
                           </span>
                         </div>
                       </div>
@@ -652,26 +692,58 @@ Studio: FramEmpire (A Revolution of Animation)`;
                     onClick={() => setStep(4)}
                     className="neon-button-primary py-2.5 px-5 text-xs"
                   >
-                    <span>Next: Final Summary & Submit</span>
+                    <span>Next: Final Summary & Coupon</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             )}
 
-            {/* STEP 4: FINAL SUMMARY & SEAMLESS SUBMIT */}
+            {/* STEP 4: FINAL SUMMARY, COUPON INPUT & SEAMLESS SUBMIT */}
             {step === 4 && (
               <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn">
                 <div className="space-y-1">
                   <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Final Summary & Order Brief</h4>
-                  <p className="text-slate-400 text-xs">Review your quote and enter contact details to claim your 50% discount and generate invoice.</p>
+                  <p className="text-slate-400 text-xs">Apply promo coupon and enter contact details to generate official single-page invoice.</p>
+                </div>
+
+                {/* Dynamic Coupon Code Input Box */}
+                <div className="p-3.5 rounded-2xl bg-slate-950 border border-yellow-500/30 space-y-2">
+                  <label className="font-bold text-yellow-300 text-xs flex items-center gap-1.5">
+                    <Ticket className="w-4 h-4 text-yellow-400" />
+                    <span>Apply Coupon Code (e.g. WEL50 for 50%, WEL40 for 40%, WEL30 for 30%)</span>
+                  </label>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter Coupon Code (e.g. WEL50)"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white font-mono uppercase tracking-wider outline-none focus:border-yellow-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCoupon(couponInput)}
+                      className="px-4 py-2 rounded-xl bg-yellow-500/20 border border-yellow-500/50 text-yellow-300 font-bold text-xs hover:bg-yellow-500/30 transition-colors"
+                    >
+                      Apply Code
+                    </button>
+                  </div>
+
+                  {couponError && (
+                    <p className="text-[11px] text-red-400 font-medium">{couponError}</p>
+                  )}
+                  {appliedCoupon.isValid && (
+                    <p className="text-[11px] text-green-400 font-bold">{appliedCoupon.message}</p>
+                  )}
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 space-y-3">
                   <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                     <span className="font-bold text-xs text-white font-['Creato_Display']">🛍️ YOUR ESTIMATED SUMMARY</span>
                     <span className="text-[10px] font-bold text-green-400 bg-green-500/20 px-2 py-0.5 rounded-full border border-green-500/30">
-                      50% OFF APPLIED
+                      {discountPercent}% OFF APPLIED
                     </span>
                   </div>
 
@@ -704,7 +776,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
                     </div>
 
                     <div className="text-right">
-                      <span className="text-[10px] text-green-400 font-bold uppercase block">Final Payable Quote</span>
+                      <span className="text-[10px] text-green-400 font-bold uppercase block">Final Payable Quote ({appliedCoupon.code})</span>
                       <span className="font-['Creato_Display'] text-2xl font-extrabold text-green-400">
                         ${finalPayableTotal} USD {billingType === 'monthly' ? '/mo' : ''}
                       </span>
@@ -754,7 +826,7 @@ Studio: FramEmpire (A Revolution of Animation)`;
                     disabled={isSubmitting}
                     className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
                   >
-                    <span>{isSubmitting ? 'Generating Invoice...' : '🚀 Submit Brief & Generate Single-Page Invoice'}</span>
+                    <span>{isSubmitting ? 'Generating Invoice...' : `🚀 Submit Brief & Claim ${discountPercent}% Offer`}</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>

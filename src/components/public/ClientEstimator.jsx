@@ -228,7 +228,8 @@ Studio: FramEmpire (A Revolution of Animation)`;
             </div>
 
             {/* FORMAL OFFICIAL INVOICE DOCUMENT CARD */}
-            <div className="p-5 sm:p-7 rounded-2xl bg-slate-950 border-2 border-cyan-400 text-slate-200 text-xs space-y-6 print:bg-white print:text-black print:p-0 print:border-0 print:shadow-none">
+            <div className="print-invoice-area p-5 sm:p-7 rounded-2xl bg-slate-950 border-2 border-cyan-400 text-slate-200 text-xs space-y-6 print:bg-white print:text-black print:p-0 print:border-0 print:shadow-none">
+
               
               {/* Invoice Header: Brand & Invoice Ref */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-5 print:border-slate-300">

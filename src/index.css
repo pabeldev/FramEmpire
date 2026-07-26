@@ -209,13 +209,15 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 /* 📄 1-Page Crisp Invoice PDF Print System */
 @media print {
   @page {
-    margin: 12mm;
+    margin: 10mm;
     size: auto;
   }
   
-  body {
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   body * {
@@ -224,21 +226,40 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
   .print-invoice-area, .print-invoice-area * {
     visibility: visible !important;
+    color: #000000 !important;
+    text-shadow: none !important;
   }
 
   .print-invoice-area {
-    position: fixed !important;
+    position: absolute !important;
     left: 0 !important;
     top: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    padding: 20px !important;
+    padding: 24px !important;
     background: #ffffff !important;
     color: #000000 !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 2px solid #000000 !important;
     border-radius: 12px !important;
     box-shadow: none !important;
   }
+
+  .print-invoice-area table,
+  .print-invoice-area th,
+  .print-invoice-area td {
+    border-color: #cbd5e1 !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  .print-invoice-area div,
+  .print-invoice-area p,
+  .print-invoice-area span,
+  .print-invoice-area h1,
+  .print-invoice-area strong {
+    color: #000000 !important;
+  }
 }
+
 

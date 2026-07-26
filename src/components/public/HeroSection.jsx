@@ -4,7 +4,7 @@ import { AGENCY_INFO } from '../../data/creativeData';
 
 export default function HeroSection({ onExplorePortfolio, onOpenEstimator }) {
   return (
-    <section className="relative min-h-[85vh] flex items-center justify-center pt-6 sm:pt-10 pb-12 sm:pb-16 px-4 overflow-hidden bg-grid-pattern">
+    <section className="relative min-h-[85vh] flex items-center justify-center pt-20 sm:pt-28 pb-12 sm:pb-16 px-4 overflow-hidden bg-grid-pattern">
       {/* Radial Neon Background Orbs */}
       <div className="glow-orb-cyan -top-20 -left-20 animate-pulse-glow" />
       <div className="glow-orb-blue top-1/3 -right-20 animate-pulse-glow" style={{ animationDelay: '1.5s' }} />

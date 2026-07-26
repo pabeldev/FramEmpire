@@ -7,8 +7,7 @@ export default function Navbar({
   onSignOut, 
   userRole, 
   setUserRole, 
-  onOpenEstimator, 
-  onOpenLoginModal 
+  onOpenEstimator
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -65,16 +64,6 @@ export default function Navbar({
               >
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Project Estimator</span>
-              </button>
-
-              {/* Discreet Staff Portal Login Button */}
-              <button
-                onClick={onOpenLoginModal}
-                className="text-xs text-slate-400 hover:text-cyan-400 p-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
-                title="Internal Employee Login"
-              >
-                <Lock className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Staff Login</span>
               </button>
             </div>
 
@@ -153,17 +142,6 @@ export default function Navbar({
             >
               <Sparkles className="w-4 h-4" />
               <span>Project Cost Estimator</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenLoginModal();
-              }}
-              className="w-full justify-center py-2.5 text-xs text-slate-400 hover:text-cyan-300 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2"
-            >
-              <Lock className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Staff Login Portal</span>
             </button>
           </div>
         </div>

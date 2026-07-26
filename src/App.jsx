@@ -22,7 +22,7 @@ export default function App() {
   // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
   const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
 
-  // URL Path & Hash Listener for Dedicated /admin Route Sync
+  // URL Path & Hash Listener for Secret /admin Route Access Only
   useEffect(() => {
     const checkRoute = () => {
       const path = window.location.pathname;
@@ -91,7 +91,6 @@ export default function App() {
         userRole={userRole}
         setUserRole={setUserRole}
         onOpenEstimator={() => handleOpenEstimator()}
-        onOpenLoginModal={() => setLoginModalOpen(true)}
       />
 
       {/* Main View Router */}
@@ -100,7 +99,6 @@ export default function App() {
           <HeroSection
             onExplorePortfolio={scrollToPortfolio}
             onOpenEstimator={() => handleOpenEstimator()}
-            onSwitchToAdmin={() => setLoginModalOpen(true)}
           />
           <ServicesSection
             onOpenEstimator={(serviceId) => handleOpenEstimator(serviceId)}
@@ -112,7 +110,6 @@ export default function App() {
           <TeamCaptainSection />
           <Footer
             onOpenEstimator={() => handleOpenEstimator()}
-            onOpenLoginModal={() => setLoginModalOpen(true)}
           />
         </main>
       ) : (
@@ -133,10 +130,15 @@ export default function App() {
         initialService={estimatorService}
       />
 
-      {/* Staff & Employee Authentication Modal */}
+      {/* Staff & Employee Authentication Modal (Secretly accessible via /admin) */}
       <EmployeeLoginModal
         isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
+        onClose={() => {
+          setLoginModalOpen(false);
+          if (viewMode !== 'admin') {
+            window.history.pushState(null, '', '/');
+          }
+        }}
         onLoginSuccess={handleLoginSuccess}
       />
 

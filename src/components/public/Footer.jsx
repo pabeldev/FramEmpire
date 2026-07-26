@@ -1,8 +1,8 @@
 import React from 'react';
-import { Sparkles, Heart, Globe, Cpu, Lock } from 'lucide-react';
+import { Sparkles, Heart, Globe, Cpu } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
-export default function Footer({ onOpenEstimator, onOpenLoginModal }) {
+export default function Footer({ onOpenEstimator }) {
   return (
     <footer className="bg-[#04060d] border-t border-cyan-500/20 pt-16 pb-12 px-4 relative text-xs text-slate-400">
       <div className="max-w-7xl mx-auto space-y-12">
@@ -49,22 +49,13 @@ export default function Footer({ onOpenEstimator, onOpenLoginModal }) {
             </ul>
           </div>
 
-          {/* Col 4: Studio Specs & Staff Portal */}
+          {/* Col 4: Studio Specs */}
           <div className="space-y-3">
             <h4 className="font-bold text-white uppercase text-[11px] tracking-wider font-['Creato_Display']">Studio Specs</h4>
             <p className="text-slate-400">Direct Inquiries: <span className="text-cyan-300">hello@framempire.agency</span></p>
             <p className="text-slate-400">Tagline: <span className="text-white font-semibold">"A Revolution of Animation"</span></p>
             <div className="pt-2 flex items-center justify-between">
               <span className="neon-badge text-[9px] py-1 px-3">EST. {AGENCY_INFO.established}</span>
-              
-              {/* Subtle Staff Portal Trigger */}
-              <button
-                onClick={onOpenLoginModal}
-                className="text-[11px] text-slate-500 hover:text-cyan-400 flex items-center gap-1 transition-colors"
-              >
-                <Lock className="w-3 h-3" />
-                <span>Staff Portal</span>
-              </button>
             </div>
           </div>
 

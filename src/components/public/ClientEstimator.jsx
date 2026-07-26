@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   X, Sparkles, Calculator, CheckCircle2, Send, Clock, DollarSign, 
-  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Mail, ExternalLink 
+  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Mail, ExternalLink, Check 
 } from 'lucide-react';
 
 export default function ClientEstimator({ isOpen, onClose, initialService = 'graphic-design' }) {
@@ -20,7 +20,6 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
 
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [contactInfo, setContactInfo] = useState('');
-  const [isSending, setIsSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
@@ -90,44 +89,7 @@ ${additionalNotes || 'None'}
 Submitted at: ${new Date().toLocaleString()}
   `;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSending(true);
-
-    try {
-      // 1. Submit via FormSubmit AJAX to team.framempire@gmail.com
-      const res = await fetch('https://formsubmit.co/ajax/team.framempire@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          _subject: emailSubject,
-          _template: "table",
-          _captcha: "false",
-          clientContact: contactInfo,
-          serviceNeeded: customServiceText || serviceLabels[service],
-          packageSelected: selectedPkg.title,
-          billingType: customBillingText || billingType,
-          deliverySpeed: expressDelivery ? 'Express Fast (+$10)' : 'Standard (Free)',
-          finalPayableQuote: `$${finalPayableTotal} USD`,
-          customRequirements: customRequirementText || 'None',
-          additionalNotes: additionalNotes || 'None'
-        })
-      });
-
-      const data = await res.json();
-      console.log('FormSubmit Response:', data);
-    } catch (err) {
-      console.error('Email API dispatch error:', err);
-    }
-
-    // 2. Open Direct Mail Client as guaranteed fallback
-    const mailtoUrl = `mailto:team.framempire@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-    window.open(mailtoUrl, '_blank');
-
-    setIsSending(false);
+  const handleSubmitSuccess = () => {
     setSubmitted(true);
   };
 
@@ -190,7 +152,7 @@ Submitted at: ${new Date().toLocaleString()}
         </div>
 
         {submitted ? (
-          <div className="text-center py-8 space-y-5">
+          <div className="text-center py-8 space-y-5 animate-fadeIn">
             <div className="w-16 h-16 rounded-full bg-green-500/20 border-2 border-green-400 text-green-400 flex items-center justify-center mx-auto animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
@@ -198,27 +160,28 @@ Submitted at: ${new Date().toLocaleString()}
             <div className="space-y-2">
               <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">Project Brief Dispatched!</h4>
               <p className="text-sm text-slate-300 max-w-md mx-auto">
-                Brief sent to <strong className="text-cyan-300">team.framempire@gmail.com</strong>.
+                Brief details have been sent to <strong className="text-cyan-300">team.framempire@gmail.com</strong>.
               </p>
             </div>
 
-            {/* FormSubmit First-Time Activation Notice Card */}
-            <div className="p-4 rounded-2xl bg-yellow-950/40 border border-yellow-500/40 max-w-lg mx-auto text-left text-xs space-y-2">
-              <div className="flex items-center gap-2 text-yellow-300 font-bold">
-                <Mail className="w-4 h-4 text-yellow-400 shrink-0" />
-                <span>📌 IMPORTANT FOR FIRST-TIME EMAIL RECEIPT:</span>
+            <div className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/40 max-w-lg mx-auto text-left text-xs space-y-3">
+              <div className="flex items-center gap-2 text-cyan-300 font-bold">
+                <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
+                <span>DIRECT EMAIL & GMAIL SHORTCUT:</span>
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
-                FormSubmit requires a <strong>1-time activation confirmation</strong> on new email addresses. Please check <strong className="text-white">team.framempire@gmail.com</strong> inbox (or Spam) once and click <em>"Activate Form"</em>.
+                Click below to open your Gmail / Email app with all brief details pre-filled directly to <strong>team.framempire@gmail.com</strong>:
               </p>
 
-              <div className="pt-2 flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <a
                   href={`mailto:team.framempire@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`}
-                  className="neon-button-primary py-2 px-4 text-[11px]"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="neon-button-primary py-2.5 px-5 text-xs font-bold justify-center"
                 >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Send via Gmail App Now</span>
+                  <Send className="w-4 h-4" />
+                  <span>Send via Gmail App Now ↗</span>
                 </a>
 
                 <button
@@ -227,7 +190,7 @@ Submitted at: ${new Date().toLocaleString()}
                     setStep(1);
                     onClose();
                   }}
-                  className="px-3 py-2 text-[11px] text-slate-400 hover:text-white"
+                  className="px-4 py-2 text-xs text-slate-400 hover:text-white"
                 >
                   Close Window
                 </button>
@@ -502,12 +465,29 @@ Submitted at: ${new Date().toLocaleString()}
               </div>
             )}
 
-            {/* STEP 4: FINAL SUMMARY & LEAD CAPTURE */}
+            {/* STEP 4: FINAL SUMMARY & DIRECT HTML FORM SUBMIT TO team.framempire@gmail.com */}
             {step === 4 && (
-              <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn">
+              <form 
+                action="https://formsubmit.co/team.framempire@gmail.com" 
+                method="POST" 
+                target="_blank"
+                onSubmit={handleSubmitSuccess}
+                className="space-y-4 animate-fadeIn"
+              >
+                {/* FormSubmit Hidden Fields */}
+                <input type="hidden" name="_subject" value={emailSubject} />
+                <input type="hidden" name="_template" value="table" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="Service Needed" value={customServiceText || serviceLabels[service]} />
+                <input type="hidden" name="Package Selected" value={`${selectedPkg.title} (${selectedPkg.desc})`} />
+                <input type="hidden" name="Billing Model" value={customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')} />
+                <input type="hidden" name="Delivery Speed" value={expressDelivery ? 'Express Fast (+$10 USD)' : 'Standard Delivery (Free)'} />
+                <input type="hidden" name="Final Quote" value={`$${finalPayableTotal} USD ${billingType === 'monthly' ? '/mo' : ''}`} />
+                <input type="hidden" name="Custom Requirements" value={customRequirementText || 'None'} />
+
                 <div className="space-y-1">
                   <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Send Brief to team.framempire@gmail.com</h4>
-                  <p className="text-slate-400 text-xs">Review summary and submit to automatically dispatch brief to team.framempire@gmail.com.</p>
+                  <p className="text-slate-400 text-xs">Review summary and submit to dispatch brief directly to team.framempire@gmail.com.</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 space-y-3">
@@ -561,6 +541,7 @@ Submitted at: ${new Date().toLocaleString()}
                   </label>
                   <textarea
                     rows={2}
+                    name="Additional Notes"
                     placeholder="e.g. Need dynamic subtitles, fast pacing, or specific brand colors..."
                     value={additionalNotes}
                     onChange={(e) => setAdditionalNotes(e.target.value)}
@@ -574,6 +555,7 @@ Submitted at: ${new Date().toLocaleString()}
                   </label>
                   <input
                     type="text"
+                    name="Client Contact"
                     required
                     placeholder="Your Email Address or Direct WhatsApp Number..."
                     value={contactInfo}
@@ -594,10 +576,9 @@ Submitted at: ${new Date().toLocaleString()}
 
                   <button
                     type="submit"
-                    disabled={isSending}
                     className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
                   >
-                    <span>{isSending ? 'Sending to team.framempire@gmail.com...' : '🚀 Send Brief to team.framempire@gmail.com'}</span>
+                    <span>🚀 Submit Brief & Send to team.framempire@gmail.com</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>

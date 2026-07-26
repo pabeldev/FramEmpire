@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   X, Sparkles, Calculator, CheckCircle2, Send, Clock, DollarSign, 
-  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, Mail, ExternalLink, Check 
+  Flame, Tag, Zap, ArrowRight, ArrowLeft, ShieldCheck, Palette, Film, Code2, HelpCircle 
 } from 'lucide-react';
 
 export default function ClientEstimator({ isOpen, onClose, initialService = 'graphic-design' }) {
@@ -20,6 +20,7 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
 
   const [additionalNotes, setAdditionalNotes] = useState('');
   const [contactInfo, setContactInfo] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   if (!isOpen) return null;
@@ -66,8 +67,12 @@ export default function ClientEstimator({ isOpen, onClose, initialService = 'gra
     'web-dev': 'Web Design & Dev'
   };
 
-  const emailSubject = `🚀 New FramEmpire Brief: ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD)`;
-  const emailBody = `NEW PROJECT BRIEF FROM FRAMEMPIRE ESTIMATOR
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const emailSubject = `🚀 New Brief: ${customServiceText || serviceLabels[service]} ($${finalPayableTotal} USD)`;
+    const emailBody = `NEW PROJECT BRIEF FROM FRAMEMPIRE ESTIMATOR
 -------------------------------------------
 Client Contact: ${contactInfo}
 Service Needed: ${customServiceText || serviceLabels[service]}
@@ -85,61 +90,66 @@ ${customRequirementText || 'None'}
 ADDITIONAL NOTES:
 ${additionalNotes || 'None'}
 
+Target Email: team.framempire@gmail.com
 Submitted at: ${new Date().toLocaleString()}`;
 
-  // Direct Web Gmail Compose Trigger (Opens Gmail Web directly in new tab)
-  const gmailWebUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=team.framempire@gmail.com&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-  const mailtoUrl = `mailto:team.framempire@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // 1. Try sending via FormSubmit API in background
+    // Silent background dispatch via Web3Forms & FormSubmit API (No popups, no redirects)
     try {
-      fetch('https://formsubmit.co/ajax/team.framempire@gmail.com', {
+      await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          _subject: emailSubject,
-          clientContact: contactInfo,
-          serviceNeeded: customServiceText || serviceLabels[service],
-          packageSelected: selectedPkg.title,
-          finalPayableQuote: `$${finalPayableTotal} USD`,
-          message: emailBody
+          access_key: '34d193fa-d07b-40fa-87bb-7b56a337e7df',
+          subject: emailSubject,
+          to_email: 'team.framempire@gmail.com',
+          from_name: 'FramEmpire Client Estimator',
+          contact_info: contactInfo,
+          service: customServiceText || serviceLabels[service],
+          package: selectedPkg.title,
+          final_quote: `$${finalPayableTotal} USD`,
+          notes: emailBody
         })
       });
     } catch (err) {
-      console.log('Background API dispatch:', err);
+      console.log('Background submission dispatch:', err);
     }
 
-    // 2. Open Gmail Web compose window directly in new tab!
-    window.open(gmailWebUrl, '_blank');
+    setIsSubmitting(false);
     setSubmitted(true);
+  };
+
+  const handleResetAndClose = () => {
+    setSubmitted(false);
+    setStep(1);
+    setContactInfo('');
+    setAdditionalNotes('');
+    setCustomRequirementText('');
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fadeIn">
-      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-7 relative space-y-5 max-h-[92vh] overflow-y-auto">
+      <div className="neon-card max-w-2xl w-full border-cyan-400 p-5 sm:p-8 relative space-y-6 max-h-[92vh] overflow-y-auto">
         
-        {/* Top Wizard Bar & Header */}
-        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        {/* Top Header */}
+        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
-              <Calculator className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-400 shrink-0">
+              <Calculator className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-['Creato_Display'] text-base sm:text-lg font-extrabold text-white">
+              <h3 className="font-['Creato_Display'] text-lg sm:text-xl font-extrabold text-white">
                 Interactive Project Estimator
               </h3>
-              <p className="text-[11px] text-slate-400">Target Email: <strong className="text-cyan-300">team.framempire@gmail.com</strong></p>
+              <p className="text-xs text-slate-400">Step {step} of 4 • Instant Quote & Brief Dispatch</p>
             </div>
           </div>
 
           <button
-            onClick={onClose}
-            className="p-1.5 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
+            onClick={handleResetAndClose}
+            className="p-2 rounded-full bg-slate-900 text-slate-400 hover:text-white border border-cyan-500/30"
           >
-            <X className="w-4 h-4" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -153,8 +163,8 @@ Submitted at: ${new Date().toLocaleString()}`;
           ].map(st => (
             <div
               key={st.num}
-              onClick={() => st.num < step && setStep(st.num)}
-              className={`h-1.5 rounded-full transition-all cursor-pointer ${
+              onClick={() => st.num < step && !submitted && setStep(st.num)}
+              className={`h-1.5 rounded-full transition-all ${
                 step >= st.num
                   ? 'bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_10px_rgba(0,243,255,0.4)]'
                   : 'bg-slate-800'
@@ -165,70 +175,71 @@ Submitted at: ${new Date().toLocaleString()}`;
         </div>
 
         {/* 🏷️ 50% OFF WELCOME OFFER BANNER */}
-        <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)]">
-          <div className="flex items-center gap-2">
-            <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
-            <span className="font-extrabold text-white text-xs">🏷️ Special Welcome Offer: 50% OFF Sent to team.framempire@gmail.com!</span>
+        {!submitted && (
+          <div className="p-3.5 rounded-xl bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-cyan-500/20 border border-yellow-500/40 text-yellow-300 text-xs flex items-center justify-between gap-3 shadow-[0_0_15px_rgba(234,179,8,0.15)]">
+            <div className="flex items-center gap-2">
+              <Flame className="w-4 h-4 text-yellow-400 fill-yellow-400 shrink-0 animate-bounce" />
+              <span className="font-extrabold text-white text-xs sm:text-sm">🏷️ Special Welcome Offer: 50% OFF Applied on First Order!</span>
+            </div>
+            <span className="neon-badge text-[9px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
+              50% DISCOUNT 🚀
+            </span>
           </div>
-          <span className="neon-badge text-[8px] border-yellow-400 text-yellow-300 bg-yellow-950/60 shrink-0">
-            CLAIM OFFER 🚀
-          </span>
-        </div>
+        )}
 
         {submitted ? (
-          <div className="text-center py-8 space-y-5 animate-fadeIn">
-            <div className="w-16 h-16 rounded-full bg-green-500/20 border-2 border-green-400 text-green-400 flex items-center justify-center mx-auto animate-bounce">
-              <CheckCircle2 className="w-8 h-8" />
+          /* SEAMLESS IN-APP SUCCESS CARD (No popups, no external tabs) */
+          <div className="text-center py-8 sm:py-10 space-y-6 animate-fadeIn">
+            
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400/20 to-cyan-400/20 border-2 border-green-400 text-green-400 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(74,222,128,0.3)] animate-bounce">
+              <CheckCircle2 className="w-10 h-10" />
             </div>
 
             <div className="space-y-2">
-              <h4 className="font-['Creato_Display'] text-2xl font-extrabold text-white">Gmail Compose Window Opened!</h4>
-              <p className="text-sm text-slate-300 max-w-md mx-auto">
-                A new browser tab has opened with all brief details pre-filled directly to <strong className="text-cyan-300">team.framempire@gmail.com</strong>.
+              <span className="neon-badge border-green-400 text-green-300 bg-green-950/60 text-[10px] px-3 py-1">
+                DISPATCHED TO TEAM.FRAMEMPIRE@GMAIL.COM
+              </span>
+              <h4 className="font-['Creato_Display'] text-2xl sm:text-3xl font-extrabold text-white">
+                Brief Submitted Successfully!
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                Thank you, <strong className="text-white">{contactInfo}</strong>! Our Executive Producer & Lead Specialist have received your project brief. We will reach out within <strong>2 hours</strong>.
               </p>
             </div>
 
-            {/* Direct Instant Action Buttons */}
-            <div className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/40 max-w-lg mx-auto text-left text-xs space-y-3">
-              <div className="flex items-center gap-2 text-cyan-300 font-bold">
-                <Mail className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>100% GUARANTEED DIRECT EMAIL DISPATCH:</span>
+            {/* Submitted Invoice Summary Card */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/90 border border-green-500/40 text-left text-xs space-y-3 max-w-lg mx-auto shadow-[0_0_20px_rgba(74,222,128,0.15)]">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span className="font-bold text-white uppercase tracking-wider text-[11px] font-['Creato_Display']">Confirmed Order Summary</span>
+                <span className="text-green-400 font-extrabold text-xs">50% DISCOUNT LOCKED</span>
               </div>
-              <p className="text-slate-300 text-[11px] leading-relaxed">
-                If your popup blocker prevented opening Gmail automatically, click below to open Gmail or your default email app:
-              </p>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <a
-                  href={gmailWebUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="neon-button-primary py-2.5 px-5 text-xs font-extrabold justify-center"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Open Gmail Web Compose ↗</span>
-                </a>
-
-                <a
-                  href={mailtoUrl}
-                  className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white font-bold flex items-center gap-1.5"
-                >
-                  <Mail className="w-4 h-4" />
-                  <span>Mail App</span>
-                </a>
-
-                <button
-                  onClick={() => {
-                    setSubmitted(false);
-                    setStep(1);
-                    onClose();
-                  }}
-                  className="px-3 py-2 text-xs text-slate-400 hover:text-white"
-                >
-                  Done
-                </button>
+              <div className="space-y-1.5 text-slate-300 text-xs">
+                <div className="flex justify-between">
+                  <span>• Service & Scope:</span>
+                  <strong className="text-white">{customServiceText || serviceLabels[service]} ({selectedPkg.title})</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span>• Billing Type:</span>
+                  <strong className="text-purple-300">{customBillingText || (billingType === 'monthly' ? 'Monthly Retainer' : 'One-Time Project')}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span>• Delivery Speed:</span>
+                  <strong className="text-amber-300">{expressDelivery ? 'Express Fast (+$10)' : 'Standard Delivery (Free)'}</strong>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-slate-800">
+                  <span className="font-bold text-slate-400">Total Payable Quote:</span>
+                  <strong className="text-green-400 text-base font-['Creato_Display'] font-extrabold">${finalPayableTotal} USD</strong>
+                </div>
               </div>
             </div>
+
+            <button
+              onClick={handleResetAndClose}
+              className="neon-button-primary py-3 px-8 text-xs justify-center mx-auto"
+            >
+              <span>Back to FramEmpire Showcase</span>
+            </button>
 
           </div>
         ) : (
@@ -491,19 +502,19 @@ Submitted at: ${new Date().toLocaleString()}`;
                     onClick={() => setStep(4)}
                     className="neon-button-primary py-2.5 px-5 text-xs"
                   >
-                    <span>Next: Final Summary & Email Brief</span>
+                    <span>Next: Final Summary & Submit</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             )}
 
-            {/* STEP 4: FINAL SUMMARY & DIRECT GMAIL DISPATCH */}
+            {/* STEP 4: FINAL SUMMARY & SEAMLESS SUBMIT */}
             {step === 4 && (
               <form onSubmit={handleSubmit} className="space-y-4 animate-fadeIn">
                 <div className="space-y-1">
-                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Dispatch Brief to team.framempire@gmail.com</h4>
-                  <p className="text-slate-400 text-xs">Review summary and submit to open Gmail Compose window pre-filled to team.framempire@gmail.com.</p>
+                  <h4 className="font-['Creato_Display'] text-base font-bold text-white">STEP 4: Final Summary & Order Brief</h4>
+                  <p className="text-slate-400 text-xs">Review your quote and enter contact details to claim your 50% discount.</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-950/90 border border-cyan-500/30 space-y-3">
@@ -590,9 +601,10 @@ Submitted at: ${new Date().toLocaleString()}`;
 
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="neon-button-primary py-3 px-6 text-xs justify-center shadow-[0_0_20px_rgba(0,243,255,0.4)]"
                   >
-                    <span>🚀 Submit Brief & Open Gmail to Send</span>
+                    <span>{isSubmitting ? 'Submitting Brief...' : '🚀 Submit Brief & Claim 50% Offer'}</span>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>

@@ -25,12 +25,12 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-2 sm:top-3 z-50 px-3 sm:px-6 max-w-7xl mx-auto transition-all duration-300">
+    <header className="sticky top-1.5 sm:top-2.5 z-50 px-2 sm:px-4 max-w-[1380px] mx-auto transition-all duration-300">
       {/* Dark Neomorphism Floating Pill Shape Bar */}
       <div className={`w-full rounded-full transition-all duration-300 relative overflow-hidden ${
         isScrolled 
-          ? 'bg-[#090c19]/80 backdrop-blur-2xl border border-cyan-500/40 shadow-[-6px_-6px_16px_rgba(255,255,255,0.03),8px_8px_24px_rgba(0,0,0,0.85),inset_0_0_15px_rgba(0,243,255,0.12)] py-2 sm:py-2.5 px-4 sm:px-6' 
-          : 'bg-[#0b0e1e]/90 backdrop-blur-xl border border-cyan-500/25 shadow-[-8px_-8px_20px_rgba(255,255,255,0.04),10px_10px_30px_rgba(0,0,0,0.9)] py-3 sm:py-4 px-5 sm:px-8'
+          ? 'bg-[#090c19]/80 backdrop-blur-2xl border border-cyan-500/40 shadow-[-6px_-6px_16px_rgba(255,255,255,0.03),8px_8px_24px_rgba(0,0,0,0.85),inset_0_0_15px_rgba(0,243,255,0.12)] py-1 sm:py-1.5 px-5 sm:px-7' 
+          : 'bg-[#0b0e1e]/90 backdrop-blur-xl border border-cyan-500/25 shadow-[-8px_-8px_20px_rgba(255,255,255,0.04),10px_10px_30px_rgba(0,0,0,0.9)] py-1.5 sm:py-2.5 px-6 sm:px-9'
       }`}>
         
         {/* Ambient Neomorphic Liquid Rim Glow */}
@@ -38,7 +38,7 @@ export default function Navbar({
 
         <div className="flex items-center justify-between gap-4 relative z-10">
           
-          {/* Brand & Logo (Large Unscrolled, Sleek Compact Scrolled) */}
+          {/* Brand & Logo (Sleek Compact Vertical Height, Wide Horizontally) */}
           <div 
             className="flex items-center gap-2.5 cursor-pointer" 
             onClick={() => onSignOut && viewMode === 'admin' ? onSignOut() : null}
@@ -48,8 +48,8 @@ export default function Navbar({
               alt="FramEmpire Studio" 
               className={`object-contain shrink-0 transition-all duration-300 drop-shadow-[0_0_15px_rgba(0,243,255,0.35)] ${
                 isScrolled 
-                  ? 'h-10 sm:h-12 md:h-15 max-w-[220px] sm:max-w-[260px]' 
-                  : 'h-13 sm:h-16 md:h-20 max-w-[280px] sm:max-w-[360px]'
+                  ? 'h-9 sm:h-11 md:h-13 max-w-[220px] sm:max-w-[250px]' 
+                  : 'h-11 sm:h-14 md:h-16 max-w-[260px] sm:max-w-[320px]'
               }`} 
             />
             {viewMode === 'admin' && (

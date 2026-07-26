@@ -209,7 +209,6 @@ Studio: FramEmpire (A Revolution of Animation)`;
         <body class="p-0 bg-white">
           <div class="max-w-[800px] mx-auto bg-white min-h-[1100px] relative text-slate-800 text-xs shadow-none border border-slate-200">
             
-            {/* Top Bar with Dark INVOICE Banner on Right */}
             <div class="flex justify-between items-stretch">
               <div class="p-8 space-y-4 flex-1">
                 <div class="flex items-center gap-3">
@@ -248,7 +247,6 @@ Studio: FramEmpire (A Revolution of Animation)`;
                 </div>
               </div>
 
-              {/* Vertical Dark Sidebar */}
               <div class="w-28 bg-[#2A2B30] flex items-center justify-center text-white">
                 <span class="font-black text-4xl tracking-widest uppercase rotate-90 whitespace-nowrap opacity-90">
                   INVOICE
@@ -256,7 +254,6 @@ Studio: FramEmpire (A Revolution of Animation)`;
               </div>
             </div>
 
-            {/* Table */}
             <div class="px-8 pt-4">
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
@@ -300,23 +297,20 @@ Studio: FramEmpire (A Revolution of Animation)`;
                   </tr>
                   ` : ''}
 
-                  {/* Clean Placeholder Rows matching template */}
                   <tr class="bg-[#EBEBEB] opacity-40"><td class="p-3 text-center">04.</td><td class="p-3">-</td><td class="p-3 text-right">-</td><td class="p-3 text-center">-</td><td class="p-3 text-right">-</td></tr>
                   <tr class="bg-white opacity-40"><td class="p-3 text-center">05.</td><td class="p-3">-</td><td class="p-3 text-right">-</td><td class="p-3 text-center">-</td><td class="p-3 text-right">-</td></tr>
                 </tbody>
               </table>
             </div>
 
-            {/* Bottom Section */}
             <div class="px-8 pt-6 flex justify-between items-start">
-              {/* Bottom Left Dark Card */}
               <div class="w-7/12 bg-[#2A2B30] text-white p-5 rounded-none space-y-3 text-[11px]">
                 <div class="space-y-1 text-slate-300">
                   <p><strong class="text-white">Email :</strong> team.framempire@gmail.com</p>
                   <p><strong class="text-white">Web :</strong> framempire.com</p>
                   <p><strong class="text-white">Address :</strong> Dhaka, Bangladesh</p>
                 </div>
-                <div className="pt-2 border-t border-slate-700">
+                <div class="pt-2 border-t border-slate-700">
                   <strong class="text-white uppercase font-bold text-[10px] block mb-0.5">Terms & Conditions</strong>
                   <p class="text-[10px] text-slate-400 leading-tight">
                     Automated quote invoice. Discount claimed via coupon code ${appliedCoupon.code} (${discountPercent}% OFF).
@@ -324,7 +318,6 @@ Studio: FramEmpire (A Revolution of Animation)`;
                 </div>
               </div>
 
-              {/* Bottom Right Totals & Signature */}
               <div class="w-4/12 space-y-4">
                 <table class="w-full text-xs text-right border-collapse">
                   <tbody>

@@ -126,11 +126,11 @@ export default function FeaturedGameSection() {
               <div className="absolute -inset-1 rounded-[36px] bg-gradient-to-r from-amber-500 via-yellow-500 to-cyan-500 opacity-70 blur-xl group-hover:opacity-100 transition-opacity duration-500" />
 
               {/* Game Icon Box */}
-              <div className="relative rounded-[32px] overflow-hidden bg-slate-950 border-4 border-amber-400/90 shadow-[0_0_40px_rgba(234,179,8,0.4)] aspect-square p-2">
+              <div className="relative rounded-[32px] overflow-hidden bg-slate-950/80 border-4 border-amber-400/90 shadow-[0_0_40px_rgba(234,179,8,0.45)] aspect-square p-3 flex items-center justify-center">
                 <img
                   src="/tictactoe_game_icon.png"
                   alt="Tic Tac Toe GenZ Multiplayer Official Game Icon"
-                  className="w-full h-full object-cover rounded-[24px] shadow-lg group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-contain rounded-[22px] drop-shadow-2xl group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
 

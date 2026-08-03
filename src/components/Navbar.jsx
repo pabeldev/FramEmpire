@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ShieldCheck, LogOut, Lock, Menu, X, ArrowRight, Calculator } from 'lucide-react';
+import { Sparkles, ShieldCheck, LogOut, Lock, Menu, X, ArrowRight, Calculator, Gamepad2 } from 'lucide-react';
 import { AGENCY_INFO } from '../data/creativeData';
 
 export default function Navbar({ 
@@ -67,16 +67,20 @@ export default function Navbar({
               <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
                 <a href="#services" className="hover:text-cyan-400 transition-colors">Services</a>
                 <a href="#portfolio" className="hover:text-cyan-400 transition-colors">Portfolio</a>
-                <button 
-                  onClick={onOpenGamePage}
-                  className="text-yellow-400 hover:text-yellow-300 font-bold transition-colors cursor-pointer flex items-center gap-1 bg-yellow-500/10 px-2.5 py-1 rounded-full border border-yellow-500/30"
-                >
-                  <span>🎮 Tic Tac Toe</span>
-                </button>
                 <a href="#about" className="hover:text-cyan-400 transition-colors">About Us</a>
               </nav>
 
-              <div className="hidden sm:flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2.5 sm:gap-3">
+                {/* Tic Tac Toe Button (2nd to last position before Project Estimator) */}
+                <button
+                  onClick={onOpenGamePage}
+                  className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 text-yellow-300 border border-yellow-500/40 py-1.5 sm:py-2 px-3.5 text-xs font-bold rounded-full shadow-[0_0_12px_rgba(234,179,8,0.2)] transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Gamepad2 className="w-3.5 h-3.5 text-yellow-400 animate-pulse" />
+                  <span>🎮 Tic Tac Toe</span>
+                </button>
+
+                {/* Project Estimator Button (Last Position) */}
                 <button
                   onClick={onOpenEstimator}
                   className="neon-button-secondary py-2 px-4 text-xs rounded-full shadow-[0_0_15px_rgba(0,243,255,0.25)]"

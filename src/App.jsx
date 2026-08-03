@@ -15,8 +15,17 @@ import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import { PORTFOLIO_PROJECTS } from './data/creativeData';
 
+const getInitialViewMode = () => {
+  if (typeof window === 'undefined') return 'public';
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') return 'admin';
+  if (path === '/tictactoe' || path === '/tic-tac-toe' || path.startsWith('/tictactoe') || hash === '#tictactoe') return 'tictactoe';
+  return 'public';
+};
+
 export default function App() {
-  const [viewMode, setViewMode] = useState('public'); // 'public' | 'admin' | 'tictactoe'
+  const [viewMode, setViewMode] = useState(getInitialViewMode); // 'public' | 'admin' | 'tictactoe'
   const [userRole, setUserRole] = useState('Admin / Executive');
   const [estimatorOpen, setEstimatorOpen] = useState(false);
   const [estimatorService, setEstimatorService] = useState('motion-graphics');
@@ -41,7 +50,6 @@ export default function App() {
       }
     };
 
-    checkRoute();
     window.addEventListener('popstate', checkRoute);
     return () => window.removeEventListener('popstate', checkRoute);
   }, []);
@@ -84,27 +92,29 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#070913] text-slate-100 font-sans selection:bg-cyan-500 selection:text-black relative">
       
-      {/* Sticky Glassmorphism Header Navbar */}
-      <Navbar 
-        viewMode={viewMode}
-        onToggleViewMode={() => {
-          if (viewMode === 'public') {
-            setViewMode('admin');
-            setLoginModalOpen(true);
-          } else {
-            setViewMode('public');
-            window.history.pushState(null, '', '/');
-          }
-        }}
-        userRole={userRole}
-        setUserRole={setUserRole}
-        onOpenEstimator={() => setEstimatorOpen(true)}
-        onOpenGamePage={() => {
-          setViewMode('tictactoe');
-          window.history.pushState(null, '', '/tictactoe');
-        }}
-        onSignOut={handleSignOutAdmin}
-      />
+      {/* Sticky Glassmorphism Header Navbar (Hidden on dedicated /tictactoe page) */}
+      {viewMode !== 'tictactoe' && (
+        <Navbar 
+          viewMode={viewMode}
+          onToggleViewMode={() => {
+            if (viewMode === 'public') {
+              setViewMode('admin');
+              setLoginModalOpen(true);
+            } else {
+              setViewMode('public');
+              window.history.pushState(null, '', '/');
+            }
+          }}
+          userRole={userRole}
+          setUserRole={setUserRole}
+          onOpenEstimator={() => setEstimatorOpen(true)}
+          onOpenGamePage={() => {
+            setViewMode('tictactoe');
+            window.history.pushState(null, '', '/tictactoe');
+          }}
+          onSignOut={handleSignOutAdmin}
+        />
+      )}
 
       {/* Main Views Router */}
       {viewMode === 'public' ? (

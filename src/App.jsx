@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/public/HeroSection';
+import FeaturedGameSection from './components/public/FeaturedGameSection';
 import ServicesSection from './components/public/ServicesSection';
 import PortfolioSection from './components/public/PortfolioSection';
 import AboutSection from './components/public/AboutSection';
@@ -102,6 +103,8 @@ export default function App() {
             }}
             onOpenEstimator={() => setEstimatorOpen(true)}
           />
+
+          <FeaturedGameSection />
 
           <ServicesSection 
             onSelectService={handleOpenEstimatorWithService}

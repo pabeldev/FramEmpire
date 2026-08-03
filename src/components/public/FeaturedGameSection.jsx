@@ -82,7 +82,7 @@ export default function FeaturedGameSection({ onOpenGameDetails }) {
                   className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm py-3 px-5 rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all border border-emerald-300"
                 >
                   <Download className="w-4 h-4 fill-current" />
-                  <span>Download APK (Android v1.0.1)</span>
+                  <span>Download</span>
                 </a>
 
                 {/* GitHub Developer Link */}

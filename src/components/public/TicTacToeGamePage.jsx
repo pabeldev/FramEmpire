@@ -9,6 +9,43 @@ export default function TicTacToeGamePage({ onBackToHome, onOpenEstimator }) {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Store original document title
+    const originalTitle = document.title;
+    document.title = "Tic Tac Toe: GenZ Multiplayer — Official Mobile Game by EDP Universe";
+
+    // Dynamic Meta Tag Update Helper for WhatsApp / Facebook / Twitter / Telegram Preview Cards
+    const updateMeta = (selector, attribute, value) => {
+      let el = document.querySelector(selector);
+      if (!el) {
+        el = document.createElement('meta');
+        if (selector.includes('property=')) {
+          const prop = selector.match(/property="([^"]+)"/)[1];
+          el.setAttribute('property', prop);
+        } else if (selector.includes('name=')) {
+          const name = selector.match(/name="([^"]+)"/)[1];
+          el.setAttribute('name', name);
+        }
+        document.head.appendChild(el);
+      }
+      el.setAttribute(attribute, value);
+    };
+
+    const hostOrigin = window.location.origin || 'https://framempire.com';
+    const absoluteGameIcon = `${hostOrigin}/tictactoe_game_icon.png`;
+
+    updateMeta('meta[property="og:title"]', 'content', 'Tic Tac Toe: GenZ Multiplayer — EDP Universe');
+    updateMeta('meta[property="og:description"]', 'content', 'Explore 100 authentic Feni villages, scale from 3x3 to 12x12 boards, unlock arcade avatars & conquer the Minimax AI engine! Download Android APK v1.0.1.');
+    updateMeta('meta[property="og:image"]', 'content', absoluteGameIcon);
+    updateMeta('meta[property="og:image:width"]', 'content', '1024');
+    updateMeta('meta[property="og:image:height"]', 'content', '1024');
+    updateMeta('meta[name="twitter:title"]', 'content', 'Tic Tac Toe: GenZ Multiplayer');
+    updateMeta('meta[name="twitter:description"]', 'content', 'Explore 100 authentic Feni villages & Minimax AI engine. Download Android APK.');
+    updateMeta('meta[name="twitter:image"]', 'content', absoluteGameIcon);
+
+    return () => {
+      document.title = originalTitle;
+    };
   }, []);
 
   const gameScreenshots = [

@@ -239,6 +239,21 @@ export const PORTFOLIO_PROJECTS = [
     stats: "Live Production Web App",
     deliverables: ["Web Application UI", "Dashboard Systems", "Responsive Engine"],
     featured: false,
+  },
+  {
+    id: "web-5",
+    title: "FramEmpire Verse Platform",
+    client: "FramEmpire Verse",
+    category: "Web Development",
+    categoryKey: "web-dev",
+    platform: "web",
+    liveUrl: "https://verse.framempire.com",
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1200&auto=format&fit=crop",
+    year: "2026",
+    summary: "Futuristic digital verse ecosystem and 3D web experience featuring ultra-modern visual aesthetics & responsive architecture.",
+    stats: "Live Production Verse Platform",
+    deliverables: ["Verse Web Architecture", "Interactive 3D UI", "Subdomain Deployment"],
+    featured: true,
   }
 ];
 

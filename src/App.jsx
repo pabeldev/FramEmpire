@@ -99,6 +99,10 @@ export default function App() {
         userRole={userRole}
         setUserRole={setUserRole}
         onOpenEstimator={() => setEstimatorOpen(true)}
+        onOpenGamePage={() => {
+          setViewMode('tictactoe');
+          window.history.pushState(null, '', '/tictactoe');
+        }}
         onSignOut={handleSignOutAdmin}
       />
 

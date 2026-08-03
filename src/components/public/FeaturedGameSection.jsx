@@ -6,7 +6,7 @@ export default function FeaturedGameSection({ onOpenGameDetails }) {
   const githubRepoUrl = 'https://github.com/pabeldev/feni-brain-arcade';
 
   return (
-    <section id="game-feature" className="relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#070913] via-[#0b0e21] to-[#070913] border-t border-cyan-500/30 overflow-hidden">
+    <section id="game-feature" className="relative min-h-[85vh] flex items-center justify-center py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#070913] via-[#0b0e21] to-[#070913] border-t border-cyan-500/30 overflow-hidden">
       
       {/* Background Neon Glow Orbs */}
       <div className="glow-orb-cyan top-1/4 -left-20 animate-pulse-glow" />

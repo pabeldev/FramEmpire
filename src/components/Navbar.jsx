@@ -7,7 +7,8 @@ export default function Navbar({
   onSignOut, 
   userRole, 
   setUserRole, 
-  onOpenEstimator
+  onOpenEstimator,
+  onOpenGamePage
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -66,13 +67,13 @@ export default function Navbar({
               <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
                 <a href="#services" className="hover:text-cyan-400 transition-colors">Services</a>
                 <a href="#portfolio" className="hover:text-cyan-400 transition-colors">Portfolio</a>
-                <a href="#about" className="hover:text-cyan-400 transition-colors">About Us</a>
                 <button 
-                  onClick={onOpenEstimator}
-                  className="hover:text-cyan-400 transition-colors cursor-pointer"
+                  onClick={onOpenGamePage}
+                  className="text-yellow-400 hover:text-yellow-300 font-bold transition-colors cursor-pointer flex items-center gap-1 bg-yellow-500/10 px-2.5 py-1 rounded-full border border-yellow-500/30"
                 >
-                  Estimate Cost
+                  <span>🎮 Tic Tac Toe</span>
                 </button>
+                <a href="#about" className="hover:text-cyan-400 transition-colors">About Us</a>
               </nav>
 
               <div className="hidden sm:flex items-center gap-3">
@@ -130,6 +131,16 @@ export default function Navbar({
       {viewMode === 'public' && mobileMenuOpen && (
         <div className="md:hidden fixed inset-x-4 top-[80px] bg-[#070913]/98 border border-cyan-500/30 backdrop-blur-2xl p-5 space-y-4 rounded-3xl shadow-2xl animate-fadeIn">
           <nav className="flex flex-col gap-3 text-sm font-semibold text-slate-200">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenGamePage();
+              }}
+              className="p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/40 text-yellow-300 font-bold text-left flex items-center justify-between"
+            >
+              <span>🎮 Tic Tac Toe: GenZ Game</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
             <a 
               href="#services" 
               onClick={() => setMobileMenuOpen(false)}

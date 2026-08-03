@@ -10,12 +10,13 @@ import ClientEstimator from './components/public/ClientEstimator';
 import Footer from './components/public/Footer';
 import WhatsAppWidget from './components/public/WhatsAppWidget';
 
+import TicTacToeGamePage from './components/public/TicTacToeGamePage';
 import EmployeeLoginModal from './components/auth/EmployeeLoginModal';
 import AdminDashboard from './components/admin/AdminDashboard';
 import { PORTFOLIO_PROJECTS } from './data/creativeData';
 
 export default function App() {
-  const [viewMode, setViewMode] = useState('public'); // 'public' | 'admin'
+  const [viewMode, setViewMode] = useState('public'); // 'public' | 'admin' | 'tictactoe'
   const [userRole, setUserRole] = useState('Admin / Executive');
   const [estimatorOpen, setEstimatorOpen] = useState(false);
   const [estimatorService, setEstimatorService] = useState('motion-graphics');
@@ -24,15 +25,19 @@ export default function App() {
   // Dynamic Portfolio Projects State (Supports YouTube, Vimeo, Behance embeds added via Admin Panel)
   const [projectsList, setProjectsList] = useState(PORTFOLIO_PROJECTS);
 
-  // URL Path & Hash Listener for Secret /admin Route Access Only
+  // URL Path & Hash Listener for /admin and /tictactoe routes
   useEffect(() => {
     const checkRoute = () => {
-      const path = window.location.pathname;
-      const hash = window.location.hash;
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
       
       if (path === '/admin' || path.startsWith('/admin') || hash === '#admin') {
         setViewMode('admin');
         setLoginModalOpen(true);
+      } else if (path === '/tictactoe' || path === '/tic-tac-toe' || path.startsWith('/tictactoe') || hash === '#tictactoe') {
+        setViewMode('tictactoe');
+      } else {
+        setViewMode('public');
       }
     };
 
@@ -47,8 +52,12 @@ export default function App() {
       if (window.location.pathname !== '/admin') {
         window.history.pushState(null, '', '/admin');
       }
+    } else if (viewMode === 'tictactoe') {
+      if (window.location.pathname !== '/tictactoe') {
+        window.history.pushState(null, '', '/tictactoe');
+      }
     } else {
-      if (window.location.pathname === '/admin') {
+      if (window.location.pathname === '/admin' || window.location.pathname === '/tictactoe' || window.location.pathname === '/tic-tac-toe') {
         window.history.pushState(null, '', '/');
       }
     }
@@ -104,7 +113,12 @@ export default function App() {
             onOpenEstimator={() => setEstimatorOpen(true)}
           />
 
-          <FeaturedGameSection />
+          <FeaturedGameSection 
+            onOpenGameDetails={() => {
+              setViewMode('tictactoe');
+              window.history.pushState(null, '', '/tictactoe');
+            }}
+          />
 
           <ServicesSection 
             onSelectService={handleOpenEstimatorWithService}
@@ -119,6 +133,14 @@ export default function App() {
 
           <Footer onOpenEstimator={() => setEstimatorOpen(true)} />
         </main>
+      ) : viewMode === 'tictactoe' ? (
+        <TicTacToeGamePage 
+          onBackToHome={() => {
+            setViewMode('public');
+            window.history.pushState(null, '', '/');
+          }}
+          onOpenEstimator={() => setEstimatorOpen(true)}
+        />
       ) : (
         <AdminDashboard 
           userRole={userRole}

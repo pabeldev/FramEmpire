@@ -7,29 +7,31 @@ const GEMINI_API_KEY = typeof window !== 'undefined' && window.atob
   ? atob('QVEuQWI4Uk42Smg1R3owd0FoTzktalM1NGlTcENmOXRBTzhMRXVCOW9OLWl5UkVvd0JNZlE=')
   : '';
 
-// Official System Instructions for FramEmpire Assistant
-const SYSTEM_INSTRUCTIONS = `You are Nabila, Executive Director and client success lead for "FramEmpire - A revolution of Animation". Your job is to assist website visitors who want to purchase services (Video Editing, Motion Graphics, Graphic Design, Next.js/React.js Web Development, Vibe Coding).
+// Human Persona System Instructions for Nabila (Executive Director)
+const SYSTEM_INSTRUCTIONS = `You are Nabila, Executive Director and Client Success Manager at FramEmpire Studio ("A Revolution of Animation").
+Your Persona: Warm, empathetic, professional, highly helpful, and conversational — respond naturally like a real human executive speaking with a client.
 
-RULES & BEHAVIOR:
-1. LANGUAGE: Ask the user's preferred language initially, or automatically match the language used by the user (Bangla, English, or Banglish). Respond fluently in Bengali, English, or Banglish.
-2. CONCISENESS: Keep responses short, classic, elegant, and directly to the point. Strictly avoid unnecessary length, long intro/outro fluff, or over-explaining.
-3. WORKING HOURS: Our working hours are 10:00 AM to 10:00 PM (Bangladesh Time, GMT+6). If a customer reaches out outside these hours, politely inform them that our team is currently offline and ask them to leave a message.
-4. PRICING INQUIRIES: Provide standard, balanced international market rates based on our services:
-   - Video Editing: Single $20 – $300 | Retainer $300 – $800/mo
-   - Motion Graphics & 3D: Single $30 – $400 | Retainer $400 – $1,200+/mo
-   - Graphic Design: Single $10 – $300 | Retainer $300 – $600/mo
-   - React/Next.js Web Dev: Single $100 – $400 | Retainer $200 – $600/mo
-   - Vibe Coding: Single $150 – $500 | Retainer $300/mo
-5. CONFLICT / ESCALATION: If customer has complex queries, custom requirements, or wants human call:
-   - Contact Person: Nabila (Executive Director)
-   - WhatsApp / Phone: +880 1848-374242
+HUMAN CONVERSATIONAL RULES:
+1. HUMAN TONE: Speak warmly, naturally, and personably (like a real human client director), NOT like a rigid bot. Use natural human phrasing, polite expressions, and helpful guidance.
+2. LANGUAGE FLEXIBILITY: Automatically match the exact language used by the customer (Bangla, English, or Banglish). If they write in Bengali, respond in fluent Bengali. If in Banglish, reply in Banglish/Bengali. If in English, reply in English.
+3. CONCISENESS & CLARITY: Keep answers clear, concise, and helpful. Avoid robotic fluff or long pre-scripted disclaimers.
+4. OPERATIONAL HOURS: Studio working hours are 10:00 AM to 10:00 PM (Bangladesh Time, GMT+6). Outside these hours, warmly let them know the creative team is currently offline and invite them to leave a message.
+5. SERVICES & RATES GUIDE:
+   - Video Editing: Single $20–$300 | Monthly Retainer $300–$800/mo
+   - 3D Motion Graphics & Animation: Single $30–$400 | Monthly Retainer $400–$1,200+/mo
+   - Graphic Design & Branding: Single $10–$300 | Monthly Retainer $300–$600/mo
+   - React/Next.js Web Development: Single $100–$400 | Monthly Retainer $200–$600/mo
+   - Vibe Coding & AI Prototypes: Single $150–$500 | Monthly Retainer $300/mo
+   - Discount: Mention coupon WEL50 for 50% OFF in our top menu "Project Estimator".
+6. DIRECT HUMAN CONTACT: For custom proposals, phone calls, meetings, or complex project requirements:
+   - Direct Line / WhatsApp: +880 1848-374242
    - Email: team.framempire@gmail.com`;
 
 const KNOWLEDGE_BASE = {
   workingHours: {
     startHour: 10,
     endHour: 22,
-    formatted: '10:00 AM to 10:00 PM (Bangladesh Time, GMT+6)'
+    formatted: '10:00 AM to 10:00 PM (GMT+6)'
   },
   escalation: {
     person: 'Nabila (Executive Director)',
@@ -68,7 +70,7 @@ export default function WhatsAppWidget() {
     {
       id: 1,
       sender: 'agent',
-      text: `Welcome to FramEmpire Studio! 👋 I am Nabila, Executive Director.\n\nHow may I assist you today? / বলুন কিভাবে সাহায্য করতে পারি? (English / বাংলা / Banglish)`,
+      text: `Hello! 👋 Nabila here from FramEmpire Studio.\n\nHow can I help you with your project today? / বলুন কিভাবে সাহায্য করতে পারি? (English / বাংলা / Banglish)`,
       time: 'Just now'
     }
   ]);
@@ -90,13 +92,12 @@ export default function WhatsAppWidget() {
     setUnreadBadge(false);
   };
 
-  // Direct Live Gemini API Request Handler
+  // Direct Live Gemini API Request Handler with Human Prompt Instructions
   const fetchGeminiAiResponse = async (userPrompt, currentHistory) => {
     if (!GEMINI_API_KEY) return null;
 
     const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
 
-    // Format conversation history for Gemini API
     const formattedContents = currentHistory
       .filter(msg => msg.id !== 1)
       .map(msg => ({
@@ -112,7 +113,7 @@ export default function WhatsAppWidget() {
     for (const model of modelsToTry) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second generous timeout for Gemini AI
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
         
@@ -142,35 +143,35 @@ export default function WhatsAppWidget() {
     return null;
   };
 
-  // Rule-based Fallback Response Generator
-  const generateFallbackResponse = (userText) => {
+  // Human-like Fallback Response Generator
+  const generateHumanFallbackResponse = (userText) => {
     const textLower = userText.toLowerCase();
     const isOnline = checkIsWithinWorkingHours();
 
     const escalationKeywords = ['nabila', 'human', 'executive', 'director', 'speak to human', 'talk to person', 'call', 'talk', 'manager', 'support team', 'custom project', 'complex', 'conflict', 'issue'];
     if (escalationKeywords.some(kw => textLower.includes(kw))) {
-      return `For custom requirements, complex queries, or direct human support:\n\n👤 Nabila (Executive Director)\n📞 WhatsApp / Phone: ${KNOWLEDGE_BASE.escalation.phone}\n✉️ Email: ${KNOWLEDGE_BASE.escalation.email}`;
+      return `I'm right here! 😊 You can reach me directly for any custom requirement, budget discussion, or phone call:\n\n👤 Nabila (Executive Director)\n📞 Direct / WhatsApp: ${KNOWLEDGE_BASE.escalation.phone}\n✉️ Email: ${KNOWLEDGE_BASE.escalation.email}`;
     }
 
     const hoursKeywords = ['time', 'hour', 'open', 'offline', 'online', 'schedule', 'working hours'];
     if (hoursKeywords.some(kw => textLower.includes(kw))) {
-      return `🕒 Operational Working Hours:\n10:00 AM to 10:00 PM (Bangladesh Time, GMT+6).\n\n${isOnline ? '🟢 We are currently ONLINE and active!' : '🌙 Our office is currently OFFLINE. Please leave your message and we will get back to you promptly.'}`;
+      return `Our studio working hours are 10:00 AM to 10:00 PM (Bangladesh Time, GMT+6).\n\n${isOnline ? '🟢 I am online and available right now!' : '🌙 Our creative team is offline right now, but please leave your message and I will reply as soon as office opens!'}`;
     }
 
     const pricingKeywords = ['price', 'pricing', 'rate', 'cost', 'pkg', 'package', 'charge', 'dollar', '$', '৳', 'দাম'];
     if (pricingKeywords.some(kw => textLower.includes(kw))) {
-      return `FramEmpire Service Rates:\n\n• Video Editing: Single $20–$300 | Retainer $300–$800/mo\n• Motion Graphics & 3D: Single $30–$400 | Retainer $400–$1,200+/mo\n• Graphic Design: Single $10–$300 | Retainer $300–$600/mo\n• React/Next.js Web Dev: Single $100–$400 | Retainer $200–$600/mo\n• Vibe Coding: Single $150–$500 | Retainer $300/mo\n\n🎉 Use coupon code WEL50 for 50% OFF in our top menu "Project Estimator"!`;
+      return `Here are our general rates:\n\n• Video Editing: Single $20–$300 | Monthly $300–$800/mo\n• Motion Graphics & 3D: Single $30–$400 | Monthly $400–$1,200+/mo\n• Graphic Design: Single $10–$300 | Monthly $300–$600/mo\n• React/Next.js Web Dev: Single $100–$400 | Monthly $200–$600/mo\n\n💡 Tip: Use coupon WEL50 for 50% OFF in our "Project Estimator" menu above!`;
     }
 
     if (!isOnline) {
-      return `🌙 Our team is currently offline (Operating Hours: 10:00 AM to 10:00 PM GMT+6).\n\nPlease leave your message here or contact me via WhatsApp (${KNOWLEDGE_BASE.escalation.phone}). We will respond as soon as our office opens!`;
+      return `Hi! Our team is currently offline for the day (Operating Hours: 10 AM - 10 PM GMT+6).\n\nPlease leave your query or project details here, or drop me a message on WhatsApp (${KNOWLEDGE_BASE.escalation.phone}). I will get back to you first thing in the morning!`;
     }
 
     if (/[অ-হা-ঢ়]/.test(userText) || textLower.includes('bangla') || textLower.includes('banglish')) {
-      return `ধন্যবাদ মেসেজ দেওয়ার জন্য! 🚀 FramEmpire স্টুডিওতে আমরা ভিডিও এডিটিং, ৩D মোশন গ্রাফিক্স, ব্র্যান্ডিং এবং রিয়্যাক্ট/নেক্সট.জেএস ওয়েব ডেভেলপমেন্ট সেবা প্রদান করি।\n\nআমার সাথে সরাসরি কল/মেসেজে কথা বলতে পারেন: ${KNOWLEDGE_BASE.escalation.phone}`;
+      return `হ্যালো! 🚀 ফ্রেমএম্পায়ার স্টুডিও থেকে আমি নাবিলা। আমরা ভিডিও এডিটিং, ৩D মোশন গ্রাফিক্স, ব্র্যান্ডিং এবং নেক্সট.জেএস/রিয়্যাক্ট ওয়েব ডেভেলপমেন্টের কাজ অত্যন্ত যত্নসহকারে করে থাকি।\n\nআপনার প্রজেক্টের বিস্তারিত বলুন অথবা সরাসরি আমাকে কল/মেসেজ দিন: ${KNOWLEDGE_BASE.escalation.phone}`;
     }
 
-    return `Thank you for contacting FramEmpire Studio! 🚀 We specialize in Video Editing, 3D Motion Graphics, Graphic Design, and React/Next.js Web Development.\n\nFor instant quotes, click "Project Estimator" in our top menu, or contact me directly: ${KNOWLEDGE_BASE.escalation.phone}.`;
+    return `Hello! 🚀 I'm Nabila from FramEmpire Studio. We specialize in high-impact Video Editing, 3D Motion Graphics, Graphic Design, and React/Next.js Web Architecture.\n\nTell me about your project or feel free to message me directly: ${KNOWLEDGE_BASE.escalation.phone}.`;
   };
 
   // Main Submission Handler
@@ -191,27 +192,27 @@ export default function WhatsAppWidget() {
     setMessage('');
     setIsTyping(true);
 
-    // Dispatch email copy to team.framempire@gmail.com
+    // Dispatch email notification to team.framempire@gmail.com
     try {
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: '5642e1ed-ed24-4f81-9b16-e41ceb325257',
-          subject: '⚡ Website Customer Message - FramEmpire',
-          from_name: 'Nabila Live Support',
+          subject: '⚡ Customer Inquiry - FramEmpire Live Chat',
+          from_name: 'Nabila Live Chat Support',
           to_email: 'team.framempire@gmail.com',
-          message: `In-Website Message:\n"${trimmedText}"\n\nExecutive Contact: Nabila (+880 1848-374242)`
+          message: `Client Message:\n"${trimmedText}"\n\nContact: Nabila (+880 1848-374242)`
         })
       }).catch(() => {});
     } catch (err) {}
 
-    // 1. Try Gemini API Request with conversation context
+    // 1. Try Live Gemini API Request with Human System Prompt
     let aiResponseText = await fetchGeminiAiResponse(trimmedText, chatHistory);
 
-    // 2. Fallback if Gemini API fails
+    // 2. Human Fallback if API fails
     if (!aiResponseText) {
-      aiResponseText = generateFallbackResponse(trimmedText);
+      aiResponseText = generateHumanFallbackResponse(trimmedText);
     }
 
     setIsTyping(false);
@@ -252,7 +253,7 @@ export default function WhatsAppWidget() {
               <div className="relative">
                 <img
                   src="/ampabel.jpg"
-                  alt="Nabila - FramEmpire Executive Lead"
+                  alt="Nabila - FramEmpire Executive Director"
                   className="w-10 h-10 rounded-full border-2 border-cyan-400 object-cover shadow-md shrink-0"
                 />
                 <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-slate-950 rounded-full animate-pulse" />

@@ -1,44 +1,50 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Sparkles, CheckCheck, ExternalLink, Bot, HelpCircle, PhoneCall, FileText } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, CheckCheck, ExternalLink, Bot, HelpCircle, PhoneCall, Globe, ShieldAlert, Clock, UserCheck } from 'lucide-react';
 import { AGENCY_INFO } from '../../data/creativeData';
 
-// Smart FAQ Knowledgebase & Automated Auto-Reply Answers
-const FAQ_ITEMS = [
-  {
-    id: 'pricing',
-    label: '💰 Pricing & Discounts',
-    question: 'What is your pricing & discount policy?',
-    keywords: ['pricing', 'price', 'cost', 'discount', 'wel50', 'wel30', 'coupon', 'rate'],
-    answer: 'FramEmpire offers competitive project pricing starting from $250 for Graphic Design up to $1,200+ for 3D Motion Graphics & Animation.\n\n🎉 You can also use coupon codes like WEL50 (50% OFF) or WEL30 (30% OFF) inside our Project Estimator!'
+// Knowledgebase & Service Rules for FramEmpire AI Assistant
+const KNOWLEDGE_BASE = {
+  services: [
+    { name: 'Video Editing', rates: 'Single Project: $20 – $300 | Monthly Retainer: $300 – $800/mo' },
+    { name: 'Motion Graphics & 3D Animation', rates: 'Single Project: $30 – $400 | Monthly Retainer: $400 – $1,200+/mo' },
+    { name: 'Graphic Design & Branding', rates: 'Single Project: $10 – $300 | Monthly Retainer: $300 – $600/mo' },
+    { name: 'Next.js / React.js Web Development', rates: 'Single Landing Page: $100 – $300 | Full Multi-Page Web App: $400 – $1,200+' },
+    { name: 'Vibe Coding & AI Prototype Builds', rates: 'Single Prototype: $150 – $500 | Retainer Support: $300/mo' }
+  ],
+  workingHours: {
+    startHour: 10, // 10:00 AM
+    endHour: 22,   // 10:00 PM
+    timeZone: 'Asia/Dhaka', // GMT+6
+    formatted: '10:00 AM to 10:00 PM (Bangladesh Time, GMT+6)'
   },
-  {
-    id: 'delivery',
-    label: '⏱️ Project Turnaround',
-    question: 'How long does a 3D animation or video project take?',
-    keywords: ['time', 'long', 'delivery', 'turnaround', 'duration', 'lead time', 'days', 'weeks'],
-    answer: 'Standard Turnaround Times:\n• Graphic Design: 1–2 Weeks\n• Commercial Video Editing: 1–2 Weeks\n• 3D Motion Graphics & Animation: 2–3 Weeks\n• Web Architecture & Development: 2–4 Weeks 🚀'
-  },
-  {
-    id: 'order',
-    label: '📋 Submit Brief & Invoice',
-    question: 'How do I submit a project brief and generate an invoice?',
-    keywords: ['brief', 'order', 'submit', 'invoice', 'estimate', 'estimator', 'pdf', 'bill'],
-    answer: 'Click the "Project Estimator" button in our top menu! Select your desired services, enter your project details, and our system will automatically generate a downloadable PDF invoice for you! 📄'
-  },
-  {
-    id: 'payment',
-    label: '💳 Payment Methods',
-    question: 'Which payment methods do you accept?',
-    keywords: ['payment', 'pay', 'bkash', 'nagad', 'wire', 'bank', 'transfer', 'card'],
-    answer: 'We accept:\n• bKash Personal / Merchant (+8801615288259)\n• Nagad (+8801615288259)\n• International Bank Wire Transfer\n• Direct Card Payments 💳'
-  },
-  {
-    id: 'contact',
-    label: '📞 Studio Direct Line',
-    question: 'How can I contact the creative team directly?',
-    keywords: ['contact', 'call', 'phone', 'human', 'whatsapp', 'email', 'mail', 'team', 'number'],
-    answer: 'Direct Studio Line: +880 1615-288259\nEmail: team.framempire@gmail.com\nWhatsApp: +8801615288259 📱'
+  escalation: {
+    person: 'Nabila (Executive Director)',
+    phone: '+880 1848-374242',
+    email: 'team.framempire@gmail.com',
+    whatsappUrl: 'https://wa.me/8801848374242'
   }
+};
+
+// Check operational status based on GMT+6 local time
+function checkIsWithinWorkingHours() {
+  try {
+    const now = new Date();
+    // Convert current time to Bangladesh Time (Asia/Dhaka)
+    const options = { timeZone: 'Asia/Dhaka', hour: 'numeric', hour12: false };
+    const bdHour = parseInt(new Intl.DateTimeFormat('en-US', options).format(now), 10);
+    return bdHour >= KNOWLEDGE_BASE.workingHours.startHour && bdHour < KNOWLEDGE_BASE.workingHours.endHour;
+  } catch (err) {
+    const localHour = new Date().getHours();
+    return localHour >= 10 && localHour < 22;
+  }
+}
+
+// Quick Suggestion Chips
+const QUICK_CHIPS = [
+  { id: 'services', label: '🚀 Services & Rates', prompt: 'What services do you offer and what are your rates?' },
+  { id: 'hours', label: '🕒 Working Hours', prompt: 'What are your operational working hours?' },
+  { id: 'human', label: '📞 Executive Support', prompt: 'I want to speak with executive support / Nabila.' },
+  { id: 'estimator', label: '📄 Project Estimator', prompt: 'How can I get an instant price estimate or invoice?' }
 ];
 
 export default function WhatsAppWidget() {
@@ -46,19 +52,19 @@ export default function WhatsAppWidget() {
   const [message, setMessage] = useState('');
   const [unreadBadge, setUnreadBadge] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
+  const [userLang, setUserLang] = useState('auto'); // 'auto' | 'bn' | 'en'
   
-  // Real-Time In-Web Chat History State
+  // Real-Time In-Web Chat History
   const [chatHistory, setChatHistory] = useState([
     {
       id: 1,
       sender: 'agent',
-      text: 'Welcome to FramEmpire Studio! 👋 Select an FAQ below or type a message for instant automated answers.',
+      text: `Welcome to FramEmpire Studio! 👋 I am your official AI Assistant.\n\nWhich language do you prefer? / কোন ভাষায় কথা বলতে স্বাচ্ছন্দ্য বোধ করবেন?\n• English | বাংলা | Banglish`,
       time: 'Just now'
     }
   ]);
 
   const messagesEndRef = useRef(null);
-  const phoneRaw = '8801615288259'; // Official WhatsApp direct number
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -75,13 +81,65 @@ export default function WhatsAppWidget() {
     setUnreadBadge(false);
   };
 
-  // Process User Input or FAQ Selection with Instant Auto-Reply Engine
+  // Rule-based Smart Response Generator following strictly prompt requirements
+  const generateAiAssistantResponse = (userText) => {
+    const textLower = userText.toLowerCase();
+    const isOnline = checkIsWithinWorkingHours();
+
+    // 1. Language Preference Detection & Setting
+    if (textLower.includes('bangla') || textLower.includes('বাংলা') || textLower.includes('banglish')) {
+      setUserLang('bn');
+      return `ধন্যবাদ! আপনি বাংলায় বা বাংলিশে কথা বলতে পারেন। আমি আপনাকে ভিডিও এডিটিং, মোশন গ্রাফিক্স, গ্রাফিক ডিজাইন এবং ওয়েব ডেভেলপমেন্ট সার্ভিসে সাহায্য করার জন্য প্রস্তুত। 🚀\n\nআপনি কী ধরনের প্রজেক্ট করতে চাচ্ছেন?`;
+    }
+    if (textLower.includes('english') || textLower.includes('en')) {
+      setUserLang('en');
+      return `Great! We can continue in English. How can FramEmpire Studio assist you with Video Editing, Motion Graphics, Graphic Design, or Web Builds today? 🚀`;
+    }
+
+    // 2. Escalation to Executive Support (Nabila) / Complex Queries
+    const escalationKeywords = ['nabila', 'human', 'executive', 'director', 'speak to human', 'talk to person', 'call', 'talk', 'manager', 'support team', 'custom project', 'complex', 'conflict', 'issue'];
+    const isEscalation = escalationKeywords.some(kw => textLower.includes(kw));
+
+    if (isEscalation) {
+      return `For custom requirements, complex queries, or to speak directly with our Executive Support:\n\n👤 Nabila (Executive Director)\n📞 WhatsApp / Phone: ${KNOWLEDGE_BASE.escalation.phone}\n✉️ Email: ${KNOWLEDGE_BASE.escalation.email}\n\nYou can also click the direct WhatsApp button below! 📲`;
+    }
+
+    // 3. Operational Hours Check Enforcement
+    const hoursKeywords = ['time', 'hour', 'open', 'offline', 'online', 'schedule', 'working hours'];
+    const isAskingHours = hoursKeywords.some(kw => textLower.includes(kw));
+
+    if (isAskingHours) {
+      return `🕒 Our operational working hours are:\n10:00 AM to 10:00 PM (Bangladesh Time, GMT+6).\n\n${isOnline ? '🟢 We are currently ONLINE and active!' : '🌙 Our team is currently OFFLINE. Please leave your message and we will respond promptly during operational hours.'}`;
+    }
+
+    // 4. Pricing / Rates Inquiries
+    const pricingKeywords = ['price', 'pricing', 'rate', 'cost', 'pkg', 'package', 'charge', 'dollar', '$', '৳', ' কত', 'দাম'];
+    const isPricing = pricingKeywords.some(kw => textLower.includes(kw));
+
+    if (isPricing) {
+      return `FramEmpire Standard Service Rates:\n\n• Video Editing: Single $20–$300 | Retainer $300–$800/mo\n• Motion Graphics & 3D: Single $30–$400 | Retainer $400–$1,200+/mo\n• Graphic Design: Single $10–$300 | Retainer $300–$600/mo\n• React/Next.js Web Dev: Single $100–$400 | Retainer $200–$600/mo\n\n🎉 Use coupon code WEL50 for 50% OFF in our top menu "Project Estimator"!`;
+    }
+
+    // 5. Offline Hours General Enforcement if outside 10:00 AM - 10:00 PM
+    if (!isOnline) {
+      return `🌙 Our team is currently offline (Operating Hours: 10:00 AM to 10:00 PM GMT+6).\n\nPlease leave your requirements, name & contact info here or email us at ${KNOWLEDGE_BASE.escalation.email}. We will get back to you as soon as our office opens!`;
+    }
+
+    // 6. Default AI Assistant Response (Concise & Direct)
+    if (userLang === 'bn' || /[অ-হা-ঢ়]/.test(userText)) {
+      return `ধন্যবাদ মেসেজ দেওয়ার জন্য! 🚀 FramEmpire স্টুডিওতে আমরা পেশাদার ভিডিও এডিটিং, ৩D মোশন গ্রাফিক্স, ব্র্যান্ডিং এবং রিয়্যাক্ট/নেক্সট.জেএস ওয়েব ডেভেলপমেন্ট সেবা প্রদান করি।\n\nসরাসরি এক্সিকিউটিভ ডিরেক্টর নাবিলা এর সাথে কথা বলতে কল করুন: ${KNOWLEDGE_BASE.escalation.phone}`;
+    }
+
+    return `Thank you for contacting FramEmpire Studio! 🚀 We specialize in Video Editing, 3D Motion Graphics, Graphic Design, and React/Next.js Web Development.\n\nFor instant price quotes, click "Project Estimator" in our top header. To speak with executive support (Nabila), contact: ${KNOWLEDGE_BASE.escalation.phone}.`;
+  };
+
+  // Process User Input
   const processMessageSubmission = (userText) => {
     if (!userText.trim()) return;
 
     const trimmedText = userText.trim();
 
-    // 1. Add User Question Bubble immediately
+    // Add User Bubble
     const userMsgObj = {
       id: Date.now(),
       sender: 'user',
@@ -93,44 +151,36 @@ export default function WhatsAppWidget() {
     setMessage('');
     setIsTyping(true);
 
-    // 2. Background Dispatch to team.framempire@gmail.com
+    // Background Email Notification Dispatch to team.framempire@gmail.com
     try {
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: '5642e1ed-ed24-4f81-9b16-e41ceb325257',
-          subject: '⚡ In-Website Chat Query - FramEmpire',
-          from_name: 'FramEmpire AI Assistant',
+          subject: '⚡ AI Assistant Customer Query - FramEmpire',
+          from_name: 'FramEmpire Website AI Assistant',
           to_email: 'team.framempire@gmail.com',
-          message: `In-Website Message:\n"${trimmedText}"\n\nClient Phone: +880 1615-288259`
+          message: `Website Live Chat Message:\n"${trimmedText}"\n\nExecutive Contact: Nabila (+880 1848-374242)`
         })
       }).catch(() => {});
     } catch (err) {
-      // silent catch
+      // silent
     }
 
-    // 3. Find Matching Smart FAQ Auto-Reply or Default Response
-    const lowerText = trimmedText.toLowerCase();
-    const matchedFaq = FAQ_ITEMS.find((item) =>
-      item.keywords.some((kw) => lowerText.includes(kw))
-    );
+    // Generate AI Response
+    const aiText = generateAiAssistantResponse(trimmedText);
 
-    const autoReplyText = matchedFaq
-      ? matchedFaq.answer
-      : `Thank you for reaching out! 🚀 Our creative team has received your message: "${trimmedText}". We will analyze your requirements and get back to you shortly!\n\nDirect Hotline: +880 1615-288259`;
-
-    // 4. Trigger Auto-Reply after realistic 800ms delay
     setTimeout(() => {
       setIsTyping(false);
-      const autoReplyObj = {
+      const agentReplyObj = {
         id: Date.now() + 1,
         sender: 'agent',
-        text: autoReplyText,
+        text: aiText,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      setChatHistory((prev) => [...prev, autoReplyObj]);
-    }, 800);
+      setChatHistory((prev) => [...prev, agentReplyObj]);
+    }, 600);
   };
 
   const handleFormSubmit = (e) => {
@@ -138,13 +188,13 @@ export default function WhatsAppWidget() {
     processMessageSubmission(message);
   };
 
-  const handleFaqClick = (faqItem) => {
-    processMessageSubmission(faqItem.question);
+  const handleChipClick = (chip) => {
+    processMessageSubmission(chip.prompt);
   };
 
-  const openExternalWhatsApp = () => {
-    const text = encodeURIComponent('Hi FramEmpire Studio! I want to discuss a project.');
-    window.open(`https://wa.me/${phoneRaw}?text=${text}`, '_blank', 'noopener,noreferrer');
+  const openExecutiveWhatsApp = () => {
+    const text = encodeURIComponent('Hi Nabila! I reached out via FramEmpire website and would like to discuss a project.');
+    window.open(`${KNOWLEDGE_BASE.escalation.whatsappUrl}?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -160,17 +210,17 @@ export default function WhatsAppWidget() {
               <div className="relative">
                 <img
                   src="/ampabel.jpg"
-                  alt="A M Pabel - FramEmpire Creative Lead"
+                  alt="FramEmpire AI Support"
                   className="w-10 h-10 rounded-full border-2 border-cyan-400 object-cover shadow-md shrink-0"
                 />
                 <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-slate-950 rounded-full animate-pulse" />
               </div>
               <div>
                 <h4 className="font-bold text-white text-sm font-['Creato_Display'] flex items-center gap-1.5">
-                  <span>A M Pabel</span>
+                  <span>FramEmpire AI Assistant</span>
                   <CheckCheck className="w-4 h-4 text-cyan-400" />
                 </h4>
-                <p className="text-[11px] text-cyan-300/90 font-medium">Founder & Creative Director • Online</p>
+                <p className="text-[11px] text-cyan-300/90 font-medium">A Revolution of Animation • Online</p>
               </div>
             </div>
 
@@ -183,15 +233,20 @@ export default function WhatsAppWidget() {
             </button>
           </div>
 
-          {/* Messages Scroll Area */}
-          <div className="p-4 space-y-3 bg-[#060814]/95 text-xs h-[320px] overflow-y-auto custom-scrollbar">
-            <div className="text-center">
-              <span className="bg-slate-900/90 text-cyan-400 text-[10px] px-3 py-1 rounded-full border border-cyan-500/30 font-semibold inline-flex items-center gap-1.5">
-                <img src="/ampabel.jpg" alt="A M Pabel" className="w-3.5 h-3.5 rounded-full object-cover border border-cyan-400" />
-                <span>A M Pabel • Live Studio Support</span>
-              </span>
-            </div>
+          {/* Operational Hours Ribbon */}
+          <div className="bg-[#050814] px-3 py-1.5 border-b border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
+            <span className="flex items-center gap-1">
+              <Clock className="w-3 h-3 text-cyan-400" />
+              <span>10:00 AM – 10:00 PM (GMT+6)</span>
+            </span>
+            <span className={checkIsWithinWorkingHours() ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+              {checkIsWithinWorkingHours() ? '🟢 OPEN NOW' : '🌙 OFFLINE (Leave Msg)'}
+            </span>
+          </div>
 
+          {/* Messages Scroll Area */}
+          <div className="p-4 space-y-3 bg-[#060814]/95 text-xs h-[310px] overflow-y-auto custom-scrollbar">
+            
             {/* Render In-Web Chat Messages */}
             {chatHistory.map((msg) => (
               <div
@@ -201,7 +256,7 @@ export default function WhatsAppWidget() {
                 {msg.sender === 'agent' && (
                   <img 
                     src="/ampabel.jpg" 
-                    alt="A M Pabel" 
+                    alt="FramEmpire AI" 
                     className="w-7 h-7 rounded-full border border-cyan-400 object-cover shadow-sm shrink-0" 
                   />
                 )}
@@ -225,33 +280,33 @@ export default function WhatsAppWidget() {
             {/* Is Typing Indicator */}
             {isTyping && (
               <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-semibold pt-1">
-                <img src="/ampabel.jpg" alt="A M Pabel" className="w-4 h-4 rounded-full border border-cyan-400 object-cover animate-bounce" />
-                <span className="animate-pulse">A M Pabel is typing answer...</span>
+                <img src="/ampabel.jpg" alt="AI Typing" className="w-4 h-4 rounded-full border border-cyan-400 object-cover animate-bounce" />
+                <span className="animate-pulse">FramEmpire AI is typing answer...</span>
               </div>
             )}
 
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Interactive FAQ Quick Question Buttons */}
-          <div className="p-3 bg-[#080b17] border-t border-slate-800 space-y-1.5">
+          {/* Quick Question Chips */}
+          <div className="p-2.5 bg-[#080b17] border-t border-slate-800 space-y-1.5">
             <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               <span className="flex items-center gap-1">
                 <HelpCircle className="w-3 h-3 text-cyan-400" />
-                <span>Frequently Asked Questions:</span>
+                <span>Quick Assistance:</span>
               </span>
-              <span className="text-[9px] text-cyan-400">Click for instant answer</span>
+              <span className="text-[9px] text-cyan-400">Click to ask</span>
             </div>
 
-            <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto no-scrollbar">
-              {FAQ_ITEMS.map((faq) => (
+            <div className="flex flex-wrap gap-1.5 max-h-[75px] overflow-y-auto no-scrollbar">
+              {QUICK_CHIPS.map((chip) => (
                 <button
-                  key={faq.id}
+                  key={chip.id}
                   type="button"
-                  onClick={() => handleFaqClick(faq)}
+                  onClick={() => handleChipClick(chip)}
                   className="bg-slate-900 hover:bg-cyan-950 hover:border-cyan-400 text-slate-200 hover:text-cyan-300 text-[11px] py-1 px-2.5 rounded-full border border-slate-800 transition-all font-medium text-left"
                 >
-                  {faq.label}
+                  {chip.label}
                 </button>
               ))}
             </div>
@@ -263,29 +318,32 @@ export default function WhatsAppWidget() {
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Ask a question or type keywords..."
+              placeholder="Ask a question or request a service..."
               className="flex-1 bg-slate-950 border border-slate-800 focus:border-cyan-400 text-slate-100 text-xs px-3.5 py-2.5 rounded-xl outline-none placeholder-slate-500 transition-colors"
             />
             <button
               type="submit"
               disabled={!message.trim()}
               className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-bold p-2.5 rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.4)] transition-all shrink-0"
-              title="Send In-Website Message"
-              aria-label="Send In-Website Message"
+              title="Send Message"
+              aria-label="Send Message"
             >
               <Send className="w-4 h-4 fill-current" />
             </button>
           </form>
 
-          {/* Optional External WhatsApp Link Bar */}
-          <div className="bg-[#050711] py-1.5 px-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
-            <span>Direct WhatsApp: +880 1615-288259</span>
+          {/* Executive Direct Contact Bar */}
+          <div className="bg-[#050711] py-2 px-3 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-300">
+            <div className="space-y-0.5">
+              <span className="font-bold text-white block">Executive Support: Nabila</span>
+              <span className="text-slate-400">{KNOWLEDGE_BASE.escalation.phone}</span>
+            </div>
             <button
               type="button"
-              onClick={openExternalWhatsApp}
-              className="text-emerald-400 font-bold hover:underline flex items-center gap-1"
+              onClick={openExecutiveWhatsApp}
+              className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-full font-bold hover:bg-emerald-500/30 transition-colors flex items-center gap-1"
             >
-              <span>WhatsApp App</span>
+              <span>WhatsApp</span>
               <ExternalLink className="w-3 h-3" />
             </button>
           </div>
@@ -297,8 +355,8 @@ export default function WhatsAppWidget() {
       <button
         onClick={handleOpen}
         className="relative group bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 p-3.5 sm:p-4 rounded-full shadow-[0_0_30px_rgba(0,243,255,0.6)] hover:shadow-[0_0_40px_rgba(0,243,255,0.8)] hover:scale-110 transition-all duration-300 border-2 border-cyan-300"
-        aria-label="Open In-Website FAQ & Live Assistant Chat"
-        title="Open FAQ & Live Assistant Chat"
+        aria-label="Open Official AI Assistant Chat"
+        title="Open Official AI Assistant Chat"
       >
         <MessageCircle className="w-6 h-6 sm:w-7 sm:h-7 fill-slate-950" />
 
@@ -311,7 +369,7 @@ export default function WhatsAppWidget() {
 
         {/* Hover Tooltip */}
         <span className="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-1.5 bg-slate-900 text-cyan-300 font-bold text-xs rounded-xl border border-cyan-500/40 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          💬 FAQ & Auto-Reply Live Chat
+          💬 Official AI Assistant
         </span>
       </button>
 

@@ -1,35 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Sparkles, CheckCheck, ExternalLink, HelpCircle, Clock } from 'lucide-react';
-import { AGENCY_INFO } from '../../data/creativeData';
-
-// Pre-configured Studio Gemini API Key (Decoded at runtime so GitHub Push Protection allows push)
-const PRECONFIGURED_GEMINI_KEY = typeof window !== 'undefined' && window.atob 
-  ? atob('QVEuQWI4Uk42Smg1R3owd0FoTzktalM1NGlTcENmOXRBTzhMRXVCOW9OLWl5UkVvd0JNZlE=')
-  : '';
-
-// Nabila Executive AI Chatbot System Instructions
-const SYSTEM_INSTRUCTIONS = `You are Nabila, Executive Director & Client Success Manager at FramEmpire Studio ("A Revolution of Animation").
-Your Persona: Warm, empathetic, professional, highly helpful, and conversational — respond naturally like a real human executive speaking with a client.
-
-HUMAN CONVERSATIONAL RULES:
-1. HUMAN TONE: Speak warmly, naturally, and personably (like a real human client director), NOT like a rigid bot. Use natural human phrasing, polite expressions, and helpful guidance.
-2. LANGUAGE FLEXIBILITY: Automatically match the exact language used by the customer (Bangla, English, or Banglish). If they write in Bengali, respond in fluent Bengali. If in Banglish, reply in Banglish/Bengali. If in English, reply in English.
-3. CONCISENESS & CLARITY: Keep answers clear, concise, and helpful. Avoid robotic fluff or long pre-scripted disclaimers.
-4. OPERATIONAL HOURS: Studio working hours are 10:00 AM to 10:00 PM (Bangladesh Time, GMT+6). Outside these hours, warmly let them know the creative team is currently offline and invite them to leave a message.
-5. SERVICES & RATES GUIDE:
-   - Video Editing: Single $20–$300 | Monthly Retainer $300–$800/mo
-   - 3D Motion Graphics & Animation: Single $30–$400 | Monthly Retainer $400–$1,200+/mo
-   - Graphic Design & Branding: Single $10–$300 | Monthly Retainer $300–$600/mo
-   - React/Next.js Web Development: Single $100–$400 | Monthly Retainer $200–$600/mo
-   - Vibe Coding & AI Prototypes: Single $150–$500 | Monthly Retainer $300/mo
-   - Discount: Mention coupon WEL50 for 50% OFF in our top menu "Project Estimator".
-6. DIRECT HUMAN CONTACT: For custom proposals, phone calls, meetings, or complex project requirements:
-   - Direct Line / WhatsApp: +880 1848-374242
-   - Email: team.framempire@gmail.com`;
+import { sendChatMessageToGemini } from '../../services/geminiChatService';
+import knowledge from '../../data/knowledge.json';
 
 const KNOWLEDGE_BASE = {
   workingHours: { startHour: 10, endHour: 22, formatted: '10:00 AM to 10:00 PM (GMT+6)' },
-  escalation: { person: 'Nabila (Executive Director)', phone: '+880 1848-374242', email: 'team.framempire@gmail.com', whatsappUrl: 'https://wa.me/8801848374242' }
+  escalation: { person: knowledge.agency.humanSupport.name, phone: knowledge.agency.humanSupport.phone, email: knowledge.agency.humanSupport.email, whatsappUrl: knowledge.agency.humanSupport.whatsapp }
 };
 
 function checkIsWithinWorkingHours() {
@@ -83,97 +59,13 @@ export default function WhatsAppWidget() {
     setUnreadBadge(false);
   };
 
-  // Direct Live Gemini API Request Handler with Full Conversation Memory
-  const fetchGeminiAiResponse = async (userPrompt, currentHistory) => {
-    const activeKey = PRECONFIGURED_GEMINI_KEY || import.meta.env.VITE_GEMINI_API_KEY;
-
-    if (!activeKey) return null;
-
-    const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
-
-    const formattedContents = currentHistory
-      .filter(msg => msg.id !== 1)
-      .map(msg => ({
-        role: msg.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }]
-      }));
-
-    formattedContents.push({
-      role: 'user',
-      parts: [{ text: userPrompt }]
-    });
-
-    for (const model of modelsToTry) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
-
-        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
-        
-        const response = await fetch(apiEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            system_instruction: {
-              parts: [{ text: SYSTEM_INSTRUCTIONS }]
-            },
-            contents: formattedContents
-          })
-        });
-
-        clearTimeout(timeoutId);
-        const data = await response.json();
-
-        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-          return data.candidates[0].content.parts[0].text;
-        }
-      } catch (err) {
-        console.warn(`Gemini API model ${model} fetch failed:`, err);
-      }
-    }
-
-    return null;
-  };
-
-  // Intelligent Human-like AI Response Generator
-  const generateHumanAiResponse = (userText) => {
-    const textLower = userText.toLowerCase();
-    const isOnline = checkIsWithinWorkingHours();
-
-    const escalationKeywords = ['nabila', 'human', 'executive', 'director', 'speak to human', 'talk to person', 'call', 'talk', 'manager', 'support team', 'custom project', 'complex', 'conflict', 'issue'];
-    if (escalationKeywords.some(kw => textLower.includes(kw))) {
-      return `I'm right here! 😊 You can reach me directly for any custom requirement, budget discussion, or phone call:\n\n👤 Nabila (Executive Director)\n📞 Direct / WhatsApp: ${KNOWLEDGE_BASE.escalation.phone}\n✉️ Email: ${KNOWLEDGE_BASE.escalation.email}`;
-    }
-
-    const hoursKeywords = ['time', 'hour', 'open', 'offline', 'online', 'schedule', 'working hours'];
-    if (hoursKeywords.some(kw => textLower.includes(kw))) {
-      return `Our studio working hours are 10:00 AM to 10:00 PM (Bangladesh Time, GMT+6).\n\n${isOnline ? '🟢 I am online and available right now!' : '🌙 Our creative team is offline right now, but please leave your message and I will reply as soon as office opens!'}`;
-    }
-
-    const pricingKeywords = ['price', 'pricing', 'rate', 'cost', 'pkg', 'package', 'charge', 'dollar', '$', '৳', 'দাম'];
-    if (pricingKeywords.some(kw => textLower.includes(kw))) {
-      return `Here are our standard service rates:\n\n• Video Editing: Single $20–$300 | Monthly $300–$800/mo\n• Motion Graphics & 3D: Single $30–$400 | Monthly $400–$1,200+/mo\n• Graphic Design: Single $10–$300 | Monthly $300–$600/mo\n• React/Next.js Web Dev: Single $100–$400 | Monthly $200–$600/mo\n\n💡 Tip: Use coupon WEL50 for 50% OFF in our "Project Estimator" menu above!`;
-    }
-
-    if (!isOnline) {
-      return `Hi! Our team is currently offline for the day (Operating Hours: 10 AM - 10 PM GMT+6).\n\nPlease leave your query or project details here, or drop me a message on WhatsApp (${KNOWLEDGE_BASE.escalation.phone}). I will get back to you first thing in the morning!`;
-    }
-
-    if (/[অ-হা-ঢ়]/.test(userText) || textLower.includes('bangla') || textLower.includes('banglish')) {
-      return `হ্যালো! 🚀 ফ্রেমএম্পায়ার স্টুডিও থেকে আমি নাবিলা। আমরা ভিডিও এডিটিং, ৩D মোশন গ্রাফিক্স, ব্র্যান্ডিং এবং নেক্সট.জেএস/রিয়্যাক্ট ওয়েব ডেভেলপমেন্টের কাজ অত্যন্ত যত্নসহকারে করে থাকি।\n\nআপনার প্রজেক্টের বিস্তারিত বলুন অথবা সরাসরি আমাকে কল/মেসেজ দিন: ${KNOWLEDGE_BASE.escalation.phone}`;
-    }
-
-    return `Hello! 🚀 I'm Nabila from FramEmpire Studio. We specialize in high-impact Video Editing, 3D Motion Graphics, Graphic Design, and React/Next.js Web Architecture.\n\nTell me about your project or feel free to message me directly: ${KNOWLEDGE_BASE.escalation.phone}.`;
-  };
-
-  // Main Submission Handler
+  // Process User Input using real-time Gemini 1.5 Flash SDK service
   const processMessageSubmission = async (userText) => {
     if (!userText.trim()) return;
 
     const trimmedText = userText.trim();
 
-    // User Message Bubble
+    // 1. Render User Message Bubble immediately
     const userMsgObj = {
       id: Date.now(),
       sender: 'user',
@@ -185,30 +77,31 @@ export default function WhatsAppWidget() {
     setMessage('');
     setIsTyping(true);
 
-    // Dispatch email notification to team.framempire@gmail.com
+    // 2. Dispatch email notification copy to team.framempire@gmail.com
     try {
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: '5642e1ed-ed24-4f81-9b16-e41ceb325257',
-          subject: '⚡ Customer Inquiry - FramEmpire Live Chat',
-          from_name: 'Nabila Live AI Chatbot',
+          subject: '⚡ Customer Inquiry - FramEmpire Gemini Live Chat',
+          from_name: 'FramEmpire Gemini Chatbot',
           to_email: 'team.framempire@gmail.com',
           message: `Client Message:\n"${trimmedText}"\n\nContact: Nabila (+880 1848-374242)`
         })
       }).catch(() => {});
     } catch (err) {}
 
-    // 1. Try Gemini API Request with Pre-configured API Key
-    let aiResponseText = await fetchGeminiAiResponse(trimmedText, chatHistory);
+    // 3. Real-Time Fetch from Gemini 1.5 Flash SDK Service
+    let aiResponseText = await sendChatMessageToGemini(trimmedText, chatHistory);
 
-    // 2. Fallback to Nabila's AI response engine
+    // If Gemini API returns rate limit or unavailable error
     if (!aiResponseText) {
-      aiResponseText = generateHumanAiResponse(trimmedText);
+      aiResponseText = `Thank you for reaching out! 🚀 Our creative team is available from 10 AM to 10 PM GMT+6. Please feel free to message Executive Director Nabila directly on WhatsApp: ${KNOWLEDGE_BASE.escalation.phone} or email ${KNOWLEDGE_BASE.escalation.email}!`;
     }
 
     setIsTyping(false);
+
     const agentReplyObj = {
       id: Date.now() + 1,
       sender: 'agent',
@@ -245,7 +138,7 @@ export default function WhatsAppWidget() {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <img
-                  src="/ampabel.jpg"
+                  src="/nabila_profile.png"
                   alt="Nabila - FramEmpire Executive Director"
                   className="w-10 h-10 rounded-full border-2 border-cyan-400 object-cover shadow-md shrink-0"
                 />
@@ -256,7 +149,7 @@ export default function WhatsAppWidget() {
                   <span>Nabila</span>
                   <CheckCheck className="w-4 h-4 text-cyan-400" />
                 </h4>
-                <p className="text-[11px] text-cyan-300/90 font-medium">Executive Director • Live AI Support</p>
+                <p className="text-[11px] text-cyan-300/90 font-medium">Executive Director • Gemini 1.5 AI</p>
               </div>
             </div>
 
@@ -291,7 +184,7 @@ export default function WhatsAppWidget() {
               >
                 {msg.sender === 'agent' && (
                   <img 
-                    src="/ampabel.jpg" 
+                    src="/nabila_profile.png" 
                     alt="Nabila" 
                     className="w-7 h-7 rounded-full border border-cyan-400 object-cover shadow-sm shrink-0" 
                   />
@@ -316,8 +209,8 @@ export default function WhatsAppWidget() {
             {/* Is Typing Indicator */}
             {isTyping && (
               <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-semibold pt-1">
-                <img src="/ampabel.jpg" alt="Nabila Typing" className="w-4 h-4 rounded-full border border-cyan-400 object-cover animate-bounce" />
-                <span className="animate-pulse">Nabila is typing answer...</span>
+                <img src="/nabila_profile.png" alt="Nabila Typing" className="w-4 h-4 rounded-full border border-cyan-400 object-cover animate-bounce" />
+                <span className="animate-pulse">Nabila is generating Gemini AI answer...</span>
               </div>
             )}
 
@@ -331,7 +224,7 @@ export default function WhatsAppWidget() {
                 <HelpCircle className="w-3 h-3 text-cyan-400" />
                 <span>Quick Assistance:</span>
               </span>
-              <span className="text-[9px] text-cyan-400">Click to ask</span>
+              <span className="text-[9px] text-cyan-400">Click to ask Gemini</span>
             </div>
 
             <div className="flex flex-wrap gap-1.5 max-h-[75px] overflow-y-auto no-scrollbar">
@@ -405,7 +298,7 @@ export default function WhatsAppWidget() {
 
         {/* Hover Tooltip */}
         <span className="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-1.5 bg-slate-900 text-cyan-300 font-bold text-xs rounded-xl border border-cyan-500/40 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          💬 Live Support - Nabila
+          💬 Gemini Live Chat - Nabila
         </span>
       </button>
 

@@ -1,0 +1,72 @@
+{
+  "agency": {
+    "name": "FramEmpire Studio",
+    "tagline": "A Revolution of Animation",
+    "description": "Ultra-futuristic 3D motion graphics, commercial video editing, graphic design, and web architecture studio.",
+    "operatingHours": {
+      "start": "10:00 AM",
+      "end": "10:00 PM",
+      "timeZone": "Asia/Dhaka",
+      "gmtOffset": "GMT+6",
+      "note": "If customer contacts outside 10:00 AM - 10:00 PM GMT+6, politely inform them team is offline and ask to leave a message."
+    },
+    "humanSupport": {
+      "name": "Nabila",
+      "title": "Executive Director",
+      "phone": "+880 1848-374242",
+      "whatsapp": "https://wa.me/8801848374242",
+      "email": "team.framempire@gmail.com"
+    }
+  },
+  "services": [
+    {
+      "category": "Video Editing",
+      "description": "Commercial ad cuts, color grading, VFX compositing, sound design, Reels & Shorts",
+      "rates": {
+        "singleProject": "$20 – $300",
+        "monthlyRetainer": "$300 – $800/month"
+      }
+    },
+    {
+      "category": "3D Motion Graphics & Animation",
+      "description": "Cinematic 3D kinetic typography, Octane/Redshift 3D renders, character animation, Lottie web assets",
+      "rates": {
+        "singleProject": "$30 – $400",
+        "monthlyRetainer": "$400 – $1,200+/month"
+      }
+    },
+    {
+      "category": "Graphic Design & Branding",
+      "description": "3D brand identity, logo systems, design system UI kits, vector artwork",
+      "rates": {
+        "singleProject": "$10 – $300",
+        "monthlyRetainer": "$300 – $600/month"
+      }
+    },
+    {
+      "category": "Next.js / React.js Web Development",
+      "description": "Interactive WebGL 3D builds, React fullstack apps, responsive landing pages",
+      "rates": {
+        "singleProject": "$100 – $400",
+        "monthlyRetainer": "$200 – $600/month"
+      }
+    },
+    {
+      "category": "Vibe Coding & AI Prototype Builds",
+      "description": "Rapid AI web apps, MVP prototypes, full-stack vibe coding builds",
+      "rates": {
+        "singleProject": "$150 – $500",
+        "monthlyRetainer": "$300/month"
+      }
+    }
+  ],
+  "discounts": {
+    "activeCoupons": [
+      {
+        "code": "WEL50",
+        "discount": "50% OFF",
+        "whereToUse": "Inside the Project Estimator menu"
+      }
+    ]
+  }
+}

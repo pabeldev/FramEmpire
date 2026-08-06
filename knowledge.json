@@ -1,0 +1,36 @@
+{
+  "agency_name": "FramEmpire",
+  "slogan": "A revolution of Animation",
+  "description": "An agency of expert Video Editors, Motion Graphic Designers, Graphic Designers, Vibe Coders, and Raw Coders specialized in Next.js and React.js.",
+  "services": [
+    "Video Editing & Post-Production",
+    "2D/3D Motion Graphics & Animation",
+    "Graphic Design & Brand Identity",
+    "Vibe Coding & Custom Web Development (Next.js / React.js)"
+  ],
+  "pricing": {
+    "currency": "USD",
+    "note": "Custom enterprise quotes available upon request.",
+    "video_editing_and_motion": {
+      "per_project": "$100 - $500 (depending on complexity and duration)",
+      "monthly_retainer": "$1,200 - $3,500/month (dedicated team)"
+    },
+    "graphic_design": {
+      "per_project": "$50 - $250",
+      "monthly_retainer": "$800 - $2,000/month"
+    },
+    "web_development_next_react": {
+      "per_project": "$500 - $2,500",
+      "monthly_retainer": "$2,000 - $5,000/month"
+    }
+  },
+  "working_hours": {
+    "timezone": "BST (GMT+6)",
+    "schedule": "10:00 AM - 10:00 PM (Bangladesh Standard Time)"
+  },
+  "contact": {
+    "executive_director": "Nabila",
+    "whatsapp_phone": "+880 1848-374242",
+    "email": "team.framempire@gmail.com"
+  }
+}

@@ -63,7 +63,7 @@ function apiChatPlugin() {
 
             const genAI = new GoogleGenerativeAI(API_KEY);
             const model = genAI.getGenerativeModel({
-              model: 'gemini-1.5-flash',
+              model: 'gemini-flash-latest',
               systemInstruction: SYSTEM_INSTRUCTION
             });
 
@@ -84,9 +84,9 @@ function apiChatPlugin() {
           } catch (err) {
             console.error('Vite /api/chat error:', err);
             
-            // REST Fallback in Vite middleware
+            // REST Fallback in Vite middleware using gemini-flash-latest
             try {
-              const fetchRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+              const fetchRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

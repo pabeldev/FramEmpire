@@ -28,13 +28,13 @@ STRICT RULES & BEHAVIOR:
 5. ESCALATION: For custom proposals or direct phone calls, provide Nabila's contact: Phone/WhatsApp: ${knowledge.agency.humanSupport.phone}, Email: ${knowledge.agency.humanSupport.email}.`;
 
 /**
- * Real-time Gemini 1.5 Flash Chat Service powered by @google/generative-ai
+ * Real-time Gemini Chat Service powered by @google/generative-ai
  */
 export async function sendChatMessageToGemini(userPrompt, conversationHistory = []) {
   const apiKey = getApiKey();
   if (!apiKey) return null;
 
-  const modelsToTry = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-pro'];
+  const modelsToTry = ['gemini-flash-latest', 'gemini-2.0-flash', 'gemini-pro'];
 
   for (const modelName of modelsToTry) {
     try {
@@ -69,7 +69,7 @@ export async function sendChatMessageToGemini(userPrompt, conversationHistory = 
 
   // Fallback REST fetch call if SDK throws rate limit error
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

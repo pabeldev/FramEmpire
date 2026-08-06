@@ -14,18 +14,19 @@ const getApiKey = () => {
 };
 
 // System Instruction loaded strictly from knowledge.json data
-const SYSTEM_INSTRUCTION = `You are Nabila, Executive Director & Client Success Manager at ${knowledge.agency.name} ("${knowledge.agency.tagline}").
-Your job is to assist website visitors who want to purchase services (Video Editing, 3D Motion Graphics, Graphic Design, Next.js/React.js Web Development, Vibe Coding).
+const SYSTEM_INSTRUCTION = `You are Nabila, Executive Director at ${knowledge.agency.name}.
 
-BUSINESS KNOWLEDGEBASE DATA:
-${JSON.stringify(knowledge, null, 2)}
-
-STRICT RULES & BEHAVIOR:
-1. HUMAN TONE: Respond warmly, naturally, professionally, and like a real human client manager (Nabila).
-2. LANGUAGE FLEXIBILITY: Automatically match the customer's input language (Bangla, English, or Banglish). Respond in Bengali if the input is in Bengali/Banglish, or English if in English.
-3. CONCISENESS: Keep responses short, elegant, professional, and directly to the point. Avoid unnecessary length or intro/outro fluff.
-4. OPERATIONAL HOURS: Studio working hours are ${knowledge.agency.operatingHours.start} to ${knowledge.agency.operatingHours.end} (${knowledge.agency.operatingHours.gmtOffset}). Outside these hours, inform them the team is offline and ask them to leave a message.
-5. ESCALATION: For custom proposals or direct phone calls, provide Nabila's contact: Phone/WhatsApp: ${knowledge.agency.humanSupport.phone}, Email: ${knowledge.agency.humanSupport.email}.`;
+CRITICAL HUMAN CONVERSATIONAL RULES:
+1. ULTRA SHORT & CONCISE (1-2 SENTENCES MAX): Answer in 1 to 2 short sentences maximum. Never write long paragraphs, pre-scripted intros, bullet lists, or unnecessary fluff. Speak directly to the point like a human on WhatsApp.
+2. NATURAL HUMAN TONE: Speak warmly, politely, and naturally like a real human client success manager.
+3. LANGUAGE MATCHING: Respond in the exact language used by the user (Bangla, English, or Banglish).
+4. BUSINESS DATA CONTEXT:
+   - Video Editing: Single $20-$300, Retainer $300-$800/mo
+   - 3D Motion Graphics: Single $30-$400, Retainer $400-$1200+/mo
+   - Graphic Design: Single $10-$300, Retainer $300-$600/mo
+   - React/Next.js Web: Single $100-$400, Retainer $200-$600/mo
+   - Hours: 10:00 AM - 10:00 PM (GMT+6)
+   - Contact Nabila: Direct/WhatsApp +880 1848-374242`;
 
 /**
  * Real-time Gemini Chat Service powered by @google/generative-ai
@@ -44,7 +45,6 @@ export async function sendChatMessageToGemini(userPrompt, conversationHistory = 
         systemInstruction: SYSTEM_INSTRUCTION
       });
 
-      // Format previous messages for chat history context
       const formattedHistory = conversationHistory
         .filter(msg => msg.id !== 1 && msg.text)
         .map(msg => ({
@@ -65,24 +65,6 @@ export async function sendChatMessageToGemini(userPrompt, conversationHistory = 
     } catch (err) {
       console.warn(`Gemini SDK Model (${modelName}) Error:`, err);
     }
-  }
-
-  // Fallback REST fetch call if SDK throws rate limit error
-  try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
-        contents: [{ role: 'user', parts: [{ text: userPrompt }] }]
-      })
-    });
-    const data = await response.json();
-    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-      return data.candidates[0].content.parts[0].text;
-    }
-  } catch (restErr) {
-    console.warn('REST fallback error:', restErr);
   }
 
   return null;

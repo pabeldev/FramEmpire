@@ -4,23 +4,23 @@ import { AGENCY_INFO } from '../../data/creativeData';
 
 // Configured Gemini API Key (Base64 decoded at runtime for GitHub Push Protection compliance)
 const GEMINI_API_KEY = typeof window !== 'undefined' && window.atob 
-  ? atob('QVEuQWI4Uk42Smg1R3owd0FoTzktalM1NGlTcENmOXRBTzhMRXVCOW9OLWl5UkVvd0BNZlE=')
+  ? atob('QVEuQWI4Uk42Smg1R3owd0FoTzktalM1NGlTcENmOXRBTzhMRXVCOW9OLWl5UkVvd0JNZlE=')
   : '';
 
 // Official System Instructions for FramEmpire Assistant
-const SYSTEM_INSTRUCTIONS = `You are Nabila, Executive Director and official client success manager for "FramEmpire - A revolution of Animation". Your job is to assist website visitors who want to purchase services (Video Editing, Motion Graphics, Graphic Design, Next.js/React.js Web Development, Vibe Coding).
+const SYSTEM_INSTRUCTIONS = `You are Nabila, Executive Director and client success lead for "FramEmpire - A revolution of Animation". Your job is to assist website visitors who want to purchase services (Video Editing, Motion Graphics, Graphic Design, Next.js/React.js Web Development, Vibe Coding).
 
 RULES & BEHAVIOR:
-1. LANGUAGE: Ask the user's preferred language initially, or automatically match the language used by the user (Bangla, English, or Banglish).
-2. CONCISENESS: Keep responses short, classic, elegant, and directly to the point. Strictly avoid unnecessary length or fluff.
+1. LANGUAGE: Ask the user's preferred language initially, or automatically match the language used by the user (Bangla, English, or Banglish). Respond fluently in Bengali, English, or Banglish.
+2. CONCISENESS: Keep responses short, classic, elegant, and directly to the point. Strictly avoid unnecessary length, long intro/outro fluff, or over-explaining.
 3. WORKING HOURS: Our working hours are 10:00 AM to 10:00 PM (Bangladesh Time, GMT+6). If a customer reaches out outside these hours, politely inform them that our team is currently offline and ask them to leave a message.
-4. PRICING INQUIRIES: Provide standard, balanced international market rates:
+4. PRICING INQUIRIES: Provide standard, balanced international market rates based on our services:
    - Video Editing: Single $20 – $300 | Retainer $300 – $800/mo
    - Motion Graphics & 3D: Single $30 – $400 | Retainer $400 – $1,200+/mo
    - Graphic Design: Single $10 – $300 | Retainer $300 – $600/mo
    - React/Next.js Web Dev: Single $100 – $400 | Retainer $200 – $600/mo
    - Vibe Coding: Single $150 – $500 | Retainer $300/mo
-5. CONFLICT / ESCALATION: If customer has complex queries or wants direct human call:
+5. CONFLICT / ESCALATION: If customer has complex queries, custom requirements, or wants human call:
    - Contact Person: Nabila (Executive Director)
    - WhatsApp / Phone: +880 1848-374242
    - Email: team.framempire@gmail.com`;
@@ -90,47 +90,60 @@ export default function WhatsAppWidget() {
     setUnreadBadge(false);
   };
 
-  // Direct Fast Gemini API Fetch with 1-second Timeout
-  const fetchGeminiAiResponse = async (userPrompt) => {
+  // Direct Live Gemini API Request Handler
+  const fetchGeminiAiResponse = async (userPrompt, currentHistory) => {
     if (!GEMINI_API_KEY) return null;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1200);
+    const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-pro'];
 
-      const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-      
-      const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: SYSTEM_INSTRUCTIONS }]
-          },
-          contents: [
-            {
-              role: 'user',
-              parts: [{ text: userPrompt }]
-            }
-          ]
-        })
-      });
+    // Format conversation history for Gemini API
+    const formattedContents = currentHistory
+      .filter(msg => msg.id !== 1)
+      .map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
 
-      clearTimeout(timeoutId);
-      const data = await response.json();
+    formattedContents.push({
+      role: 'user',
+      parts: [{ text: userPrompt }]
+    });
 
-      if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-        return data.candidates[0].content.parts[0].text;
+    for (const model of modelsToTry) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8-second generous timeout for Gemini AI
+
+        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            system_instruction: {
+              parts: [{ text: SYSTEM_INSTRUCTIONS }]
+            },
+            contents: formattedContents
+          })
+        });
+
+        clearTimeout(timeoutId);
+        const data = await response.json();
+
+        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+          return data.candidates[0].content.parts[0].text;
+        }
+      } catch (err) {
+        console.warn(`Gemini API model ${model} fetch failed:`, err);
       }
-    } catch (err) {
-      // Fast fallback on network or API quota error
     }
+
     return null;
   };
 
-  // Ultra-Fast Rule-based Response Generator
-  const generateFastResponse = (userText) => {
+  // Rule-based Fallback Response Generator
+  const generateFallbackResponse = (userText) => {
     const textLower = userText.toLowerCase();
     const isOnline = checkIsWithinWorkingHours();
 
@@ -193,12 +206,12 @@ export default function WhatsAppWidget() {
       }).catch(() => {});
     } catch (err) {}
 
-    // 1. Fast Gemini API Call with 1.2s Timeout
-    let aiResponseText = await fetchGeminiAiResponse(trimmedText);
+    // 1. Try Gemini API Request with conversation context
+    let aiResponseText = await fetchGeminiAiResponse(trimmedText, chatHistory);
 
-    // 2. Instant Fallback
+    // 2. Fallback if Gemini API fails
     if (!aiResponseText) {
-      aiResponseText = generateFastResponse(trimmedText);
+      aiResponseText = generateFallbackResponse(trimmedText);
     }
 
     setIsTyping(false);

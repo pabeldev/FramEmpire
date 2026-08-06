@@ -1,11 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Sparkles, CheckCheck, ExternalLink, HelpCircle, Clock } from 'lucide-react';
-import { sendChatMessageToGemini } from '../../services/geminiChatService';
 import knowledge from '../../data/knowledge.json';
 
 const KNOWLEDGE_BASE = {
   workingHours: { startHour: 10, endHour: 22, formatted: '10:00 AM to 10:00 PM (GMT+6)' },
-  escalation: { person: knowledge.agency.humanSupport.name, phone: knowledge.agency.humanSupport.phone, email: knowledge.agency.humanSupport.email, whatsappUrl: knowledge.agency.humanSupport.whatsapp }
+  escalation: { 
+    person: knowledge.agency.humanSupport.name, 
+    phone: knowledge.agency.humanSupport.phone, 
+    email: knowledge.agency.humanSupport.email, 
+    whatsappUrl: knowledge.agency.humanSupport.whatsapp 
+  }
 };
 
 function checkIsWithinWorkingHours() {
@@ -59,13 +63,13 @@ export default function WhatsAppWidget() {
     setUnreadBadge(false);
   };
 
-  // Process User Input using real-time Gemini 1.5 Flash SDK service
+  // Real-time API Fetch from /api/chat endpoint powered by Gemini 1.5 Flash
   const processMessageSubmission = async (userText) => {
     if (!userText.trim()) return;
 
     const trimmedText = userText.trim();
 
-    // 1. Render User Message Bubble immediately
+    // 1. Render User Message Bubble
     const userMsgObj = {
       id: Date.now(),
       sender: 'user',
@@ -77,27 +81,49 @@ export default function WhatsAppWidget() {
     setMessage('');
     setIsTyping(true);
 
-    // 2. Dispatch email notification copy to team.framempire@gmail.com
+    // 2. Dispatch email copy to team.framempire@gmail.com
     try {
       fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: '5642e1ed-ed24-4f81-9b16-e41ceb325257',
-          subject: '⚡ Customer Inquiry - FramEmpire Gemini Live Chat',
-          from_name: 'FramEmpire Gemini Chatbot',
+          subject: '⚡ Live Chat Inquiry - FramEmpire',
+          from_name: 'Nabila Live Chat',
           to_email: 'team.framempire@gmail.com',
           message: `Client Message:\n"${trimmedText}"\n\nContact: Nabila (+880 1848-374242)`
         })
       }).catch(() => {});
     } catch (err) {}
 
-    // 3. Real-Time Fetch from Gemini 1.5 Flash SDK Service
-    let aiResponseText = await sendChatMessageToGemini(trimmedText, chatHistory);
+    // 3. Real-Time Fetch from /api/chat Backend Endpoint
+    let aiResponseText = '';
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: trimmedText,
+          history: chatHistory
+        })
+      });
 
-    // If Gemini API returns rate limit or unavailable error
+      const data = await response.json();
+      if (data && data.text) {
+        aiResponseText = data.text;
+      }
+    } catch (err) {
+      console.warn('Fetch /api/chat error:', err);
+    }
+
+    // Fallback message if endpoint network error occurs
     if (!aiResponseText) {
-      aiResponseText = `Thank you for reaching out! 🚀 Our creative team is available from 10 AM to 10 PM GMT+6. Please feel free to message Executive Director Nabila directly on WhatsApp: ${KNOWLEDGE_BASE.escalation.phone} or email ${KNOWLEDGE_BASE.escalation.email}!`;
+      const isOnline = checkIsWithinWorkingHours();
+      if (/[অ-হা-ঢ়]/.test(trimmedText) || trimmedText.toLowerCase().includes('bangla')) {
+        aiResponseText = `ধন্যবাদ মেসেজ দেওয়ার জন্য! 🚀 ফ্রেমএম্পায়ার স্টুডিওতে আমরা ভিডিও এডিটিং, ৩D মোশন গ্রাফিক্স, ব্র্যান্ডিং এবং নেক্সট.জেএস/রিয়্যাক্ট ওয়েব ডেভেলপমেন্টের কাজ করে থাকি।\n\nসরাসরি কথা বলতে আমার সাথে যোগাযোগ করতে পারেন: ${KNOWLEDGE_BASE.escalation.phone}`;
+      } else {
+        aiResponseText = `Hello! 🚀 I'm Nabila from FramEmpire Studio. We specialize in high-impact Video Editing, 3D Motion Graphics, Graphic Design, and React/Next.js Web Architecture.\n\n${isOnline ? 'How can I assist you with your project today?' : 'Our team is currently offline (10 AM - 10 PM GMT+6). Please leave your project details!'} Direct WhatsApp: ${KNOWLEDGE_BASE.escalation.phone}`;
+      }
     }
 
     setIsTyping(false);
@@ -149,7 +175,7 @@ export default function WhatsAppWidget() {
                   <span>Nabila</span>
                   <CheckCheck className="w-4 h-4 text-cyan-400" />
                 </h4>
-                <p className="text-[11px] text-cyan-300/90 font-medium">Executive Director • Gemini 1.5 AI</p>
+                <p className="text-[11px] text-cyan-300/90 font-medium">Executive Director • Gemini 1.5 Flash</p>
               </div>
             </div>
 
@@ -210,7 +236,7 @@ export default function WhatsAppWidget() {
             {isTyping && (
               <div className="flex items-center gap-2 text-cyan-400 text-[11px] font-semibold pt-1">
                 <img src="/nabila_profile.png" alt="Nabila Typing" className="w-4 h-4 rounded-full border border-cyan-400 object-cover animate-bounce" />
-                <span className="animate-pulse">Nabila is generating Gemini AI answer...</span>
+                <span className="animate-pulse">Nabila is generating answer...</span>
               </div>
             )}
 
@@ -298,7 +324,7 @@ export default function WhatsAppWidget() {
 
         {/* Hover Tooltip */}
         <span className="absolute right-full top-1/2 -translate-y-1/2 mr-3 px-3 py-1.5 bg-slate-900 text-cyan-300 font-bold text-xs rounded-xl border border-cyan-500/40 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-          💬 Gemini Live Chat - Nabila
+          💬 Live Support - Nabila
         </span>
       </button>
 

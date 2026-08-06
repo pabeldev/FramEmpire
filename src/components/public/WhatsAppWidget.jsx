@@ -194,8 +194,18 @@ export default function WhatsAppWidget() {
               <Clock className="w-3 h-3 text-cyan-400" />
               <span>10:00 AM – 10:00 PM (GMT+6)</span>
             </span>
-            <span className={checkIsWithinWorkingHours() ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
-              {checkIsWithinWorkingHours() ? '🟢 OPEN NOW' : '🌙 OFFLINE (Leave Msg)'}
+            <span className="flex items-center gap-1.5 font-bold">
+              {checkIsWithinWorkingHours() ? (
+                <>
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-80" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+                  </span>
+                  <span className="text-emerald-400 tracking-wider text-[10px]">OPEN NOW</span>
+                </>
+              ) : (
+                <span className="text-amber-400">🌙 OFFLINE (Leave Msg)</span>
+              )}
             </span>
           </div>
 
